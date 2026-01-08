@@ -17,8 +17,8 @@ repositories {
 
 dependencies {
     // Lombok (plugin handles annotation processing)
-    compileOnly 'org.projectlombok:lombok:1.18.30'
-    annotationProcessor 'org.projectlombok:lombok:1.18.30'
+    compileOnly 'org.projectlombok:lombok:1.18.36'
+    annotationProcessor 'org.projectlombok:lombok:1.18.36'
     
     // Logging
     implementation 'org.slf4j:slf4j-api:2.0.9'
@@ -37,7 +37,7 @@ tasks.named('test') {
 jar {
     manifest {
         attributes(
-            'Main-Class': 'com.bioxml.parser.Main',
+            'Main-Class': 'com.brillianttiger.bio.parser.Main',
             'Implementation-Title': project.name,
             'Implementation-Version': project.version
         )
@@ -54,6 +54,6 @@ tasks.register('fatJar', Jar) {
     }
     duplicatesStrategy = DuplicatesStrategy.EXCLUDE
     manifest {
-        attributes 'Main-Class': 'com.bioxml.parser.Main'
+        attributes 'Main-Class': 'com.brillianttiger.bio.parser.Main'
     }
 }
