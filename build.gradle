@@ -3,7 +3,7 @@ plugins {
     id 'io.freefair.lombok' version '8.4'
 }
 
-group = 'com.brillianttigercorp.bioxml'
+group = 'com.brillianttiger.bio'
 version = '1.0.0-SNAPSHOT'
 
 java {
