@@ -5,15 +5,19 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.List;
+
 /**
- * Source / 출처
+ * Note / 노트
  *
- * KR: 인용 출처 (저널명, 책명 등). JATS 1.4 DTD 완전 준수 모델.
- * EN: Citation source (journal name, book name, etc.). Fully compliant with JATS 1.4 DTD.
+ * KR: 참조 또는 인용에 대한 노트. JATS 1.4 DTD 완전 준수 모델.
+ *     참조 목록 내에서 추가 정보를 제공하는 데 사용됨.
+ * EN: Note on a reference or citation. Fully compliant with JATS 1.4 DTD.
+ *     Used to provide additional information within a reference list.
  *
- * DTD: <!ELEMENT source (#PCDATA | %source-elements;)*>
+ * DTD: <!ELEMENT note (%note-model;)*>
  *
- * DTD: <!ATTLIST source
+ * DTD: <!ATTLIST note
  *          content-type CDATA #IMPLIED
  *          id ID #IMPLIED
  *          specific-use CDATA #IMPLIED
@@ -21,28 +25,31 @@ import lombok.NoArgsConstructor;
  *          xml:lang NMTOKEN #IMPLIED
  *      >
  *
- * Reference: https://jats.nlm.nih.gov/archiving/tag-library/1.4/element/source.html
+ * Reference: https://jats.nlm.nih.gov/archiving/tag-library/1.4/element/note.html
  *
  * Example:
- * <source>Journal of Biological Chemistry</source>
- * <source xml:lang="de">Zeitschrift für Physik</source>
+ * <note>
+ *   <p>This paper was retracted on January 15, 2024.</p>
+ * </note>
  */
 @Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class Source {
+public class Note {
 
     // ========== Attributes / 속성 ==========
 
     /**
      * 콘텐츠 유형 / Content type
      *
-     * KR: 출처의 콘텐츠 유형.
-     * EN: Type of content in the source.
+     * KR: 노트의 콘텐츠 유형.
+     * EN: Type of content in the note.
      *
      * DTD: content-type CDATA #IMPLIED
      * Required: NO
+     *
+     * Example: "retraction", "erratum", "update"
      */
     private String contentType;
 
@@ -90,16 +97,38 @@ public class Source {
      */
     private String xmlLang;
 
-    // ========== Content / 내용 ==========
+    // ========== Child Elements / 자식 요소 ==========
 
     /**
-     * 출처 값 / Source value
+     * 레이블 / Label
      *
-     * KR: 출처명 텍스트 (저널명, 책명 등).
-     * EN: Source name text (journal name, book name, etc.).
+     * KR: 노트의 레이블.
+     * EN: Label for the note.
      *
-     * DTD: #PCDATA
-     * Required: YES
+     * DTD: label?
+     * Required: NO
      */
-    private String value;
+    private Label label;
+
+    /**
+     * 단락 목록 / Paragraph list
+     *
+     * KR: 노트 내용 단락 목록.
+     * EN: List of paragraphs in the note.
+     *
+     * DTD: %note-model; includes p
+     * Required: NO (0 or more)
+     */
+    private List<P> paragraphs;
+
+    /**
+     * 제품 정보 목록 / Product list
+     *
+     * KR: 제품 정보 목록 (리뷰의 경우).
+     * EN: List of product information (for reviews).
+     *
+     * DTD: %note-model; includes product
+     * Required: NO (0 or more)
+     */
+    private List<Product> products;
 }
