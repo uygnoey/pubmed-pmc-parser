@@ -8,19 +8,19 @@ import lombok.NoArgsConstructor;
 import java.util.List;
 
 /**
- * Graphic / 그래픽
+ * Media / 미디어
  *
- * KR: 그래픽/이미지 요소. JATS 1.4 DTD 완전 준수 모델.
- * EN: Graphic/image element. Fully compliant with JATS 1.4 DTD.
+ * KR: 미디어 요소 (비디오, 오디오 등). JATS 1.4 DTD 완전 준수 모델.
+ * EN: Media element (video, audio, etc.). Fully compliant with JATS 1.4 DTD.
  *
- * DTD: <!ELEMENT graphic (
+ * DTD: <!ELEMENT media (
  *          (alt-text | long-desc)*,
  *          (abstract)*,
  *          (attrib)*,
  *          (permissions)*
  *      )>
  *
- * DTD: <!ATTLIST graphic
+ * DTD: <!ATTLIST media
  *          content-type CDATA #IMPLIED
  *          id ID #IMPLIED
  *          mime-subtype CDATA #IMPLIED
@@ -36,27 +36,26 @@ import java.util.List;
  *          xlink:type (simple) #IMPLIED
  *      >
  *
- * Reference: https://jats.nlm.nih.gov/archiving/tag-library/1.4/element/graphic.html
+ * Reference: https://jats.nlm.nih.gov/archiving/tag-library/1.4/element/media.html
  *
  * Example:
- * <graphic xlink:href="figure1.jpg" mimetype="image" mime-subtype="jpeg"
- *          orientation="portrait" position="float">
- *     <alt-text>Graph showing patient recovery rates</alt-text>
- * </graphic>
+ * <media xlink:href="video1.mp4" mimetype="video" mime-subtype="mp4">
+ *     <alt-text>Video showing experimental procedure</alt-text>
+ * </media>
  */
 @Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class Graphic {
+public class Media {
 
     // ========== Attributes / 속성 ==========
 
     /**
      * 콘텐츠 유형 / Content type
      *
-     * KR: 그래픽의 콘텐츠 유형.
-     * EN: Content type of the graphic.
+     * KR: 미디어의 콘텐츠 유형.
+     * EN: Content type of the media.
      *
      * DTD: content-type CDATA #IMPLIED
      * Required: NO
@@ -77,34 +76,34 @@ public class Graphic {
     /**
      * MIME 서브타입 / MIME subtype
      *
-     * KR: 미디어 서브타입 (예: jpeg, png, gif).
-     * EN: Media subtype (e.g., jpeg, png, gif).
+     * KR: 미디어 서브타입 (예: mp4, avi, mp3).
+     * EN: Media subtype (e.g., mp4, avi, mp3).
      *
      * DTD: mime-subtype CDATA #IMPLIED
      * Required: NO
      *
-     * Common values: jpeg, png, gif, tiff, svg+xml
+     * Common values: mp4, avi, mp3, wav, ogg
      */
     private String mimeSubtype;
 
     /**
      * MIME 타입 / MIME type
      *
-     * KR: 미디어 타입 (예: image).
-     * EN: Media type (e.g., image).
+     * KR: 미디어 타입 (예: video, audio).
+     * EN: Media type (e.g., video, audio).
      *
      * DTD: mimetype CDATA #IMPLIED
      * Required: NO
      *
-     * Common values: image, application
+     * Common values: video, audio, application
      */
     private String mimetype;
 
     /**
      * 방향 / Orientation
      *
-     * KR: 그래픽의 표시 방향.
-     * EN: Display orientation of the graphic.
+     * KR: 미디어의 표시 방향.
+     * EN: Display orientation of the media.
      *
      * DTD: orientation (portrait | landscape) #IMPLIED
      * Required: NO
@@ -114,8 +113,8 @@ public class Graphic {
     /**
      * 위치 / Position
      *
-     * KR: 그래픽의 배치 위치.
-     * EN: Placement position of the graphic.
+     * KR: 미디어의 배치 위치.
+     * EN: Placement position of the media.
      *
      * DTD: position (anchor | background | float | margin) #IMPLIED
      * Required: NO
@@ -147,13 +146,13 @@ public class Graphic {
     /**
      * XLink href (필수) / XLink href (required)
      *
-     * KR: 그래픽 파일 경로 또는 URL.
-     * EN: Path or URL to the graphic file.
+     * KR: 미디어 파일 경로 또는 URL.
+     * EN: Path or URL to the media file.
      *
      * DTD: xlink:href CDATA #REQUIRED
      * Required: YES
      *
-     * Example: "images/fig1.jpg", "https://example.com/fig.png"
+     * Example: "media/video1.mp4", "https://example.com/video.mp4"
      */
     private String xlinkHref;
 
@@ -230,8 +229,8 @@ public class Graphic {
     /**
      * 초록 목록 / Abstract list
      *
-     * KR: 그래픽에 대한 초록/요약 목록.
-     * EN: List of abstracts/summaries for the graphic.
+     * KR: 미디어에 대한 초록/요약 목록.
+     * EN: List of abstracts/summaries for the media.
      *
      * DTD: abstract*
      * Required: NO (0 or more)

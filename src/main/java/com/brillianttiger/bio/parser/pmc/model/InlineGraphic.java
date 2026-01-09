@@ -8,25 +8,19 @@ import lombok.NoArgsConstructor;
 import java.util.List;
 
 /**
- * Graphic / 그래픽
+ * InlineGraphic / 인라인 그래픽
  *
- * KR: 그래픽/이미지 요소. JATS 1.4 DTD 완전 준수 모델.
- * EN: Graphic/image element. Fully compliant with JATS 1.4 DTD.
+ * KR: 텍스트 내 인라인 그래픽/이미지. JATS 1.4 DTD 완전 준수 모델.
+ * EN: Inline graphic/image within text. Fully compliant with JATS 1.4 DTD.
  *
- * DTD: <!ELEMENT graphic (
- *          (alt-text | long-desc)*,
- *          (abstract)*,
- *          (attrib)*,
- *          (permissions)*
- *      )>
+ * DTD: <!ELEMENT inline-graphic (alt-text | long-desc)*>
  *
- * DTD: <!ATTLIST graphic
+ * DTD: <!ATTLIST inline-graphic
+ *          baseline-shift CDATA #IMPLIED
  *          content-type CDATA #IMPLIED
  *          id ID #IMPLIED
  *          mime-subtype CDATA #IMPLIED
  *          mimetype CDATA #IMPLIED
- *          orientation (portrait | landscape) #IMPLIED
- *          position (anchor | background | float | margin) #IMPLIED
  *          specific-use CDATA #IMPLIED
  *          xlink:actuate (onLoad | onRequest | other | none) #IMPLIED
  *          xlink:href CDATA #REQUIRED
@@ -36,27 +30,39 @@ import java.util.List;
  *          xlink:type (simple) #IMPLIED
  *      >
  *
- * Reference: https://jats.nlm.nih.gov/archiving/tag-library/1.4/element/graphic.html
+ * Reference: https://jats.nlm.nih.gov/archiving/tag-library/1.4/element/inline-graphic.html
+ *
+ * Note: Unlike <graphic>, <inline-graphic> is used for small images
+ * that appear within running text, such as symbols, small icons, or
+ * special characters not available in the font.
  *
  * Example:
- * <graphic xlink:href="figure1.jpg" mimetype="image" mime-subtype="jpeg"
- *          orientation="portrait" position="float">
- *     <alt-text>Graph showing patient recovery rates</alt-text>
- * </graphic>
+ * <p>The reaction proceeds via <inline-graphic xlink:href="arrow.png"/> to the product.</p>
  */
 @Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class Graphic {
+public class InlineGraphic {
 
     // ========== Attributes / 속성 ==========
 
     /**
+     * 기준선 이동 / Baseline shift
+     *
+     * KR: 기준선 대비 이미지 위치 조정.
+     * EN: Adjustment of image position relative to baseline.
+     *
+     * DTD: baseline-shift CDATA #IMPLIED
+     * Required: NO
+     */
+    private String baselineShift;
+
+    /**
      * 콘텐츠 유형 / Content type
      *
-     * KR: 그래픽의 콘텐츠 유형.
-     * EN: Content type of the graphic.
+     * KR: 인라인 그래픽의 콘텐츠 유형.
+     * EN: Content type of the inline graphic.
      *
      * DTD: content-type CDATA #IMPLIED
      * Required: NO
@@ -82,8 +88,6 @@ public class Graphic {
      *
      * DTD: mime-subtype CDATA #IMPLIED
      * Required: NO
-     *
-     * Common values: jpeg, png, gif, tiff, svg+xml
      */
     private String mimeSubtype;
 
@@ -95,32 +99,8 @@ public class Graphic {
      *
      * DTD: mimetype CDATA #IMPLIED
      * Required: NO
-     *
-     * Common values: image, application
      */
     private String mimetype;
-
-    /**
-     * 방향 / Orientation
-     *
-     * KR: 그래픽의 표시 방향.
-     * EN: Display orientation of the graphic.
-     *
-     * DTD: orientation (portrait | landscape) #IMPLIED
-     * Required: NO
-     */
-    private Orientation orientation;
-
-    /**
-     * 위치 / Position
-     *
-     * KR: 그래픽의 배치 위치.
-     * EN: Placement position of the graphic.
-     *
-     * DTD: position (anchor | background | float | margin) #IMPLIED
-     * Required: NO
-     */
-    private Position position;
 
     /**
      * 특정 용도 / Specific use
@@ -147,13 +127,11 @@ public class Graphic {
     /**
      * XLink href (필수) / XLink href (required)
      *
-     * KR: 그래픽 파일 경로 또는 URL.
-     * EN: Path or URL to the graphic file.
+     * KR: 인라인 그래픽 파일 경로 또는 URL.
+     * EN: Path or URL to the inline graphic file.
      *
      * DTD: xlink:href CDATA #REQUIRED
      * Required: YES
-     *
-     * Example: "images/fig1.jpg", "https://example.com/fig.png"
      */
     private String xlinkHref;
 
@@ -226,37 +204,4 @@ public class Graphic {
      * Required: NO (0 or more)
      */
     private List<LongDesc> longDescs;
-
-    /**
-     * 초록 목록 / Abstract list
-     *
-     * KR: 그래픽에 대한 초록/요약 목록.
-     * EN: List of abstracts/summaries for the graphic.
-     *
-     * DTD: abstract*
-     * Required: NO (0 or more)
-     */
-    private List<Abstract> abstracts;
-
-    /**
-     * 속성 정보 목록 / Attribution list
-     *
-     * KR: 속성/출처 정보 목록.
-     * EN: List of attributions/source information.
-     *
-     * DTD: attrib*
-     * Required: NO (0 or more)
-     */
-    private List<Attrib> attribs;
-
-    /**
-     * 권한 정보 목록 / Permissions list
-     *
-     * KR: 저작권 및 라이선스 정보 목록.
-     * EN: List of copyright and license information.
-     *
-     * DTD: permissions*
-     * Required: NO (0 or more)
-     */
-    private List<Permissions> permissions;
 }
