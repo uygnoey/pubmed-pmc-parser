@@ -129,10 +129,8 @@ public class PubmedDataParser {
      * DTD: <!ATTLIST ArticleId IdType (...) "pubmed">
      */
     public static ArticleId parseArticleId(XMLStreamReader reader) throws XMLStreamException {
-        String idType = reader.getAttributeValue(null, "IdType");
-        if (idType == null) {
-            idType = "pubmed";
-        }
+        String idTypeStr = reader.getAttributeValue(null, "IdType");
+        ArticleIdType idType = idTypeStr != null ? ArticleIdType.fromValue(idTypeStr) : ArticleIdType.PUBMED;
 
         String value = parseTextContent(reader, "ArticleId");
 

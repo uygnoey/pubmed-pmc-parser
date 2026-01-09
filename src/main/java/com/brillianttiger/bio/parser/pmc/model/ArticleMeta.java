@@ -10,17 +10,46 @@ import java.util.List;
 /**
  * ArticleMeta / 논문 메타데이터
  *
- * DTD: <!ELEMENT article-meta (article-id*, article-categories?, title-group, contrib-group*, aff*,
- *                              author-notes?, pub-date+, volume?, volume-id?, volume-series?, issue?,
- *                              issue-id?, issue-title?, issue-sponsor?, issue-part?, volume-issue-group*,
- *                              isbn*, supplement?, fpage?, lpage?, page-range?, elocation-id?, email*,
- *                              ext-link*, uri*, product*, supplementary-material*, history?, permissions?,
- *                              self-uri*, related-article*, related-object*, abstract*, trans-abstract*,
- *                              kwd-group*, funding-group*, support-group*, conference*, counts?,
- *                              custom-meta-group?)>
+ * KR: 논문의 메타데이터 정보를 포함하는 요소.
+ *     논문 ID, 카테고리, 제목, 저자, 출판 정보, 초록, 키워드, 연구비 등을 포함.
+ * EN: Element containing article metadata information.
+ *     Includes article ID, categories, title, authors, publication info, abstract, keywords, funding, etc.
  *
- * KR: 논문의 메타데이터 정보
- * EN: Article metadata information
+ * DTD: <!ELEMENT article-meta (
+ *          (article-id)*,
+ *          article-categories?,
+ *          title-group?,
+ *          (contrib-group | aff | aff-alternatives | x)*,
+ *          author-notes?,
+ *          pub-date*,
+ *          pub-date-not-available?,
+ *          volume?, volume-id*, volume-series?,
+ *          issue?, issue-id*, issue-title*, issue-title-group*, issue-sponsor*,
+ *          issue-part?,
+ *          volume-issue-group*,
+ *          isbn*,
+ *          supplement?,
+ *          ((fpage, lpage?, page-range?) | elocation-id)?,
+ *          (email | ext-link | uri | product | supplementary-material)*,
+ *          history?,
+ *          pub-history?,
+ *          permissions?,
+ *          self-uri*,
+ *          (related-article | related-object)*,
+ *          abstract*,
+ *          trans-abstract*,
+ *          kwd-group*,
+ *          funding-group*,
+ *          support-group*,
+ *          conference*,
+ *          counts?,
+ *          custom-meta-group*,
+ *          content-language*
+ *      )>
+ *
+ * Reference: https://jats.nlm.nih.gov/archiving/tag-library/1.4/element/article-meta.html
+ *
+ * Note: JATS 1.4 complete DTD structure.
  */
 @Data
 @Builder

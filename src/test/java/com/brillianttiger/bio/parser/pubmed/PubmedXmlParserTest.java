@@ -88,7 +88,7 @@ class PubmedXmlParserTest {
     @Test
     void testMedlineCitationAttributes() throws Exception {
         // When
-        PubmedArticleSet result = parser.parse(sampleXmlPath);
+        PubmedArticleSet result = parser.parseFile(sampleXmlPath);
 
         // Then
         assertNotNull(result, "파싱 결과가 null이 아니어야 함 / Parse result should not be null");
@@ -101,9 +101,12 @@ class PubmedXmlParserTest {
         MedlineCitation citation = article.getMedlineCitation();
 
         assertNotNull(citation, "MedlineCitation이 null이 아니어야 함 / MedlineCitation should not be null");
-        assertEquals("MEDLINE", citation.getStatus(), "Status 속성 검증 / Verify Status attribute");
-        assertEquals("NLM", citation.getOwner(), "Owner 속성 검증 / Verify Owner attribute");
-        assertEquals("Automated", citation.getIndexingMethod(), "IndexingMethod 속성 검증 / Verify IndexingMethod attribute");
+        assertNotNull(citation.getStatus(), "Status가 null이 아니어야 함 / Status should not be null");
+        assertEquals("MEDLINE", citation.getStatus().getValue(), "Status 속성 검증 / Verify Status attribute");
+        assertNotNull(citation.getOwner(), "Owner가 null이 아니어야 함 / Owner should not be null");
+        assertEquals("NLM", citation.getOwner().getValue(), "Owner 속성 검증 / Verify Owner attribute");
+        assertNotNull(citation.getIndexingMethod(), "IndexingMethod가 null이 아니어야 함 / IndexingMethod should not be null");
+        assertEquals("Automated", citation.getIndexingMethod().getValue(), "IndexingMethod 속성 검증 / Verify IndexingMethod attribute");
     }
 
     /**
@@ -115,12 +118,12 @@ class PubmedXmlParserTest {
     @Test
     void testArticleChildElements() throws Exception {
         // When
-        PubmedArticleSet result = parser.parse(sampleXmlPath);
+        PubmedArticleSet result = parser.parseFile(sampleXmlPath);
         Article article = result.getPubmedArticles().get(0).getMedlineCitation().getArticle();
 
         // Then: Article basic info
         assertNotNull(article, "Article이 null이 아니어야 함 / Article should not be null");
-        assertEquals("Print-Electronic", article.getPubModel(), "PubModel 검증 / Verify PubModel");
+        assertEquals("Print-Electronic", article.getPubModel().getValue(), "PubModel 검증 / Verify PubModel");
 
         // Journal
         assertNotNull(article.getJournal(), "Journal이 null이 아니어야 함 / Journal should not be null");
@@ -141,7 +144,7 @@ class PubmedXmlParserTest {
         assertEquals(2, article.getELocationIDs().size(), "ELocationID 2개 확인 / Should have 2 ELocationIDs");
 
         ELocationID doi = article.getELocationIDs().get(0);
-        assertEquals("doi", doi.getEIdType(), "첫 번째는 DOI / First should be DOI");
+        assertEquals("doi", doi.getEIdType().getValue(), "첫 번째는 DOI / First should be DOI");
         assertEquals("Y", doi.getValidYN(), "ValidYN 확인 / Verify ValidYN");
 
         // Abstract
@@ -150,7 +153,7 @@ class PubmedXmlParserTest {
 
         AbstractText background = article.getAbstractInfo().getAbstractTexts().get(0);
         assertEquals("BACKGROUND", background.getLabel(), "Label 확인 / Verify Label");
-        assertEquals("BACKGROUND", background.getNlmCategory(), "NlmCategory 확인 / Verify NlmCategory");
+        assertEquals("BACKGROUND", background.getNlmCategory().getValue(), "NlmCategory 확인 / Verify NlmCategory");
 
         // Language
         assertNotNull(article.getLanguages(), "Language 리스트가 null이 아니어야 함 / Language list should not be null");
@@ -181,7 +184,7 @@ class PubmedXmlParserTest {
     @Test
     void testAuthorListParsing() throws Exception {
         // When
-        PubmedArticleSet result = parser.parse(sampleXmlPath);
+        PubmedArticleSet result = parser.parseFile(sampleXmlPath);
         Article article = result.getPubmedArticles().get(0).getMedlineCitation().getArticle();
 
         // Then
@@ -234,7 +237,7 @@ class PubmedXmlParserTest {
     @Test
     void testMeshHeadingListParsing() throws Exception {
         // When
-        PubmedArticleSet result = parser.parse(sampleXmlPath);
+        PubmedArticleSet result = parser.parseFile(sampleXmlPath);
         MedlineCitation citation = result.getPubmedArticles().get(0).getMedlineCitation();
 
         // Then
@@ -278,7 +281,7 @@ class PubmedXmlParserTest {
     @Test
     void testReferenceListNestedStructure() throws Exception {
         // When
-        PubmedArticleSet result = parser.parse(sampleXmlPath);
+        PubmedArticleSet result = parser.parseFile(sampleXmlPath);
         PubmedData pubmedData = result.getPubmedArticles().get(0).getPubmedData();
 
         // Then
@@ -301,7 +304,7 @@ class PubmedXmlParserTest {
 
         assertNotNull(firstRef.getArticleIdList(), "ArticleIdList가 null이 아니어야 함 / ArticleIdList should not be null");
         assertEquals(1, firstRef.getArticleIdList().getArticleIds().size());
-        assertEquals("pubmed", firstRef.getArticleIdList().getArticleIds().get(0).getIdType());
+        assertEquals(ArticleIdType.PUBMED, firstRef.getArticleIdList().getArticleIds().get(0).getIdType());
         assertEquals("11111111", firstRef.getArticleIdList().getArticleIds().get(0).getValue());
 
         // Check nested ReferenceList
@@ -322,7 +325,7 @@ class PubmedXmlParserTest {
     @Test
     void testDeleteCitationParsing() throws Exception {
         // When
-        PubmedArticleSet result = parser.parse(sampleXmlPath);
+        PubmedArticleSet result = parser.parseFile(sampleXmlPath);
 
         // Then
         assertNotNull(result.getDeleteCitation(), "DeleteCitation이 null이 아니어야 함 / DeleteCitation should not be null");
@@ -350,7 +353,7 @@ class PubmedXmlParserTest {
     @Test
     void testPubmedBookArticleParsing() throws Exception {
         // When
-        PubmedArticleSet result = parser.parse(sampleXmlPath);
+        PubmedArticleSet result = parser.parseFile(sampleXmlPath);
 
         // Then
         assertNotNull(result.getPubmedBookArticles(), "PubmedBookArticle 리스트가 null이 아니어야 함 / PubmedBookArticle list should not be null");
@@ -379,7 +382,7 @@ class PubmedXmlParserTest {
 
         // AuthorList
         assertNotNull(book.getAuthorLists(), "AuthorLists가 null이 아니어야 함 / AuthorLists should not be null");
-        assertEquals("authors", book.getAuthorLists().get(0).getType());
+        assertEquals("authors", book.getAuthorLists().get(0).getType().getValue());
         assertEquals(2, book.getAuthorLists().get(0).getAuthors().size(), "저자 2명 확인 / Should have 2 authors");
 
         Author firstBookAuthor = book.getAuthorLists().get(0).getAuthors().get(0);
@@ -442,7 +445,7 @@ class PubmedXmlParserTest {
     @Test
     void testChemicalListParsing() throws Exception {
         // When
-        PubmedArticleSet result = parser.parse(sampleXmlPath);
+        PubmedArticleSet result = parser.parseFile(sampleXmlPath);
         MedlineCitation citation = result.getPubmedArticles().get(0).getMedlineCitation();
 
         // Then
@@ -461,7 +464,7 @@ class PubmedXmlParserTest {
     @Test
     void testKeywordListParsing() throws Exception {
         // When
-        PubmedArticleSet result = parser.parse(sampleXmlPath);
+        PubmedArticleSet result = parser.parseFile(sampleXmlPath);
         MedlineCitation citation = result.getPubmedArticles().get(0).getMedlineCitation();
 
         // Then
@@ -469,7 +472,7 @@ class PubmedXmlParserTest {
         assertEquals(1, citation.getKeywordLists().size());
 
         KeywordList kwList = citation.getKeywordLists().get(0);
-        assertEquals("NOTNLM", kwList.getOwner());
+        assertEquals(KeywordOwner.NOTNLM, kwList.getOwner());
         assertEquals(3, kwList.getKeywords().size(), "Keyword 3개 확인 / Should have 3 keywords");
 
         Keyword firstKw = kwList.getKeywords().get(0);
@@ -486,7 +489,7 @@ class PubmedXmlParserTest {
     @Test
     void testCommentsCorrectionsList() throws Exception {
         // When
-        PubmedArticleSet result = parser.parse(sampleXmlPath);
+        PubmedArticleSet result = parser.parseFile(sampleXmlPath);
         MedlineCitation citation = result.getPubmedArticles().get(0).getMedlineCitation();
 
         // Then
@@ -494,12 +497,12 @@ class PubmedXmlParserTest {
         assertEquals(2, citation.getCommentsCorrectionsList().getCommentsCorrections().size());
 
         CommentsCorrections firstComment = citation.getCommentsCorrectionsList().getCommentsCorrections().get(0);
-        assertEquals("CommentIn", firstComment.getRefType());
+        assertEquals(RefType.COMMENT_IN, firstComment.getRefType());
         assertTrue(firstComment.getRefSource().getValue().contains("J Biomed Res. 2024 Feb"));
         assertEquals("87654321", firstComment.getPmid().getValue());
 
         CommentsCorrections secondComment = citation.getCommentsCorrectionsList().getCommentsCorrections().get(1);
-        assertEquals("ErratumIn", secondComment.getRefType());
+        assertEquals(RefType.ERRATUM_IN, secondComment.getRefType());
     }
 
     // ==================== Helper Methods ====================

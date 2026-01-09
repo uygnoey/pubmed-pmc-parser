@@ -21,10 +21,10 @@ import lombok.NoArgsConstructor;
 public class GeneralNote {
 
     /**
-     * 소유자 (기본값: "NLM") / Owner (default: "NLM")
+     * 소유자 (기본값: NLM) / Owner (default: NLM)
      */
     @Builder.Default
-    private String owner = "NLM";
+    private GeneralNoteOwner owner = GeneralNoteOwner.NLM;
 
     /**
      * 노트 내용 / Note content

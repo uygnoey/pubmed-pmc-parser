@@ -26,7 +26,8 @@ public class ArticleParser {
      * DTD: <!ATTLIST Article PubModel (...) #REQUIRED>
      */
     public static Article parseArticle(XMLStreamReader reader) throws XMLStreamException {
-        String pubModel = reader.getAttributeValue(null, "PubModel");
+        String pubModelStr = reader.getAttributeValue(null, "PubModel");
+        PubModel pubModel = pubModelStr != null ? PubModel.fromValue(pubModelStr) : null;
 
         Article.ArticleBuilder builder = Article.builder()
                 .pubModel(pubModel);
@@ -142,7 +143,8 @@ public class ArticleParser {
      * DTD: <!ATTLIST JournalIssue CitedMedium (Internet | Print) #REQUIRED>
      */
     public static JournalIssue parseJournalIssue(XMLStreamReader reader) throws XMLStreamException {
-        String citedMedium = reader.getAttributeValue(null, "CitedMedium");
+        String citedMediumStr = reader.getAttributeValue(null, "CitedMedium");
+        CitedMedium citedMedium = citedMediumStr != null ? CitedMedium.fromValue(citedMediumStr) : null;
 
         JournalIssue.JournalIssueBuilder builder = JournalIssue.builder()
                 .citedMedium(citedMedium);
@@ -230,9 +232,10 @@ public class ArticleParser {
      * DTD: <!ATTLIST ELocationID EIdType (doi | pii) #REQUIRED ValidYN (Y | N) "Y">
      */
     public static ELocationID parseELocationID(XMLStreamReader reader) throws XMLStreamException {
-        String eIdType = reader.getAttributeValue(null, "EIdType");
-        String validYN = reader.getAttributeValue(null, "ValidYN");
+        String eIdTypeStr = reader.getAttributeValue(null, "EIdType");
+        EIdType eIdType = eIdTypeStr != null ? EIdType.fromValue(eIdTypeStr) : null;
 
+        String validYN = reader.getAttributeValue(null, "ValidYN");
         if (validYN == null) {
             validYN = "Y";
         }
@@ -288,7 +291,8 @@ public class ArticleParser {
      */
     public static AbstractText parseAbstractText(XMLStreamReader reader) throws XMLStreamException {
         String label = reader.getAttributeValue(null, "Label");
-        String nlmCategory = reader.getAttributeValue(null, "NlmCategory");
+        String nlmCategoryStr = reader.getAttributeValue(null, "NlmCategory");
+        NlmCategory nlmCategory = nlmCategoryStr != null ? NlmCategory.fromValue(nlmCategoryStr) : null;
 
         String value = parseTextContent(reader, "AbstractText");
 
@@ -306,7 +310,8 @@ public class ArticleParser {
      */
     public static AuthorList parseAuthorList(XMLStreamReader reader) throws XMLStreamException {
         String completeYN = reader.getAttributeValue(null, "CompleteYN");
-        String type = reader.getAttributeValue(null, "Type");
+        String typeStr = reader.getAttributeValue(null, "Type");
+        AuthorListType type = typeStr != null ? AuthorListType.fromValue(typeStr) : null;
 
         if (completeYN == null) {
             completeYN = "Y";

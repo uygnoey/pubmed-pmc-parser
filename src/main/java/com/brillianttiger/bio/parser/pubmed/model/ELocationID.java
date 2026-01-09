@@ -24,8 +24,10 @@ public class ELocationID {
 
     /**
      * 식별자 유형: doi | pii (필수) / Identifier type (required)
+     *
+     * DTD: EIdType (doi | pii) #REQUIRED
      */
-    private String eIdType;
+    private EIdType eIdType;
 
     /**
      * 유효 여부: Y | N (기본값: "Y") / Valid flag (default: "Y")

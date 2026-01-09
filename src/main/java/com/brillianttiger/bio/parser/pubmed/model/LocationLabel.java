@@ -23,7 +23,7 @@ public class LocationLabel {
     /**
      * 유형 / Type
      */
-    private String type;
+    private LocationLabelType type;
 
     /**
      * 위치 레이블 / Location label

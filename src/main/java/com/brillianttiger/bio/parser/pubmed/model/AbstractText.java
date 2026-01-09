@@ -29,8 +29,10 @@ public class AbstractText {
 
     /**
      * NLM 카테고리 / NLM category
+     *
+     * DTD: NlmCategory (BACKGROUND | OBJECTIVE | METHODS | RESULTS | CONCLUSIONS | UNASSIGNED) #IMPLIED
      */
-    private String nlmCategory;
+    private NlmCategory nlmCategory;
 
     /**
      * 텍스트 내용 / Text content

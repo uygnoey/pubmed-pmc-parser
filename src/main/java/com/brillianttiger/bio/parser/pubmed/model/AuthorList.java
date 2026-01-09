@@ -32,8 +32,10 @@ public class AuthorList {
 
     /**
      * 유형: authors | editors / Type
+     *
+     * DTD: Type (authors | editors) #IMPLIED
      */
-    private String type;
+    private AuthorListType type;
 
     /**
      * 저자 목록 / Author list

@@ -8,10 +8,12 @@ import lombok.NoArgsConstructor;
 /**
  * Grant / 연구비
  *
- * DTD: <!ELEMENT Grant (GrantID?, Acronym?, Agency, Country)>
+ * DTD: <!ELEMENT Grant (GrantID?, Acronym?, Agency, Country?)>
  *
  * KR: 연구비 지원 정보
  * EN: Grant funding information
+ *
+ * **2024년 변경**: Country가 선택적으로 변경 (기존: 필수 → 변경: 선택)
  */
 @Data
 @Builder

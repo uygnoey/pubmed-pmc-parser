@@ -94,14 +94,15 @@ class PmcXmlParserTest {
         assertEquals(4, journalMeta.getJournalIds().size(), "Journal ID 4개 확인 / Should have 4 journal IDs");
 
         JournalId nlmTaId = journalMeta.getJournalIds().stream()
-                .filter(id -> "nlm-ta".equals(id.getJournalIdType()))
+                .filter(id -> id.getJournalIdType() == JournalIdType.NLM_TA)
                 .findFirst()
                 .orElse(null);
         assertNotNull(nlmTaId, "NLM-TA ID가 존재해야 함 / NLM-TA ID should exist");
         assertEquals("J Biomed Inform", nlmTaId.getValue());
 
         // Journal Title Group
-        JournalTitleGroup titleGroup = journalMeta.getJournalTitleGroup();
+        assertNotNull(journalMeta.getJournalTitleGroups(), "JournalTitleGroups가 null이 아니어야 함 / JournalTitleGroups should not be null");
+        JournalTitleGroup titleGroup = journalMeta.getJournalTitleGroups().get(0);
         assertNotNull(titleGroup, "JournalTitleGroup이 null이 아니어야 함 / JournalTitleGroup should not be null");
         assertNotNull(titleGroup.getJournalTitles(), "JournalTitles가 null이 아니어야 함 / JournalTitles should not be null");
         assertEquals("Journal of Biomedical Informatics", titleGroup.getJournalTitles().get(0).getValue());
@@ -110,8 +111,8 @@ class PmcXmlParserTest {
         assertNotNull(journalMeta.getIssns(), "ISSN 리스트가 null이 아니어야 함 / ISSN list should not be null");
         assertEquals(2, journalMeta.getIssns().size(), "ISSN 2개 확인 / Should have 2 ISSNs");
 
-        PmcIssn ppubIssn = journalMeta.getIssns().stream()
-                .filter(issn -> "ppub".equals(issn.getPubType()))
+        Issn ppubIssn = journalMeta.getIssns().stream()
+                .filter(issn -> issn.getPubType() != null && issn.getPubType() == PubType.PPUB)
                 .findFirst()
                 .orElse(null);
         assertNotNull(ppubIssn, "Print ISSN이 존재해야 함 / Print ISSN should exist");
@@ -119,8 +120,8 @@ class PmcXmlParserTest {
 
         // Publisher
         assertNotNull(journalMeta.getPublisher(), "Publisher가 null이 아니어야 함 / Publisher should not be null");
-        assertNotNull(journalMeta.getPublisher().getPublisherName(), "PublisherName이 null이 아니어야 함 / PublisherName should not be null");
-        assertEquals("Elsevier Science", journalMeta.getPublisher().getPublisherName().getValue());
+        assertNotNull(journalMeta.getPublisher().getPublisherNames(), "PublisherNames가 null이 아니어야 함 / PublisherNames should not be null");
+        assertEquals("Elsevier Science", journalMeta.getPublisher().getPublisherNames().get(0).getValue());
     }
 
     /**
@@ -192,14 +193,14 @@ class PmcXmlParserTest {
         // Then: Title Group
         assertNotNull(articleMeta.getTitleGroup(), "TitleGroup이 null이 아니어야 함 / TitleGroup should not be null");
 
-        PmcArticleTitle articleTitle = articleMeta.getTitleGroup().getArticleTitle();
+        ArticleTitle articleTitle = articleMeta.getTitleGroup().getArticleTitle();
         assertNotNull(articleTitle, "ArticleTitle이 null이 아니어야 함 / ArticleTitle should not be null");
-        assertTrue(articleTitle.getValue().contains("Advanced XML Parsing"), "제목 내용 확인 / Verify title content");
+        assertTrue(articleTitle.getContent().contains("Advanced XML Parsing"), "제목 내용 확인 / Verify title content");
 
         assertNotNull(articleMeta.getTitleGroup().getSubtitles(), "Subtitles가 null이 아니어야 함 / Subtitles should not be null");
         Subtitle subtitle = articleMeta.getTitleGroup().getSubtitles().get(0);
         assertNotNull(subtitle, "Subtitle이 null이 아니어야 함 / Subtitle should not be null");
-        assertEquals("A Comprehensive Study", subtitle.getValue());
+        assertEquals("A Comprehensive Study", subtitle.getContent());
 
         // Contrib Groups
         assertNotNull(articleMeta.getContribGroups(), "ContribGroup 리스트가 null이 아니어야 함 / ContribGroup list should not be null");
@@ -216,7 +217,7 @@ class PmcXmlParserTest {
 
         assertNotNull(firstAuthor.getContribIds(), "ContribId 리스트가 null이 아니어야 함 / ContribId list should not be null");
         assertEquals(1, firstAuthor.getContribIds().size());
-        assertEquals("orcid", firstAuthor.getContribIds().get(0).getContribIdType());
+        assertEquals(ContribIdType.ORCID, firstAuthor.getContribIds().get(0).getContribIdType());
         assertEquals("0000-0002-1234-5678", firstAuthor.getContribIds().get(0).getValue());
 
         Name name = firstAuthor.getName();
@@ -300,8 +301,8 @@ class PmcXmlParserTest {
                 .findFirst()
                 .orElse(null);
         assertNotNull(authorKwds, "Author keywords가 존재해야 함 / Author keywords should exist");
-        if (authorKwds.getTitle() != null) {
-            assertEquals("Keywords", authorKwds.getTitle().getValue());
+        if (authorKwds.getTitles() != null && !authorKwds.getTitles().isEmpty()) {
+            assertEquals("Keywords", authorKwds.getTitles().get(0).getValue());
         }
 
         assertNotNull(authorKwds.getKeywords(), "Keyword 리스트가 null이 아니어야 함 / Keyword list should not be null");
@@ -380,19 +381,23 @@ class PmcXmlParserTest {
 
         Permissions permissions = articleMeta.getPermissions();
 
-        assertNotNull(permissions.getCopyrightStatement(), "CopyrightStatement가 null이 아니어야 함 / CopyrightStatement should not be null");
-        assertTrue(permissions.getCopyrightStatement().getValue().contains("Copyright"));
-        assertTrue(permissions.getCopyrightStatement().getValue().contains("2024"));
+        assertNotNull(permissions.getCopyrightStatements(), "CopyrightStatements가 null이 아니어야 함 / CopyrightStatements should not be null");
+        assertFalse(permissions.getCopyrightStatements().isEmpty(), "CopyrightStatements가 비어있지 않아야 함 / CopyrightStatements should not be empty");
+        assertTrue(permissions.getCopyrightStatements().get(0).getValue().contains("Copyright"));
+        assertTrue(permissions.getCopyrightStatements().get(0).getValue().contains("2024"));
 
-        assertNotNull(permissions.getCopyrightYear(), "CopyrightYear가 null이 아니어야 함 / CopyrightYear should not be null");
-        assertEquals("2024", permissions.getCopyrightYear().getValue());
+        assertNotNull(permissions.getCopyrightYears(), "CopyrightYears가 null이 아니어야 함 / CopyrightYears should not be null");
+        assertFalse(permissions.getCopyrightYears().isEmpty(), "CopyrightYears가 비어있지 않아야 함 / CopyrightYears should not be empty");
+        assertEquals("2024", permissions.getCopyrightYears().get(0).getValue());
 
-        assertNotNull(permissions.getCopyrightHolder(), "CopyrightHolder가 null이 아니어야 함 / CopyrightHolder should not be null");
-        assertEquals("Elsevier Science", permissions.getCopyrightHolder().getValue());
+        assertNotNull(permissions.getCopyrightHolders(), "CopyrightHolders가 null이 아니어야 함 / CopyrightHolders should not be null");
+        assertFalse(permissions.getCopyrightHolders().isEmpty(), "CopyrightHolders가 비어있지 않아야 함 / CopyrightHolders should not be empty");
+        assertEquals("Elsevier Science", permissions.getCopyrightHolders().get(0).getValue());
 
-        assertNotNull(permissions.getLicense(), "License가 null이 아니어야 함 / License should not be null");
-        assertEquals("open-access", permissions.getLicense().getLicenseType());
-        assertTrue(permissions.getLicense().getXlinkHref().contains("creativecommons.org"));
+        assertNotNull(permissions.getLicenses(), "Licenses가 null이 아니어야 함 / Licenses should not be null");
+        assertFalse(permissions.getLicenses().isEmpty(), "Licenses가 비어있지 않아야 함 / Licenses should not be empty");
+        assertEquals("open-access", permissions.getLicenses().get(0).getLicenseType());
+        assertTrue(permissions.getLicenses().get(0).getXlinkHref().contains("creativecommons.org"));
     }
 
     /**

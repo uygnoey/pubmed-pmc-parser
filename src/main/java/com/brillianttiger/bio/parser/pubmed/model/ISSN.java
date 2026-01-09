@@ -27,6 +27,8 @@ public class ISSN {
 
     /**
      * ISSN 유형: Electronic | Print (필수) / ISSN type (required)
+     *
+     * DTD: IssnType (Electronic | Print) #REQUIRED
      */
-    private String issnType;
+    private IssnType issnType;
 }

@@ -39,14 +39,15 @@ public class MedlineCitationParser {
         String versionID = reader.getAttributeValue(null, "VersionID");
         String versionDate = reader.getAttributeValue(null, "VersionDate");
 
-        if (owner == null) {
-            owner = "NLM";
-        }
+        // Convert String attributes to enums
+        Status statusEnum = status != null ? Status.fromValue(status) : null;
+        Owner ownerEnum = owner != null ? Owner.fromValue(owner) : Owner.NLM;
+        IndexingMethod indexingMethodEnum = indexingMethod != null ? IndexingMethod.fromValue(indexingMethod) : null;
 
         MedlineCitation.MedlineCitationBuilder builder = MedlineCitation.builder()
-                .status(status)
-                .owner(owner)
-                .indexingMethod(indexingMethod)
+                .status(statusEnum)
+                .owner(ownerEnum)
+                .indexingMethod(indexingMethodEnum)
                 .versionID(versionID)
                 .versionDate(versionDate);
 
@@ -55,6 +56,7 @@ public class MedlineCitationParser {
         List<OtherAbstract> otherAbstracts = new ArrayList<>();
         List<KeywordList> keywordLists = new ArrayList<>();
         List<SpaceFlightMission> spaceFlightMissions = new ArrayList<>();
+        List<InvestigatorList> investigatorLists = new ArrayList<>();
         List<GeneralNote> generalNotes = new ArrayList<>();
 
         while (reader.hasNext()) {
@@ -68,10 +70,10 @@ public class MedlineCitationParser {
                         builder.pmid(parsePMID(reader));
                         break;
                     case "DateCompleted":
-                        builder.dateCompleted(convertDateToPubMedDate(parseDate(reader, "DateCompleted")));
+                        builder.dateCompleted(parseDateCompleted(reader));
                         break;
                     case "DateRevised":
-                        builder.dateRevised(convertDateToPubMedDate(parseDate(reader, "DateRevised")));
+                        builder.dateRevised(parseDateRevised(reader));
                         break;
                     case "Article":
                         builder.article(parseArticle(reader));
@@ -119,7 +121,7 @@ public class MedlineCitationParser {
                         spaceFlightMissions.add(parseSpaceFlightMission(reader));
                         break;
                     case "InvestigatorList":
-                        builder.investigatorList(parseInvestigatorList(reader));
+                        investigatorLists.add(parseInvestigatorList(reader));
                         break;
                     case "GeneralNote":
                         generalNotes.add(parseGeneralNote(reader));
@@ -140,6 +142,7 @@ public class MedlineCitationParser {
         builder.otherAbstracts(otherAbstracts.isEmpty() ? null : otherAbstracts);
         builder.keywordLists(keywordLists.isEmpty() ? null : keywordLists);
         builder.spaceFlightMissions(spaceFlightMissions.isEmpty() ? null : spaceFlightMissions);
+        builder.investigatorLists(investigatorLists.isEmpty() ? null : investigatorLists);
         builder.generalNotes(generalNotes.isEmpty() ? null : generalNotes);
 
         return builder.build();
@@ -300,7 +303,8 @@ public class MedlineCitationParser {
      * DTD: <!ATTLIST SupplMeshName Type (Disease | Protocol | Organism) #REQUIRED UI CDATA #REQUIRED>
      */
     public static SupplMeshName parseSupplMeshName(XMLStreamReader reader) throws XMLStreamException {
-        String type = reader.getAttributeValue(null, "Type");
+        String typeStr = reader.getAttributeValue(null, "Type");
+        SupplMeshNameType type = typeStr != null ? SupplMeshNameType.fromValue(typeStr) : null;
         String ui = reader.getAttributeValue(null, "UI");
         String value = parseTextContent(reader, "SupplMeshName");
 
@@ -347,7 +351,8 @@ public class MedlineCitationParser {
      * DTD: <!ATTLIST CommentsCorrections RefType (...) #REQUIRED>
      */
     public static CommentsCorrections parseCommentsCorrections(XMLStreamReader reader) throws XMLStreamException {
-        String refType = reader.getAttributeValue(null, "RefType");
+        String refTypeStr = reader.getAttributeValue(null, "RefType");
+        RefType refType = RefType.fromValue(refTypeStr);
 
         CommentsCorrections.CommentsCorrectionsBuilder builder = CommentsCorrections.builder()
                 .refType(refType);
@@ -481,12 +486,14 @@ public class MedlineCitationParser {
     /**
      * DescriptorName 파싱 / Parse DescriptorName
      * DTD: <!ELEMENT DescriptorName (#PCDATA)>
-     * DTD: <!ATTLIST DescriptorName UI CDATA #REQUIRED MajorTopicYN (Y | N) "N" Type (Geographic) #IMPLIED>
+     * DTD: <!ATTLIST DescriptorName UI CDATA #REQUIRED MajorTopicYN (Y | N) "N" AutoHM (Y) #IMPLIED Type (Geographic) #IMPLIED>
      */
     public static DescriptorName parseDescriptorName(XMLStreamReader reader) throws XMLStreamException {
         String ui = reader.getAttributeValue(null, "UI");
         String majorTopicYN = reader.getAttributeValue(null, "MajorTopicYN");
-        String type = reader.getAttributeValue(null, "Type");
+        String autoHM = reader.getAttributeValue(null, "AutoHM");
+        String typeStr = reader.getAttributeValue(null, "Type");
+        DescriptorNameType type = typeStr != null ? DescriptorNameType.fromValue(typeStr) : null;
 
         if (majorTopicYN == null) {
             majorTopicYN = "N";
@@ -497,6 +504,7 @@ public class MedlineCitationParser {
         return DescriptorName.builder()
                 .ui(ui)
                 .majorTopicYN(majorTopicYN)
+                .autoHM(autoHM)
                 .type(type)
                 .value(value)
                 .build();
@@ -505,10 +513,11 @@ public class MedlineCitationParser {
     /**
      * QualifierName 파싱 / Parse QualifierName
      * DTD: <!ELEMENT QualifierName (#PCDATA)>
-     * DTD: <!ATTLIST QualifierName UI CDATA #REQUIRED MajorTopicYN (Y | N) "N">
+     * DTD: <!ATTLIST QualifierName UI CDATA #REQUIRED AutoHM (Y) #IMPLIED MajorTopicYN (Y | N) "N">
      */
     public static QualifierName parseQualifierName(XMLStreamReader reader) throws XMLStreamException {
         String ui = reader.getAttributeValue(null, "UI");
+        String autoHM = reader.getAttributeValue(null, "AutoHM");
         String majorTopicYN = reader.getAttributeValue(null, "MajorTopicYN");
 
         if (majorTopicYN == null) {
@@ -519,6 +528,7 @@ public class MedlineCitationParser {
 
         return QualifierName.builder()
                 .ui(ui)
+                .autoHM(autoHM)
                 .majorTopicYN(majorTopicYN)
                 .value(value)
                 .build();
@@ -560,7 +570,8 @@ public class MedlineCitationParser {
      * DTD: <!ATTLIST OtherID Source (NASA | KIE | PIP | POP | ARPL | CPC | IND | CPFH | CLML | NRCBL | NLM | QCIM) #REQUIRED>
      */
     public static OtherID parseOtherID(XMLStreamReader reader) throws XMLStreamException {
-        String source = reader.getAttributeValue(null, "Source");
+        String sourceStr = reader.getAttributeValue(null, "Source");
+        OtherIDSource source = OtherIDSource.fromValue(sourceStr);
         String value = parseTextContent(reader, "OtherID");
 
         return OtherID.builder()
@@ -575,9 +586,10 @@ public class MedlineCitationParser {
      * DTD: <!ATTLIST OtherAbstract Type (AAMC | AIDS | KIE | PIP | NASA | Publisher) #REQUIRED Language CDATA "eng">
      */
     public static OtherAbstract parseOtherAbstract(XMLStreamReader reader) throws XMLStreamException {
-        String type = reader.getAttributeValue(null, "Type");
-        String language = reader.getAttributeValue(null, "Language");
+        String typeStr = reader.getAttributeValue(null, "Type");
+        OtherAbstractType type = typeStr != null ? OtherAbstractType.fromValue(typeStr) : null;
 
+        String language = reader.getAttributeValue(null, "Language");
         if (language == null) {
             language = "eng";
         }
@@ -622,10 +634,8 @@ public class MedlineCitationParser {
      * DTD: <!ATTLIST KeywordList Owner (NLM | NLM-AUTO | NASA | PIP | KIE | NOTNLM | HHS) "NLM">
      */
     public static KeywordList parseKeywordList(XMLStreamReader reader) throws XMLStreamException {
-        String owner = reader.getAttributeValue(null, "Owner");
-        if (owner == null) {
-            owner = "NLM";
-        }
+        String ownerStr = reader.getAttributeValue(null, "Owner");
+        KeywordOwner owner = ownerStr != null ? KeywordOwner.fromValue(ownerStr) : KeywordOwner.NLM;
 
         KeywordList.KeywordListBuilder builder = KeywordList.builder()
                 .owner(owner);
@@ -709,10 +719,8 @@ public class MedlineCitationParser {
      * DTD: <!ATTLIST GeneralNote Owner (NLM | NASA | PIP | KIE | HSR | HMD) "NLM">
      */
     public static GeneralNote parseGeneralNote(XMLStreamReader reader) throws XMLStreamException {
-        String owner = reader.getAttributeValue(null, "Owner");
-        if (owner == null) {
-            owner = "NLM";
-        }
+        String ownerStr = reader.getAttributeValue(null, "Owner");
+        GeneralNoteOwner owner = ownerStr != null ? GeneralNoteOwner.fromValue(ownerStr) : GeneralNoteOwner.NLM;
 
         String value = parseTextContent(reader, "GeneralNote");
 
@@ -768,13 +776,31 @@ public class MedlineCitationParser {
         return GeneSymbol.builder().value(parseTextContent(reader, "GeneSymbol")).build();
     }
 
-    // Helper methods
-    private static com.brillianttiger.bio.parser.common.model.PubMedDate convertDateToPubMedDate(Date date) {
+    /**
+     * DateCompleted 파싱 / Parse DateCompleted
+     * DTD: <!ELEMENT DateCompleted (Year, Month, Day)>
+     */
+    public static DateCompleted parseDateCompleted(XMLStreamReader reader) throws XMLStreamException {
+        Date date = parseDate(reader, "DateCompleted");
         if (date == null) return null;
-        return com.brillianttiger.bio.parser.common.model.PubMedDate.builder()
-                .year(date.getYear() != null ? date.getYear().getValue() : null)
-                .month(date.getMonth() != null ? date.getMonth().getValue() : null)
-                .day(date.getDay() != null ? date.getDay().getValue() : null)
+        return DateCompleted.builder()
+                .year(date.getYear())
+                .month(date.getMonth())
+                .day(date.getDay())
+                .build();
+    }
+
+    /**
+     * DateRevised 파싱 / Parse DateRevised
+     * DTD: <!ELEMENT DateRevised (Year, Month, Day)>
+     */
+    public static DateRevised parseDateRevised(XMLStreamReader reader) throws XMLStreamException {
+        Date date = parseDate(reader, "DateRevised");
+        if (date == null) return null;
+        return DateRevised.builder()
+                .year(date.getYear())
+                .month(date.getMonth())
+                .day(date.getDay())
                 .build();
     }
 }

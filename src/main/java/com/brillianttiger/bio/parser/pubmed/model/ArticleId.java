@@ -21,10 +21,10 @@ import lombok.NoArgsConstructor;
 public class ArticleId {
 
     /**
-     * ID 유형 (기본값: "pubmed") / ID type (default: "pubmed")
+     * ID 유형 (기본값: PUBMED) / ID type (default: PUBMED)
      */
     @Builder.Default
-    private String idType = "pubmed";
+    private ArticleIdType idType = ArticleIdType.PUBMED;
 
     /**
      * ID 값 / ID value

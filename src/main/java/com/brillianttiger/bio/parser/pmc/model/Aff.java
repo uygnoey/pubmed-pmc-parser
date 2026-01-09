@@ -5,14 +5,26 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.List;
+
 /**
  * Aff / 소속
  *
- * DTD: <!ELEMENT aff (#PCDATA | %aff-elements;)*>
- * DTD: <!ATTLIST aff id ID #IMPLIED>
+ * KR: 저자 소속 기관 정보. JATS 1.4 완전 준수 모델.
+ *     텍스트 및 구조화된 기관 정보 모두 지원.
+ * EN: Author affiliation information. Fully compliant with JATS 1.4.
+ *     Supports both plain text and structured institution information.
  *
- * KR: 저자 소속 정보
- * EN: Author affiliation information
+ * DTD: <!ELEMENT aff (#PCDATA | %address-elements; | %aff-elements;)*>
+ *
+ * DTD: <!ATTLIST aff
+ *          content-type CDATA #IMPLIED
+ *          id ID #IMPLIED
+ *          rid IDREFS #IMPLIED
+ *          specific-use CDATA #IMPLIED
+ *      >
+ *
+ * Reference: https://jats.nlm.nih.gov/archiving/tag-library/1.4/element/aff.html
  */
 @Data
 @Builder
@@ -21,12 +33,38 @@ import lombok.NoArgsConstructor;
 public class Aff {
 
     /**
+     * 내용 유형 / Content type
+     * DTD: content-type CDATA #IMPLIED
+     */
+    private String contentType;
+
+    /**
      * ID 속성 / ID attribute
+     * DTD: id ID #IMPLIED
      */
     private String id;
 
     /**
-     * 소속 내용 / Affiliation content
+     * 참조 ID / Reference ID
+     * DTD: rid IDREFS #IMPLIED
+     */
+    private String rid;
+
+    /**
+     * 특정 용도 / Specific use
+     * DTD: specific-use CDATA #IMPLIED
+     */
+    private String specificUse;
+
+    /**
+     * 기관 래퍼 목록 / Institution wrap list
+     * DTD: institution-wrap*
+     */
+    private List<InstitutionWrap> institutionWraps;
+
+    /**
+     * 소속 내용 / Affiliation content (텍스트)
+     * DTD: (#PCDATA | %address-elements; | %aff-elements;)*
      */
     private String value;
 }

@@ -26,7 +26,7 @@ public class PubMedPubDate {
     /**
      * 출판 상태 (필수) / Publication status (required)
      */
-    private String pubStatus;
+    private PubStatus pubStatus;
 
     /**
      * 연도 / Year

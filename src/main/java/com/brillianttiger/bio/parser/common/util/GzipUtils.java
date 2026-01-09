@@ -15,14 +15,25 @@ import java.util.zip.GZIPOutputStream;
 public class GzipUtils {
 
     /**
-     * 기본 버퍼 크기 / Default buffer size
+     * 버퍼 크기: 64KB / Buffer size: 64KB
+     *
+     * KR: PubMed XML 파일 처리를 위한 최적 버퍼 크기
+     * EN: Optimal buffer size for PubMed XML file processing
      */
-    private static final int DEFAULT_BUFFER_SIZE = 8192;
+    public static final int BUFFER_SIZE = 65536;  // 64KB
+
+    /**
+     * 기본 버퍼 크기 (하위 호환성) / Default buffer size (backward compatibility)
+     */
+    private static final int DEFAULT_BUFFER_SIZE = BUFFER_SIZE;
 
     /**
      * GZip 매직 넘버 / GZip magic number
+     *
+     * KR: GZip 파일의 시작 2바이트: 0x1f 0x8b
+     * EN: First 2 bytes of GZip file: 0x1f 0x8b
      */
-    private static final int GZIP_MAGIC = 0x1f8b;
+    public static final int GZIP_MAGIC = 0x1f8b;
 
     /**
      * InputStream 열기 (GZip 자동 처리) / Open InputStream (auto-handle GZip)
@@ -48,6 +59,22 @@ public class GzipUtils {
         }
 
         return bufferedInputStream;
+    }
+
+    /**
+     * InputStream 생성 (별칭 메서드) / Create InputStream (alias method)
+     *
+     * KR: openInputStream의 별칭. 더 직관적인 이름.
+     *     GZip 자동 감지 및 64KB 버퍼 사용.
+     * EN: Alias for openInputStream. More intuitive name.
+     *     Auto-detect GZip and use 64KB buffer.
+     *
+     * @param filePath 파일 경로 / File path
+     * @return InputStream (버퍼링됨, GZip 자동 처리) / InputStream (buffered, auto-handle GZip)
+     * @throws IOException 파일 읽기 오류 / File reading error
+     */
+    public static InputStream createInputStream(Path filePath) throws IOException {
+        return openInputStream(filePath);
     }
 
     /**
@@ -113,8 +140,8 @@ public class GzipUtils {
     /**
      * GZip 파일 여부 확인 (매직 넘버 기반) / Check if GZip file (magic number-based)
      *
-     * KR: 파일의 첫 2바이트를 읽어 GZip 매직 넘버 확인
-     * EN: Read first 2 bytes of file and check GZip magic number
+     * KR: 파일의 첫 2바이트를 읽어 GZip 매직 넘버(0x1f 0x8b) 확인
+     * EN: Read first 2 bytes of file and check GZip magic number (0x1f 0x8b)
      *
      * @param filePath 파일 경로 / File path
      * @return GZip 파일 여부 / Whether it's a GZip file
@@ -125,7 +152,7 @@ public class GzipUtils {
             return false;
         }
 
-        try (InputStream in = new BufferedInputStream(Files.newInputStream(filePath))) {
+        try (InputStream in = new BufferedInputStream(Files.newInputStream(filePath), DEFAULT_BUFFER_SIZE)) {
             if (!in.markSupported()) {
                 return false;
             }
@@ -135,8 +162,45 @@ public class GzipUtils {
             int byte2 = in.read();
             in.reset();
 
-            return ((byte2 << 8) | byte1) == GZIP_MAGIC;
+            return ((byte1 << 8) | byte2) == GZIP_MAGIC;
         }
+    }
+
+    /**
+     * GZip 파일 여부 확인 (별칭 메서드) / Check if GZip file (alias method)
+     *
+     * KR: isGzipFileByMagicNumber의 별칭. 더 간결한 이름.
+     *     파일의 첫 2바이트(0x1f 0x8b)로 GZip 확인.
+     * EN: Alias for isGzipFileByMagicNumber. More concise name.
+     *     Check GZip by first 2 bytes (0x1f 0x8b).
+     *
+     * @param filePath 파일 경로 / File path
+     * @return GZip 파일 여부 / Whether it's a GZip file
+     * @throws IOException 파일 읽기 오류 / File reading error
+     */
+    public static boolean isGzipped(Path filePath) throws IOException {
+        return isGzipFileByMagicNumber(filePath);
+    }
+
+    /**
+     * GZip 파일 여부 확인 (바이트 배열 기반) / Check if GZip file (byte array-based)
+     *
+     * KR: 바이트 배열의 첫 2바이트를 읽어 GZip 매직 넘버(0x1f 0x8b) 확인
+     * EN: Read first 2 bytes of byte array and check GZip magic number (0x1f 0x8b)
+     *
+     * @param header 파일 헤더 바이트 배열 (최소 2바이트) / File header byte array (minimum 2 bytes)
+     * @return GZip 파일 여부 / Whether it's a GZip file
+     */
+    public static boolean isGzipped(byte[] header) {
+        if (header == null || header.length < 2) {
+            return false;
+        }
+
+        // GZip 매직 넘버: 0x1f 0x8b / GZip magic number: 0x1f 0x8b
+        int byte1 = header[0] & 0xFF;
+        int byte2 = header[1] & 0xFF;
+
+        return ((byte1 << 8) | byte2) == GZIP_MAGIC;
     }
 
     /**

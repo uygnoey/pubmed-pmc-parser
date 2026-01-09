@@ -161,18 +161,20 @@ class RealPubmedFileTest {
         }
 
         // Status, Owner
-        writer.write(String.format("| **Status** | %s |\n", nvl(citation.getStatus())));
-        writer.write(String.format("| **Owner** | %s |\n", nvl(citation.getOwner())));
+        writer.write(String.format("| **Status** | %s |\n",
+                citation.getStatus() != null ? citation.getStatus().getValue() : "N/A"));
+        writer.write(String.format("| **Owner** | %s |\n",
+                citation.getOwner() != null ? citation.getOwner().getValue() : "N/A"));
         if (citation.getIndexingMethod() != null) {
-            writer.write(String.format("| Indexing Method | %s |\n", citation.getIndexingMethod()));
+            writer.write(String.format("| Indexing Method | %s |\n", citation.getIndexingMethod().getValue()));
         }
 
         // DateCompleted, DateRevised
         if (citation.getDateCompleted() != null) {
-            writer.write(String.format("| Date Completed | %s |\n", formatPubMedDate(citation.getDateCompleted())));
+            writer.write(String.format("| Date Completed | %s |\n", formatDateCompleted(citation.getDateCompleted())));
         }
         if (citation.getDateRevised() != null) {
-            writer.write(String.format("| Date Revised | %s |\n", formatPubMedDate(citation.getDateRevised())));
+            writer.write(String.format("| Date Revised | %s |\n", formatDateRevised(citation.getDateRevised())));
         }
 
         writer.write("\n");
@@ -194,7 +196,7 @@ class RealPubmedFileTest {
 
             // PubModel
             if (art.getPubModel() != null) {
-                writer.write(String.format("**출판 모델:** %s\n\n", art.getPubModel()));
+                writer.write(String.format("**출판 모델:** %s\n\n", art.getPubModel().getValue()));
             }
 
             // Journal
@@ -205,7 +207,7 @@ class RealPubmedFileTest {
                 if (journal.getIssn() != null) {
                     writer.write(String.format("- ISSN: %s (%s)\n",
                         journal.getIssn().getValue(),
-                        nvl(journal.getIssn().getIssnType())));
+                        journal.getIssn().getIssnType() != null ? journal.getIssn().getIssnType().getValue() : ""));
                 }
 
                 if (journal.getTitle() != null) {
@@ -366,7 +368,9 @@ class RealPubmedFileTest {
             if (art.getELocationIDs() != null && !art.getELocationIDs().isEmpty()) {
                 writer.write("**전자 위치 / ELocation IDs:**\n\n");
                 for (ELocationID eloc : art.getELocationIDs()) {
-                    writer.write(String.format("- %s: %s", eloc.getEIdType(), eloc.getValue()));
+                    writer.write(String.format("- %s: %s",
+                        eloc.getEIdType() != null ? eloc.getEIdType().getValue() : "",
+                        eloc.getValue()));
                     if (eloc.getValidYN() != null) {
                         writer.write(String.format(" (Valid: %s)", eloc.getValidYN()));
                     }
@@ -528,7 +532,7 @@ class RealPubmedFileTest {
             writer.write("### 코멘트 및 정정 / Comments & Corrections\n\n");
 
             for (CommentsCorrections cc : citation.getCommentsCorrectionsList().getCommentsCorrections()) {
-                writer.write(String.format("- **%s**", nvl(cc.getRefType())));
+                writer.write(String.format("- **%s**", cc.getRefType() != null ? cc.getRefType().getValue() : ""));
                 if (cc.getRefSource() != null) {
                     writer.write(String.format(": %s", cc.getRefSource().getValue()));
                 }
@@ -550,15 +554,20 @@ class RealPubmedFileTest {
             writer.write("\n\n");
         }
 
-        // 9. InvestigatorList
-        if (citation.getInvestigatorList() != null && citation.getInvestigatorList().getInvestigators() != null) {
-            writer.write("### 조사자 목록 / Investigators");
-            if (citation.getInvestigatorList().getId() != null) {
-                writer.write(String.format(" (ID: %s)", citation.getInvestigatorList().getId()));
-            }
-            writer.write("\n\n");
+        // 9. InvestigatorList (2024: now repeatable, 0-N occurrences)
+        if (citation.getInvestigatorLists() != null && !citation.getInvestigatorLists().isEmpty()) {
+            for (InvestigatorList investigatorList : citation.getInvestigatorLists()) {
+                writer.write("### 조사자 목록 / Investigators");
+                if (investigatorList.getId() != null) {
+                    writer.write(String.format(" (ID: %s)", investigatorList.getId()));
+                }
+                writer.write("\n\n");
 
-            for (Investigator inv : citation.getInvestigatorList().getInvestigators()) {
+                if (investigatorList.getInvestigators() == null) {
+                    continue;
+                }
+
+                for (Investigator inv : investigatorList.getInvestigators()) {
                 writer.write("- ");
                 if (inv.getLastName() != null) {
                     writer.write(inv.getLastName().getValue());
@@ -579,6 +588,7 @@ class RealPubmedFileTest {
                 writer.write("\n");
             }
             writer.write("\n");
+            }
         }
 
         // 10. PubmedData
@@ -605,7 +615,7 @@ class RealPubmedFileTest {
                 writer.write("**이력 / History:**\n\n");
                 for (PubMedPubDate pubDate : pubmedData.getHistory().getPubMedPubDates()) {
                     writer.write(String.format("- %s: %s\n",
-                        nvl(pubDate.getPubStatus()),
+                        pubDate.getPubStatus() != null ? pubDate.getPubStatus().getValue() : "",
                         formatPubMedPubDate(pubDate)));
                 }
                 writer.write("\n");
@@ -645,6 +655,24 @@ class RealPubmedFileTest {
             return pubDate.getMedlineDate().getValue();
         }
         return sb.toString();
+    }
+
+    private String formatDateCompleted(DateCompleted date) {
+        if (date == null) return "N/A";
+        StringBuilder sb = new StringBuilder();
+        if (date.getYear() != null) sb.append(date.getYear().getValue());
+        if (date.getMonth() != null) sb.append("-").append(date.getMonth().getValue());
+        if (date.getDay() != null) sb.append("-").append(date.getDay().getValue());
+        return sb.length() > 0 ? sb.toString() : "N/A";
+    }
+
+    private String formatDateRevised(DateRevised date) {
+        if (date == null) return "N/A";
+        StringBuilder sb = new StringBuilder();
+        if (date.getYear() != null) sb.append(date.getYear().getValue());
+        if (date.getMonth() != null) sb.append("-").append(date.getMonth().getValue());
+        if (date.getDay() != null) sb.append("-").append(date.getDay().getValue());
+        return sb.length() > 0 ? sb.toString() : "N/A";
     }
 
     private String formatArticleDate(ArticleDate date) {

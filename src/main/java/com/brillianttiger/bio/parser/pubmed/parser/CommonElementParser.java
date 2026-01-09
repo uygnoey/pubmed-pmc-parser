@@ -121,7 +121,9 @@ public class CommonElementParser {
      * DTD: <!ATTLIST ISSN IssnType (Electronic | Print) #REQUIRED>
      */
     public static ISSN parseISSN(XMLStreamReader reader) throws XMLStreamException {
-        String issnType = reader.getAttributeValue(null, "IssnType");
+        String issnTypeStr = reader.getAttributeValue(null, "IssnType");
+        IssnType issnType = issnTypeStr != null ? IssnType.fromValue(issnTypeStr) : null;
+
         String value = parseTextContent(reader, "ISSN");
 
         return ISSN.builder()
@@ -374,7 +376,8 @@ public class CommonElementParser {
      * DTD: <!ATTLIST PubMedPubDate PubStatus (...) #REQUIRED>
      */
     public static PubMedPubDate parsePubMedPubDate(XMLStreamReader reader) throws XMLStreamException {
-        String pubStatus = reader.getAttributeValue(null, "PubStatus");
+        String pubStatusStr = reader.getAttributeValue(null, "PubStatus");
+        PubStatus pubStatus = PubStatus.fromValue(pubStatusStr);
 
         PubMedPubDate.PubMedPubDateBuilder builder = PubMedPubDate.builder()
                 .pubStatus(pubStatus);

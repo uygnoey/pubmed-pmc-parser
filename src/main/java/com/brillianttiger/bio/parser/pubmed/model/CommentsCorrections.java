@@ -15,7 +15,8 @@ import lombok.NoArgsConstructor;
  *                   ErratumIn | ErratumFor | ExpressionOfConcernIn | ExpressionOfConcernFor |
  *                   RepublishedIn | RepublishedFrom | RetractedandRepublishedIn |
  *                   RetractedandRepublishedFrom | RetractionIn | RetractionOf |
- *                   UpdateIn | UpdateOf | Cites) #REQUIRED>
+ *                   UpdateIn | UpdateOf | SummaryForPatientsIn | OriginalReportIn |
+ *                   ReprintIn | ReprintOf | Cites) #REQUIRED>
  *
  * KR: 논문의 코멘트, 정정, 철회 등 관련 정보
  * EN: Article comment, correction, retraction information
@@ -29,7 +30,7 @@ public class CommentsCorrections {
     /**
      * 참조 유형 (필수) / Reference type (required)
      */
-    private String refType;
+    private RefType refType;
 
     /**
      * 참조 출처 / Reference source

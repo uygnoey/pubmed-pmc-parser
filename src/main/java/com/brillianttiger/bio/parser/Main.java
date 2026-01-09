@@ -95,7 +95,7 @@ public class Main {
         System.out.println("📦 전체 파싱 모드 / Full parsing mode");
         System.out.println();
 
-        PubmedArticleSet articleSet = parser.parse(xmlPath);
+        PubmedArticleSet articleSet = parser.parseFile(xmlPath);
 
         long endTime = System.currentTimeMillis();
         long elapsedTime = endTime - startTime;
@@ -124,7 +124,7 @@ public class Main {
         AtomicInteger bookArticleCount = new AtomicInteger(0);
 
         // Article 카운터 / Article counter
-        parser.parseStream(xmlPath,
+        parser.parseStreamAll(xmlPath,
                 article -> {
                     int count = articleCount.incrementAndGet();
                     if (count % 1000 == 0) {

@@ -23,7 +23,7 @@ public class OtherID {
     /**
      * 출처 (필수) / Source (required)
      */
-    private String source;
+    private OtherIDSource source;
 
     /**
      * ID 값 / ID value

@@ -22,8 +22,10 @@ public class JournalIssue {
 
     /**
      * 인용 매체: Internet | Print (필수) / Cited medium (required)
+     *
+     * DTD: CitedMedium (Internet | Print) #REQUIRED
      */
-    private String citedMedium;
+    private CitedMedium citedMedium;
 
     /**
      * 권 / Volume

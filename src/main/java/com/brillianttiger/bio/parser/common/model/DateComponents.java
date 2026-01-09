@@ -24,7 +24,7 @@ public class DateComponents {
     private Integer year;
     private Integer month;
     private Integer day;
-    private String season;          // "Spring", "Summer", etc.
+    private Season season;          // 계절 / Season
     private String medlineDate;     // "2024 Jan-Feb" 같은 비정형
     private String stringDate;      // JATS string-date
     private String era;             // JATS era
@@ -74,9 +74,76 @@ public class DateComponents {
             sb.append("-").append(String.format("%02d", day));
         }
         if (season != null) {
-            sb.append(" ").append(season);
+            sb.append(" ").append(season.getValue());
         }
 
         return sb.toString();
+    }
+
+    /**
+     * Season / 계절
+     *
+     * KR: 날짜의 계절 정보
+     * EN: Season information for dates
+     */
+    public enum Season {
+        /**
+         * 봄 / Spring
+         */
+        SPRING("Spring"),
+
+        /**
+         * 여름 / Summer
+         */
+        SUMMER("Summer"),
+
+        /**
+         * 가을 / Fall
+         */
+        FALL("Fall"),
+
+        /**
+         * 겨울 / Winter
+         */
+        WINTER("Winter");
+
+        private final String value;
+
+        Season(String value) {
+            this.value = value;
+        }
+
+        /**
+         * 문자열 값 반환 / Get string value
+         *
+         * @return DTD/JATS 문자열 값 / DTD/JATS string value
+         */
+        public String getValue() {
+            return value;
+        }
+
+        /**
+         * 문자열에서 Season enum 변환 / Parse string to Season enum
+         *
+         * KR: XML 파싱 시 문자열을 enum으로 변환
+         * EN: Convert string to enum during XML parsing
+         *
+         * @param value 계절 문자열 값 / Season string value
+         * @return Season enum 또는 null / Season enum or null
+         */
+        public static Season fromValue(String value) {
+            if (value == null) {
+                return null;
+            }
+
+            for (Season season : Season.values()) {
+                if (season.value.equalsIgnoreCase(value)) {
+                    return season;
+                }
+            }
+
+            // 알 수 없는 값인 경우 null 반환 / Return null for unknown values
+            return null;
+        }
     }
 }

@@ -57,14 +57,15 @@ public class BookArticleParser {
 
     /**
      * BookDocument 파싱 / Parse BookDocument
-     * DTD: <!ELEMENT BookDocument (PMID, ArticleIdList, Book, ArticleTitle?, VernacularTitle?,
+     * DTD: <!ELEMENT BookDocument (PMID, ArticleIdList, Book, LocationLabel*, ArticleTitle?, VernacularTitle?,
      *                              Pagination?, Language*, AuthorList*, InvestigatorList?,
      *                              PublicationType*, Abstract?, Sections?, KeywordList*,
-     *                              CoiStatement?, GrantList?, ItemList*, ReferenceList*)>
+     *                              ContributionDate?, DateRevised?, GrantList?, ItemList*, ReferenceList*)>
      */
     public static BookDocument parseBookDocument(XMLStreamReader reader) throws XMLStreamException {
         BookDocument.BookDocumentBuilder builder = BookDocument.builder();
 
+        List<LocationLabel> locationLabels = new ArrayList<>();
         List<Language> languages = new ArrayList<>();
         List<AuthorList> authorLists = new ArrayList<>();
         List<PublicationType> publicationTypes = new ArrayList<>();
@@ -87,6 +88,9 @@ public class BookArticleParser {
                         break;
                     case "Book":
                         builder.book(parseBook(reader));
+                        break;
+                    case "LocationLabel":
+                        locationLabels.add(parseLocationLabel(reader));
                         break;
                     case "ArticleTitle":
                         builder.articleTitle(parseArticleTitle(reader));
@@ -118,8 +122,11 @@ public class BookArticleParser {
                     case "KeywordList":
                         keywordLists.add(parseKeywordList(reader));
                         break;
-                    case "CoiStatement":
-                        builder.coiStatement(parseCoiStatement(reader));
+                    case "ContributionDate":
+                        builder.contributionDate(parseContributionDate(reader));
+                        break;
+                    case "DateRevised":
+                        builder.dateRevised(parseDateRevised(reader));
                         break;
                     case "GrantList":
                         builder.grantList(parseGrantList(reader));
@@ -141,6 +148,7 @@ public class BookArticleParser {
             }
         }
 
+        builder.locationLabels(locationLabels.isEmpty() ? null : locationLabels);
         builder.languages(languages.isEmpty() ? null : languages);
         builder.authorLists(authorLists.isEmpty() ? null : authorLists);
         builder.publicationTypes(publicationTypes.isEmpty() ? null : publicationTypes);
@@ -343,7 +351,8 @@ public class BookArticleParser {
      * DTD: <!ATTLIST LocationLabel Type (part | chapter | section | appendix | figure | table | box) #IMPLIED>
      */
     public static LocationLabel parseLocationLabel(XMLStreamReader reader) throws XMLStreamException {
-        String type = reader.getAttributeValue(null, "Type");
+        String typeStr = reader.getAttributeValue(null, "Type");
+        LocationLabelType type = LocationLabelType.fromValue(typeStr);
         String value = parseTextContent(reader, "LocationLabel");
 
         return LocationLabel.builder()
@@ -430,5 +439,45 @@ public class BookArticleParser {
 
     public static Item parseItem(XMLStreamReader reader) throws XMLStreamException {
         return Item.builder().value(parseTextContent(reader, "Item")).build();
+    }
+
+    /**
+     * ContributionDate 파싱 / Parse ContributionDate
+     * DTD: <!ELEMENT ContributionDate (Year, ((Month, Day?) | Season)?)>
+     */
+    public static ContributionDate parseContributionDate(XMLStreamReader reader) throws XMLStreamException {
+        ContributionDate.ContributionDateBuilder builder = ContributionDate.builder();
+
+        while (reader.hasNext()) {
+            int event = reader.next();
+
+            if (event == XMLStreamConstants.START_ELEMENT) {
+                String localName = reader.getLocalName();
+
+                switch (localName) {
+                    case "Year":
+                        builder.year(Year.builder().value(parseTextContent(reader, "Year")).build());
+                        break;
+                    case "Month":
+                        builder.month(Month.builder().value(parseTextContent(reader, "Month")).build());
+                        break;
+                    case "Day":
+                        builder.day(Day.builder().value(parseTextContent(reader, "Day")).build());
+                        break;
+                    case "Season":
+                        builder.season(Season.builder().value(parseTextContent(reader, "Season")).build());
+                        break;
+                    default:
+                        skipElement(reader);
+                        break;
+                }
+            } else if (event == XMLStreamConstants.END_ELEMENT) {
+                if (reader.getLocalName().equals("ContributionDate")) {
+                    break;
+                }
+            }
+        }
+
+        return builder.build();
     }
 }

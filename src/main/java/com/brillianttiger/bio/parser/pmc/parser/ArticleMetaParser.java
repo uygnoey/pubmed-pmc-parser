@@ -216,7 +216,7 @@ public class ArticleMetaParser {
 
                 switch (localName) {
                     case "article-title":
-                        builder.articleTitle(parsePmcArticleTitle(reader));
+                        builder.articleTitle(parseArticleTitle(reader));
                         break;
                     case "subtitle":
                         subtitles.add(parseSubtitle(reader));
@@ -487,11 +487,23 @@ public class ArticleMetaParser {
      * KwdGroup 파싱 / Parse KwdGroup
      */
     public static KwdGroup parseKwdGroup(XMLStreamReader reader) throws XMLStreamException {
+        String assigningAuthority = reader.getAttributeValue(null, "assigning-authority");
         String kwdGroupType = reader.getAttributeValue(null, "kwd-group-type");
+        String specificUse = reader.getAttributeValue(null, "specific-use");
+        String vocab = reader.getAttributeValue(null, "vocab");
+        String vocabIdentifier = reader.getAttributeValue(null, "vocab-identifier");
+        String xmlLang = reader.getAttributeValue(null, "xml:lang");
 
         KwdGroup.KwdGroupBuilder builder = KwdGroup.builder()
-                .kwdGroupType(kwdGroupType);
+                .assigningAuthority(assigningAuthority)
+                .kwdGroupType(kwdGroupType)
+                .specificUse(specificUse)
+                .vocab(vocab)
+                .vocabIdentifier(vocabIdentifier)
+                .xmlLang(xmlLang);
 
+        List<Label> labels = new ArrayList<>();
+        List<Title> titles = new ArrayList<>();
         List<Kwd> keywords = new ArrayList<>();
 
         while (reader.hasNext()) {
@@ -501,8 +513,11 @@ public class ArticleMetaParser {
                 String localName = reader.getLocalName();
 
                 switch (localName) {
+                    case "label":
+                        labels.add(parseLabel(reader));
+                        break;
                     case "title":
-                        builder.title(parseTitle(reader));
+                        titles.add(parseTitle(reader));
                         break;
                     case "kwd":
                         keywords.add(parseKwd(reader));
@@ -518,6 +533,8 @@ public class ArticleMetaParser {
             }
         }
 
+        builder.labels(labels.isEmpty() ? null : labels);
+        builder.titles(titles.isEmpty() ? null : titles);
         builder.keywords(keywords.isEmpty() ? null : keywords);
         return builder.build();
     }
@@ -599,24 +616,108 @@ public class ArticleMetaParser {
         return ArticleCategories.builder().value(value).build();
     }
 
+    /**
+     * ArticleTitle 파싱 / Parse ArticleTitle
+     * DTD: <!ELEMENT article-title (#PCDATA | %all-phrase;)*>
+     * DTD: <!ATTLIST article-title xml:lang NMTOKEN #IMPLIED>
+     */
+    public static ArticleTitle parseArticleTitle(XMLStreamReader reader) throws XMLStreamException {
+        String xmlLang = reader.getAttributeValue("http://www.w3.org/XML/1998/namespace", "lang");
+        String content = parseTextContent(reader, "article-title");
+        return ArticleTitle.builder()
+                .xmlLang(xmlLang)
+                .content(content)
+                .build();
+    }
+
+    /**
+     * PmcArticleTitle 파싱 / Parse PmcArticleTitle (legacy)
+     */
     public static PmcArticleTitle parsePmcArticleTitle(XMLStreamReader reader) throws XMLStreamException {
         String value = parseTextContent(reader, "article-title");
         return PmcArticleTitle.builder().value(value).build();
     }
 
+    /**
+     * Subtitle 파싱 / Parse Subtitle
+     * DTD: <!ELEMENT subtitle (#PCDATA | %all-phrase;)*>
+     */
     public static Subtitle parseSubtitle(XMLStreamReader reader) throws XMLStreamException {
-        String value = parseTextContent(reader, "subtitle");
-        return Subtitle.builder().value(value).build();
+        String content = parseTextContent(reader, "subtitle");
+        return Subtitle.builder().content(content).build();
     }
 
+    /**
+     * TransTitleGroup 파싱 / Parse TransTitleGroup
+     * DTD: <!ELEMENT trans-title-group (trans-title, trans-subtitle*)>
+     * DTD: <!ATTLIST trans-title-group xml:lang NMTOKEN #IMPLIED>
+     */
     public static TransTitleGroup parseTransTitleGroup(XMLStreamReader reader) throws XMLStreamException {
-        String value = parseTextContent(reader, "trans-title-group");
-        return TransTitleGroup.builder().value(value).build();
+        String xmlLang = reader.getAttributeValue("http://www.w3.org/XML/1998/namespace", "lang");
+
+        TransTitleGroup.TransTitleGroupBuilder builder = TransTitleGroup.builder()
+                .xmlLang(xmlLang);
+
+        List<TransSubtitle> transSubtitles = new ArrayList<>();
+
+        while (reader.hasNext()) {
+            int event = reader.next();
+
+            if (event == XMLStreamConstants.START_ELEMENT) {
+                String localName = reader.getLocalName();
+
+                switch (localName) {
+                    case "trans-title":
+                        builder.transTitle(parseTransTitle(reader));
+                        break;
+                    case "trans-subtitle":
+                        transSubtitles.add(parseTransSubtitle(reader));
+                        break;
+                    default:
+                        skipElement(reader);
+                        break;
+                }
+            } else if (event == XMLStreamConstants.END_ELEMENT) {
+                if (reader.getLocalName().equals("trans-title-group")) {
+                    break;
+                }
+            }
+        }
+
+        builder.transSubtitles(transSubtitles.isEmpty() ? null : transSubtitles);
+        return builder.build();
     }
 
+    /**
+     * TransTitle 파싱 / Parse TransTitle
+     * DTD: <!ELEMENT trans-title (#PCDATA | %all-phrase;)*>
+     */
+    public static TransTitle parseTransTitle(XMLStreamReader reader) throws XMLStreamException {
+        String content = parseTextContent(reader, "trans-title");
+        return TransTitle.builder().content(content).build();
+    }
+
+    /**
+     * TransSubtitle 파싱 / Parse TransSubtitle
+     * DTD: <!ELEMENT trans-subtitle (#PCDATA | %all-phrase;)*>
+     */
+    public static TransSubtitle parseTransSubtitle(XMLStreamReader reader) throws XMLStreamException {
+        String content = parseTextContent(reader, "trans-subtitle");
+        return TransSubtitle.builder().content(content).build();
+    }
+
+    /**
+     * AltTitle 파싱 / Parse AltTitle
+     * DTD: <!ELEMENT alt-title (#PCDATA | %all-phrase;)*>
+     * DTD: <!ATTLIST alt-title alt-title-type CDATA #IMPLIED>
+     */
     public static AltTitle parseAltTitle(XMLStreamReader reader) throws XMLStreamException {
-        String value = parseTextContent(reader, "alt-title");
-        return AltTitle.builder().value(value).build();
+        String altTitleType = reader.getAttributeValue(null, "alt-title-type");
+        String content = parseTextContent(reader, "alt-title");
+        return AltTitle.builder()
+                .altTitleType(altTitleType)
+                .content(content)
+                .build();
     }
 
     public static FnGroup parseFnGroup(XMLStreamReader reader) throws XMLStreamException {
@@ -625,17 +726,31 @@ public class ArticleMetaParser {
     }
 
     public static ContribId parseContribId(XMLStreamReader reader) throws XMLStreamException {
-        String contribIdType = reader.getAttributeValue(null, "contrib-id-type");
+        String authenticated = reader.getAttributeValue(null, "authenticated");
+        String contentType = reader.getAttributeValue(null, "content-type");
+        String contribIdTypeStr = reader.getAttributeValue(null, "contrib-id-type");
+        String specificUse = reader.getAttributeValue(null, "specific-use");
         String value = parseTextContent(reader, "contrib-id");
 
         return ContribId.builder()
-                .contribIdType(contribIdType)
+                .authenticated(authenticated)
+                .contentType(contentType)
+                .contribIdType(ContribIdType.fromValue(contribIdTypeStr))
+                .specificUse(specificUse)
                 .value(value)
                 .build();
     }
 
     public static Name parseName(XMLStreamReader reader) throws XMLStreamException {
-        Name.NameBuilder builder = Name.builder();
+        // Parse attributes
+        String contentType = reader.getAttributeValue(null, "content-type");
+        String nameStyleStr = reader.getAttributeValue(null, "name-style");
+        String specificUse = reader.getAttributeValue(null, "specific-use");
+
+        Name.NameBuilder builder = Name.builder()
+                .contentType(contentType)
+                .nameStyle(NameStyle.fromValue(nameStyleStr))
+                .specificUse(specificUse);
 
         while (reader.hasNext()) {
             int event = reader.next();
@@ -842,6 +957,11 @@ public class ArticleMetaParser {
     public static Permissions parsePermissions(XMLStreamReader reader) throws XMLStreamException {
         Permissions.PermissionsBuilder builder = Permissions.builder();
 
+        List<CopyrightStatement> copyrightStatements = new ArrayList<>();
+        List<CopyrightYear> copyrightYears = new ArrayList<>();
+        List<CopyrightHolder> copyrightHolders = new ArrayList<>();
+        List<License> licenses = new ArrayList<>();
+
         while (reader.hasNext()) {
             int event = reader.next();
 
@@ -850,16 +970,16 @@ public class ArticleMetaParser {
 
                 switch (localName) {
                     case "copyright-statement":
-                        builder.copyrightStatement(parseCopyrightStatement(reader));
+                        copyrightStatements.add(parseCopyrightStatement(reader));
                         break;
                     case "copyright-year":
-                        builder.copyrightYear(parseCopyrightYear(reader));
+                        copyrightYears.add(parseCopyrightYear(reader));
                         break;
                     case "copyright-holder":
-                        builder.copyrightHolder(parseCopyrightHolder(reader));
+                        copyrightHolders.add(parseCopyrightHolder(reader));
                         break;
                     case "license":
-                        builder.license(parseLicense(reader));
+                        licenses.add(parseLicense(reader));
                         break;
                     default:
                         skipElement(reader);
@@ -871,6 +991,11 @@ public class ArticleMetaParser {
                 }
             }
         }
+
+        builder.copyrightStatements(copyrightStatements.isEmpty() ? null : copyrightStatements);
+        builder.copyrightYears(copyrightYears.isEmpty() ? null : copyrightYears);
+        builder.copyrightHolders(copyrightHolders.isEmpty() ? null : copyrightHolders);
+        builder.licenses(licenses.isEmpty() ? null : licenses);
 
         return builder.build();
     }

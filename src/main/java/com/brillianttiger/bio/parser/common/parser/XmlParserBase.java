@@ -15,6 +15,11 @@ import java.util.zip.GZIPInputStream;
  */
 public abstract class XmlParserBase {
 
+    /**
+     * 버퍼 크기 상수 (64KB) / Buffer size constant (64KB)
+     */
+    protected static final int BUFFER_SIZE = 65536; // 64 * 1024
+
     protected final XMLInputFactory factory;
 
     protected XmlParserBase() {
@@ -55,7 +60,7 @@ public abstract class XmlParserBase {
             is = new GZIPInputStream(is);
         }
 
-        return new BufferedInputStream(is, 65536);
+        return new BufferedInputStream(is, BUFFER_SIZE);
     }
 
     /**
@@ -108,6 +113,20 @@ public abstract class XmlParserBase {
         }
 
         return sb.toString().trim();
+    }
+
+    /**
+     * 현재 요소의 텍스트만 추출 (별칭 메서드) / Extract text only from current element (alias method)
+     *
+     * KR: getElementText의 별칭. 메서드 이름이 더 직관적임.
+     * EN: Alias for getElementText. Method name is more intuitive.
+     *
+     * @param reader XMLStreamReader
+     * @return trimmed text content
+     * @throws XMLStreamException if parsing error occurs
+     */
+    protected String readElementText(XMLStreamReader reader) throws XMLStreamException {
+        return getElementText(reader);
     }
 
     /**
@@ -167,6 +186,22 @@ public abstract class XmlParserBase {
     }
 
     /**
+     * Mixed content 추출 (별칭 메서드) / Extract mixed content (alias method)
+     *
+     * KR: getMixedContent의 별칭. 메서드 이름이 더 직관적임.
+     * EN: Alias for getMixedContent. Method name is more intuitive.
+     *
+     * @param reader XMLStreamReader
+     * @param endTag end element name
+     * @return TextContent with plain text, HTML, and raw XML
+     * @throws XMLStreamException if parsing error occurs
+     */
+    protected TextContent extractTextContent(XMLStreamReader reader, String endTag)
+            throws XMLStreamException {
+        return getMixedContent(reader, endTag);
+    }
+
+    /**
      * 현재 요소 건너뛰기 / Skip current element
      *
      * @param reader XMLStreamReader
@@ -205,6 +240,41 @@ public abstract class XmlParserBase {
      */
     protected String getAttribute(XMLStreamReader reader, String namespace, String name) {
         return reader.getAttributeValue(namespace, name);
+    }
+
+    /**
+     * 속성값 가져오기 (기본값 제공) / Get attribute value with default
+     *
+     * @param reader XMLStreamReader
+     * @param name attribute name
+     * @param defaultValue default value if attribute not found
+     * @return attribute value or default value
+     */
+    protected String getAttributeOrDefault(XMLStreamReader reader, String name, String defaultValue) {
+        String value = getAttribute(reader, name);
+        return value != null ? value : defaultValue;
+    }
+
+    /**
+     * 필수 속성값 가져오기 / Get required attribute value
+     *
+     * KR: 속성이 없으면 XMLStreamException 발생
+     * EN: Throws XMLStreamException if attribute not found
+     *
+     * @param reader XMLStreamReader
+     * @param name attribute name
+     * @return attribute value (never null)
+     * @throws XMLStreamException if attribute not found
+     */
+    protected String getRequiredAttribute(XMLStreamReader reader, String name) throws XMLStreamException {
+        String value = getAttribute(reader, name);
+        if (value == null || value.isBlank()) {
+            throw new XMLStreamException(
+                String.format("Required attribute '%s' not found in element '%s'",
+                    name, reader.getLocalName())
+            );
+        }
+        return value;
     }
 
     /**

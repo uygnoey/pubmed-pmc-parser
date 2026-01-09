@@ -10,10 +10,26 @@ import java.util.List;
 /**
  * ArticleCategories / 논문 카테고리
  *
- * DTD: <!ELEMENT article-categories (subj-group*, series-title*, series-text*)>
+ * KR: 논문의 주제 분류 및 시리즈 정보를 나타내는 요소.
+ *     주제 그룹, 시리즈 제목 등을 포함.
+ * EN: Element representing article subject classification and series information.
+ *     Includes subject groups, series titles, etc.
  *
- * KR: 논문의 주제 분류 및 시리즈 정보
- * EN: Article subject classification and series information
+ * DTD: <!ELEMENT article-categories (subj-group+)>
+ *
+ * Reference: https://jats.nlm.nih.gov/archiving/tag-library/1.4/element/article-categories.html
+ *
+ * Note: JATS 1.4 requires at least one subj-group.
+ *
+ * Examples:
+ * <article-categories>
+ *   <subj-group subj-group-type="heading">
+ *     <subject>Research Article</subject>
+ *   </subj-group>
+ *   <subj-group subj-group-type="discipline">
+ *     <subject>Biology</subject>
+ *   </subj-group>
+ * </article-categories>
  */
 @Data
 @Builder

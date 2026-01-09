@@ -14,6 +14,7 @@ import java.util.List;
  *      PMID,
  *      ArticleIdList,
  *      Book,
+ *      LocationLabel*,
  *      ArticleTitle?,
  *      VernacularTitle?,
  *      Pagination?,
@@ -24,7 +25,8 @@ import java.util.List;
  *      Abstract?,
  *      Sections?,
  *      KeywordList*,
- *      CoiStatement?,
+ *      ContributionDate?,
+ *      DateRevised?,
  *      GrantList?,
  *      ItemList*,
  *      ReferenceList*
@@ -53,6 +55,11 @@ public class BookDocument {
      * 도서 / Book
      */
     private Book book;
+
+    /**
+     * 위치 레이블 목록 / Location label list
+     */
+    private List<LocationLabel> locationLabels;
 
     /**
      * 논문 제목 / Article title
@@ -105,9 +112,14 @@ public class BookDocument {
     private List<KeywordList> keywordLists;
 
     /**
-     * 이해충돌 성명 / Conflict of interest statement
+     * 기여 날짜 / Contribution date
      */
-    private CoiStatement coiStatement;
+    private ContributionDate contributionDate;
+
+    /**
+     * 개정 날짜 / Date revised
+     */
+    private DateRevised dateRevised;
 
     /**
      * 연구비 목록 / Grant list

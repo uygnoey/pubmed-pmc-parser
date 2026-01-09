@@ -20,10 +20,12 @@ public class FrontParser {
 
     /**
      * Front 파싱 / Parse Front
-     * DTD: <!ELEMENT front (journal-meta?, article-meta, notes?)>
+     * DTD: <!ELEMENT front (journal-meta?, article-meta, (def-list | list | ack | bio | fn-group | glossary | notes)*)>
      */
     public static Front parseFront(XMLStreamReader reader) throws XMLStreamException {
         Front.FrontBuilder builder = Front.builder();
+
+        List<Notes> notesList = new ArrayList<>();
 
         while (reader.hasNext()) {
             int event = reader.next();
@@ -39,7 +41,7 @@ public class FrontParser {
                         builder.articleMeta(ArticleMetaParser.parseArticleMeta(reader));
                         break;
                     case "notes":
-                        builder.notes(parseNotes(reader));
+                        notesList.add(parseNotes(reader));
                         break;
                     default:
                         skipElement(reader);
@@ -52,6 +54,7 @@ public class FrontParser {
             }
         }
 
+        builder.notesList(notesList.isEmpty() ? null : notesList);
         return builder.build();
     }
 
@@ -63,8 +66,10 @@ public class FrontParser {
         JournalMeta.JournalMetaBuilder builder = JournalMeta.builder();
 
         List<JournalId> journalIds = new ArrayList<>();
-        List<PmcIssn> issns = new ArrayList<>();
+        List<JournalTitleGroup> journalTitleGroups = new ArrayList<>();
+        List<Issn> issns = new ArrayList<>();
         List<PmcIsbn> isbns = new ArrayList<>();
+        List<Notes> notesList = new ArrayList<>();
 
         while (reader.hasNext()) {
             int event = reader.next();
@@ -77,19 +82,19 @@ public class FrontParser {
                         journalIds.add(parseJournalId(reader));
                         break;
                     case "journal-title-group":
-                        builder.journalTitleGroup(parseJournalTitleGroup(reader));
+                        journalTitleGroups.add(parseJournalTitleGroup(reader));
                         break;
                     case "issn":
-                        issns.add(parsePmcIssn(reader));
+                        issns.add(parseIssn(reader));
                         break;
                     case "isbn":
                         isbns.add(parsePmcIsbn(reader));
                         break;
                     case "publisher":
-                        builder.publisher(parsePmcPublisher(reader));
+                        builder.publisher(parsePublisher(reader));
                         break;
                     case "notes":
-                        builder.notes(parseNotes(reader));
+                        notesList.add(parseNotes(reader));
                         break;
                     default:
                         skipElement(reader);
@@ -103,8 +108,10 @@ public class FrontParser {
         }
 
         builder.journalIds(journalIds.isEmpty() ? null : journalIds);
+        builder.journalTitleGroups(journalTitleGroups.isEmpty() ? null : journalTitleGroups);
         builder.issns(issns.isEmpty() ? null : issns);
         builder.isbns(isbns.isEmpty() ? null : isbns);
+        builder.notesList(notesList.isEmpty() ? null : notesList);
 
         return builder.build();
     }
@@ -115,11 +122,15 @@ public class FrontParser {
      * DTD: <!ATTLIST journal-id journal-id-type CDATA #IMPLIED>
      */
     public static JournalId parseJournalId(XMLStreamReader reader) throws XMLStreamException {
-        String journalIdType = reader.getAttributeValue(null, "journal-id-type");
+        String journalIdTypeStr = reader.getAttributeValue(null, "journal-id-type");
+        String specificUse = reader.getAttributeValue(null, "specific-use");
+        String xmlLang = reader.getAttributeValue(null, "xml:lang");
         String value = parseTextContent(reader, "journal-id");
 
         return JournalId.builder()
-                .journalIdType(journalIdType)
+                .journalIdType(JournalIdType.fromValue(journalIdTypeStr))
+                .specificUse(specificUse)
+                .xmlLang(xmlLang)
                 .value(value)
                 .build();
     }
@@ -175,7 +186,29 @@ public class FrontParser {
     }
 
     /**
-     * PmcIssn 파싱 / Parse PmcIssn
+     * Issn 파싱 / Parse Issn
+     * DTD: <!ELEMENT issn (#PCDATA)>
+     * DTD: <!ATTLIST issn
+     *          content-type CDATA #IMPLIED
+     *          publication-format (print | electronic | print-electronic | online) #IMPLIED
+     *          pub-type (ppub | epub | ppub-epub | epub-ppub | collection | epreprint) #IMPLIED>
+     */
+    public static Issn parseIssn(XMLStreamReader reader) throws XMLStreamException {
+        String contentType = reader.getAttributeValue(null, "content-type");
+        String publicationFormatStr = reader.getAttributeValue(null, "publication-format");
+        String pubTypeStr = reader.getAttributeValue(null, "pub-type");
+        String value = parseTextContent(reader, "issn");
+
+        return Issn.builder()
+                .contentType(contentType)
+                .publicationFormat(PublicationFormat.fromValue(publicationFormatStr))
+                .pubType(PubType.fromValue(pubTypeStr))
+                .value(value)
+                .build();
+    }
+
+    /**
+     * PmcIssn 파싱 / Parse PmcIssn (backward compatibility)
      * DTD: <!ATTLIST issn pub-type (ppub | epub) #IMPLIED content-type CDATA #IMPLIED>
      */
     public static PmcIssn parsePmcIssn(XMLStreamReader reader) throws XMLStreamException {
@@ -191,7 +224,47 @@ public class FrontParser {
     }
 
     /**
-     * PmcPublisher 파싱 / Parse PmcPublisher
+     * Publisher 파싱 / Parse Publisher
+     * DTD: <!ELEMENT publisher (publisher-name+, publisher-loc*)>
+     */
+    public static Publisher parsePublisher(XMLStreamReader reader) throws XMLStreamException {
+        Publisher.PublisherBuilder builder = Publisher.builder();
+
+        List<PublisherName> publisherNames = new ArrayList<>();
+        List<PublisherLoc> publisherLocs = new ArrayList<>();
+
+        while (reader.hasNext()) {
+            int event = reader.next();
+
+            if (event == XMLStreamConstants.START_ELEMENT) {
+                String localName = reader.getLocalName();
+
+                switch (localName) {
+                    case "publisher-name":
+                        publisherNames.add(parsePublisherName(reader));
+                        break;
+                    case "publisher-loc":
+                        publisherLocs.add(parsePublisherLoc(reader));
+                        break;
+                    default:
+                        skipElement(reader);
+                        break;
+                }
+            } else if (event == XMLStreamConstants.END_ELEMENT) {
+                if (reader.getLocalName().equals("publisher")) {
+                    break;
+                }
+            }
+        }
+
+        builder.publisherNames(publisherNames.isEmpty() ? null : publisherNames);
+        builder.publisherLocs(publisherLocs.isEmpty() ? null : publisherLocs);
+
+        return builder.build();
+    }
+
+    /**
+     * PmcPublisher 파싱 / Parse PmcPublisher (backward compatibility)
      * DTD: <!ELEMENT publisher (publisher-name, publisher-loc?)>
      */
     public static PmcPublisher parsePmcPublisher(XMLStreamReader reader) throws XMLStreamException {
@@ -243,9 +316,14 @@ public class FrontParser {
         return JournalSubtitle.builder().value(value).build();
     }
 
+    /**
+     * TransTitleGroup 파싱 / Parse TransTitleGroup
+     * DTD: <!ELEMENT trans-title-group (trans-title, trans-subtitle*)>
+     * DTD: <!ATTLIST trans-title-group xml:lang NMTOKEN #IMPLIED>
+     */
     public static TransTitleGroup parseTransTitleGroup(XMLStreamReader reader) throws XMLStreamException {
-        String value = parseTextContent(reader, "trans-title-group");
-        return TransTitleGroup.builder().value(value).build();
+        // Delegate to ArticleMetaParser for proper JATS 1.4 parsing
+        return ArticleMetaParser.parseTransTitleGroup(reader);
     }
 
     public static AbbrevJournalTitle parseAbbrevJournalTitle(XMLStreamReader reader) throws XMLStreamException {

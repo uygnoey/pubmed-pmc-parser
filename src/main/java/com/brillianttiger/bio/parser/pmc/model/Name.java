@@ -25,17 +25,40 @@ public class Name {
 
     /**
      * 내용 유형 / Content type
+     *
+     * KR: 이름의 내용 유형 (선택적 분류).
+     * EN: Content type of the name (optional classification).
+     *
+     * DTD: content-type CDATA #IMPLIED
      */
     private String contentType;
 
     /**
-     * 이름 스타일 (기본값: "western") / Name style (default: "western")
+     * 이름 스타일 / Name style
+     *
+     * KR: 이름 표기 방식 (western, eastern, islensk, given-only).
+     *     기본값: WESTERN
+     * EN: Name formatting style (western, eastern, islensk, given-only).
+     *     Default: WESTERN
+     *
+     * DTD: name-style (western | eastern | islensk | given-only) "western"
+     *
+     * Values:
+     * - WESTERN: 서양식 (이름 성) / Western style (given-name surname)
+     * - EASTERN: 동양식 (성 이름) / Eastern style (surname given-name)
+     * - ISLENSK: 아이슬란드식 / Icelandic style
+     * - GIVEN_ONLY: 이름만 / Given name only
      */
     @Builder.Default
-    private String nameStyle = "western";
+    private NameStyle nameStyle = NameStyle.WESTERN;
 
     /**
      * 특정 용도 / Specific use
+     *
+     * KR: 이 이름의 특정 용도나 응용 (선택적).
+     * EN: Specific use or application of this name (optional).
+     *
+     * DTD: specific-use CDATA #IMPLIED
      */
     private String specificUse;
 

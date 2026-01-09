@@ -23,10 +23,10 @@ import java.util.List;
 public class KeywordList {
 
     /**
-     * 소유자 (기본값: "NLM") / Owner (default: "NLM")
+     * 소유자 (기본값: NLM) / Owner (default: NLM)
      */
     @Builder.Default
-    private String owner = "NLM";
+    private KeywordOwner owner = KeywordOwner.NLM;
 
     /**
      * 키워드 목록 / Keyword list

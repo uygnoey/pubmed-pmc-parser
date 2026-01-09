@@ -1,7 +1,8 @@
 package com.brillianttiger.bio.parser.common.util;
 
-import java.time.Month;
-import java.time.Year;
+import com.brillianttiger.bio.parser.common.model.DateComponents;
+
+import java.time.*;
 import java.time.format.DateTimeParseException;
 import java.util.HashMap;
 import java.util.Map;
@@ -384,5 +385,242 @@ public class DateParser {
         }
 
         return sb.toString();
+    }
+
+    // ==================== DateComponents 통합 메서드 / DateComponents Integration Methods ====================
+
+    /**
+     * MedlineDate 파싱 (DateComponents 반환) / Parse MedlineDate (returns DateComponents)
+     *
+     * KR: MedlineDate를 파싱하여 DateComponents 반환
+     * EN: Parse MedlineDate and return DateComponents
+     *
+     * @param medlineDate MedlineDate 문자열 / MedlineDate string
+     * @return DateComponents 객체 / DateComponents object
+     */
+    public static DateComponents parseMedlineDateToComponents(String medlineDate) {
+        if (medlineDate == null || medlineDate.isBlank()) {
+            return null;
+        }
+
+        DateComponents.DateComponentsBuilder builder = DateComponents.builder()
+                .medlineDate(medlineDate);
+
+        // 연도 추출 / Extract year
+        Matcher yearMatcher = YEAR_PATTERN.matcher(medlineDate);
+        if (yearMatcher.find()) {
+            builder.year(Integer.parseInt(yearMatcher.group(1)));
+        }
+
+        // 계절 확인 / Check for season
+        Matcher seasonMatcher = SEASON_PATTERN.matcher(medlineDate);
+        if (seasonMatcher.find()) {
+            String season = seasonMatcher.group(1);
+            String normalizedSeason = season.substring(0, 1).toUpperCase() + season.substring(1).toLowerCase();
+            builder.season(DateComponents.Season.fromValue(normalizedSeason));
+            return builder.build();
+        }
+
+        // 월 범위 추출 (예: Jan-Feb) / Extract month range (e.g., Jan-Feb)
+        Pattern monthRangePattern = Pattern.compile("([A-Za-z]{3,})-([A-Za-z]{3,})");
+        Matcher monthRangeMatcher = monthRangePattern.matcher(medlineDate);
+        if (monthRangeMatcher.find()) {
+            String startMonth = monthRangeMatcher.group(1);
+            Integer monthNum = parseMonthName(startMonth);
+            if (monthNum != null) {
+                builder.month(monthNum);
+            }
+        } else {
+            // 단일 월 추출 / Extract single month
+            Matcher monthMatcher = MONTH_PATTERN.matcher(medlineDate);
+            if (monthMatcher.find()) {
+                String month = monthMatcher.group(1);
+                Integer monthNum = parseMonthName(month);
+                if (monthNum != null) {
+                    builder.month(monthNum);
+                }
+            }
+        }
+
+        // 일 추출 / Extract day
+        Matcher monthMatcher = MONTH_PATTERN.matcher(medlineDate);
+        if (monthMatcher.find()) {
+            String month = monthMatcher.group(1);
+            int monthEndIndex = medlineDate.toLowerCase().indexOf(month.toLowerCase()) + month.length();
+            String afterMonth = medlineDate.substring(monthEndIndex).trim();
+            Matcher dayMatcher = DAY_PATTERN.matcher(afterMonth);
+            if (dayMatcher.find()) {
+                builder.day(Integer.parseInt(dayMatcher.group(1)));
+            }
+        }
+
+        return builder.build();
+    }
+
+    /**
+     * ISO 8601 날짜 파싱 / Parse ISO 8601 date
+     *
+     * KR: ISO 8601 형식의 날짜를 파싱하여 DateComponents 반환
+     * EN: Parse ISO 8601 format date and return DateComponents
+     *
+     * Supported formats:
+     * - 2024-01-15T10:30:00Z
+     * - 2024-01-15
+     * - 2024-01
+     * - 2024
+     *
+     * @param iso8601Date ISO 8601 날짜 문자열 / ISO 8601 date string
+     * @return DateComponents 객체 / DateComponents object
+     */
+    public static DateComponents parseIso8601Date(String iso8601Date) {
+        if (iso8601Date == null || iso8601Date.isBlank()) {
+            return null;
+        }
+
+        DateComponents.DateComponentsBuilder builder = DateComponents.builder()
+                .iso8601Date(iso8601Date);
+
+        try {
+            // YYYY-MM-DDTHH:MM:SS 형식 처리 / Handle YYYY-MM-DDTHH:MM:SS format
+            String dateOnlyPart = iso8601Date;
+            if (iso8601Date.contains("T")) {
+                dateOnlyPart = iso8601Date.substring(0, iso8601Date.indexOf("T"));
+            }
+
+            // YYYY-MM-DD 형식 / YYYY-MM-DD format
+            try {
+                LocalDate date = LocalDate.parse(dateOnlyPart);
+                builder.year(date.getYear())
+                       .month(date.getMonthValue())
+                       .day(date.getDayOfMonth());
+                return builder.build();
+            } catch (DateTimeParseException e) {
+                // YYYY-MM 형식 시도 / Try YYYY-MM format
+                try {
+                    YearMonth ym = YearMonth.parse(dateOnlyPart);
+                    builder.year(ym.getYear())
+                           .month(ym.getMonthValue());
+                    return builder.build();
+                } catch (DateTimeParseException e2) {
+                    // YYYY 형식 시도 / Try YYYY format
+                    try {
+                        Year y = Year.parse(dateOnlyPart);
+                        builder.year(y.getValue());
+                        return builder.build();
+                    } catch (DateTimeParseException e3) {
+                        // 파싱 실패 / Parsing failed
+                        return builder.build();
+                    }
+                }
+            }
+        } catch (Exception e) {
+            return builder.build();
+        }
+    }
+
+    /**
+     * 월 이름을 숫자로 변환 (별칭 메서드) / Convert month name to number (alias method)
+     *
+     * KR: parseMonthName의 별칭. 더 직관적인 이름.
+     * EN: Alias for parseMonthName. More intuitive name.
+     *
+     * @param monthName 월 이름 / Month name
+     * @return 월 숫자 (1-12) / Month number (1-12)
+     */
+    public static Integer monthNameToNumber(String monthName) {
+        return parseMonthName(monthName);
+    }
+
+    /**
+     * 계절을 월 범위로 변환 / Convert season to month range
+     *
+     * KR: 계절 이름을 시작-종료 월 범위로 변환
+     * EN: Convert season name to start-end month range
+     *
+     * @param season 계절 이름 (Spring, Summer, Fall/Autumn, Winter) / Season name
+     * @return 월 범위 배열 [시작월, 종료월] 또는 null / Month range array [start, end] or null
+     */
+    public static int[] seasonToMonthRange(String season) {
+        if (season == null || season.isBlank()) {
+            return null;
+        }
+
+        return switch (season.toLowerCase()) {
+            case "spring" -> new int[]{3, 5};    // 3월-5월 / March-May
+            case "summer" -> new int[]{6, 8};    // 6월-8월 / June-August
+            case "fall", "autumn" -> new int[]{9, 11};  // 9월-11월 / September-November
+            case "winter" -> new int[]{12, 2};   // 12월-2월 / December-February
+            default -> null;
+        };
+    }
+
+    /**
+     * 계절의 대표 월 반환 / Get representative month for season
+     *
+     * KR: 계절의 중간 월을 반환 (Spring→4, Summer→7, Fall→10, Winter→1)
+     * EN: Return middle month of season (Spring→4, Summer→7, Fall→10, Winter→1)
+     *
+     * @param season 계절 이름 / Season name
+     * @return 대표 월 (1-12) 또는 null / Representative month (1-12) or null
+     */
+    public static Integer seasonToRepresentativeMonth(String season) {
+        if (season == null || season.isBlank()) {
+            return null;
+        }
+
+        return switch (season.toLowerCase()) {
+            case "spring" -> 4;   // April
+            case "summer" -> 7;   // July
+            case "fall", "autumn" -> 10;  // October
+            case "winter" -> 1;   // January
+            default -> null;
+        };
+    }
+
+    /**
+     * ParsedDate를 DateComponents로 변환 / Convert ParsedDate to DateComponents
+     *
+     * KR: 기존 ParsedDate 객체를 DateComponents로 변환
+     * EN: Convert legacy ParsedDate object to DateComponents
+     *
+     * @param parsedDate ParsedDate 객체 / ParsedDate object
+     * @return DateComponents 객체 / DateComponents object
+     */
+    public static DateComponents toDateComponents(ParsedDate parsedDate) {
+        if (parsedDate == null) {
+            return null;
+        }
+
+        DateComponents.DateComponentsBuilder builder = DateComponents.builder()
+                .medlineDate(parsedDate.getRawValue());
+
+        // 연도 / Year
+        if (parsedDate.getYear() != null) {
+            try {
+                builder.year(Integer.parseInt(parsedDate.getYear()));
+            } catch (NumberFormatException ignored) {}
+        }
+
+        // 월 / Month
+        if (parsedDate.getMonth() != null) {
+            Integer monthNum = parseMonthName(parsedDate.getMonth());
+            if (monthNum != null) {
+                builder.month(monthNum);
+            }
+        }
+
+        // 일 / Day
+        if (parsedDate.getDay() != null) {
+            try {
+                builder.day(Integer.parseInt(parsedDate.getDay()));
+            } catch (NumberFormatException ignored) {}
+        }
+
+        // 계절 / Season
+        if (parsedDate.getSeason() != null) {
+            builder.season(DateComponents.Season.fromValue(parsedDate.getSeason()));
+        }
+
+        return builder.build();
     }
 }

@@ -37,8 +37,10 @@ public class Article {
 
     /**
      * 출판 모델 (필수) / Publication model (required)
+     *
+     * DTD: PubModel (Print | Print-Electronic | Electronic | Electronic-Print | Electronic-eCollection) #REQUIRED
      */
-    private String pubModel;
+    private PubModel pubModel;
 
     /**
      * 저널 / Journal

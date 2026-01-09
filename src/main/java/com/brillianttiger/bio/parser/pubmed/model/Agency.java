@@ -8,10 +8,10 @@ import lombok.NoArgsConstructor;
 /**
  * Agency / 지원 기관
  *
- * DTD: <!ELEMENT Agency (#PCDATA)>
+ * DTD: <!ELEMENT Agency (%text;)*>
  *
- * KR: 연구비 지원 기관명
- * EN: Grant funding agency name
+ * KR: 연구비 지원 기관명 (혼합 콘텐츠 지원)
+ * EN: Grant funding agency name (supports mixed content)
  */
 @Data
 @Builder

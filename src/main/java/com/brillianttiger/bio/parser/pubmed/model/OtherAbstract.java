@@ -26,8 +26,10 @@ public class OtherAbstract {
 
     /**
      * 유형 (필수) / Type (required)
+     *
+     * DTD: Type (AAMC | AIDS | KIE | PIP | NASA | Publisher) #REQUIRED
      */
-    private String type;
+    private OtherAbstractType type;
 
     /**
      * 언어 (기본값: "eng") / Language (default: "eng")

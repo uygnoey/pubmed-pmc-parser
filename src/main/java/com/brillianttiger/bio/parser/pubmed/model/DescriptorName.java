@@ -12,6 +12,7 @@ import lombok.NoArgsConstructor;
  * DTD: <!ATTLIST DescriptorName
  *          UI CDATA #REQUIRED
  *          MajorTopicYN (Y | N) "N"
+ *          AutoHM (Y) #IMPLIED
  *          Type (Geographic) #IMPLIED>
  *
  * KR: MeSH 주제어 디스크립터
@@ -35,9 +36,17 @@ public class DescriptorName {
     private String majorTopicYN = "N";
 
     /**
+     * AutoHM 플래그 (Y만 가능) / AutoHM flag (only Y allowed)
+     *
+     * KR: 자동으로 매핑된 MeSH 표제어 표시 (Y인 경우에만 존재)
+     * EN: Indicates automatically mapped MeSH heading (present only when Y)
+     */
+    private String autoHM;
+
+    /**
      * 유형 (Geographic) / Type
      */
-    private String type;
+    private DescriptorNameType type;
 
     /**
      * 디스크립터명 / Descriptor name

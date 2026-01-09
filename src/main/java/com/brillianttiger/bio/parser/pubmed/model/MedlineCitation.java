@@ -1,6 +1,5 @@
 package com.brillianttiger.bio.parser.pubmed.model;
 
-import com.brillianttiger.bio.parser.common.model.PubMedDate;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -53,18 +52,18 @@ public class MedlineCitation {
     /**
      * 상태 (필수) / Status (required)
      */
-    private String status;
+    private Status status;
 
     /**
-     * 소유자 (기본값: "NLM") / Owner (default: "NLM")
+     * 소유자 (기본값: NLM) / Owner (default: NLM)
      */
     @Builder.Default
-    private String owner = "NLM";
+    private Owner owner = Owner.NLM;
 
     /**
      * 색인 방법 / Indexing method
      */
-    private String indexingMethod;
+    private IndexingMethod indexingMethod;
 
     /**
      * 버전 ID / Version ID
@@ -85,12 +84,12 @@ public class MedlineCitation {
     /**
      * 완료 날짜 / Date completed
      */
-    private PubMedDate dateCompleted;
+    private DateCompleted dateCompleted;
 
     /**
      * 개정 날짜 / Date revised
      */
-    private PubMedDate dateRevised;
+    private DateRevised dateRevised;
 
     /**
      * 논문 / Article
@@ -169,8 +168,11 @@ public class MedlineCitation {
 
     /**
      * 조사자 목록 / Investigator list
+     *
+     * KR: 2024년 변경: 반복 가능하게 변경 (0-N개)
+     * EN: 2024 change: Made repeatable (0-N occurrences)
      */
-    private InvestigatorList investigatorList;
+    private List<InvestigatorList> investigatorLists;
 
     /**
      * 일반 노트 목록 / General note list

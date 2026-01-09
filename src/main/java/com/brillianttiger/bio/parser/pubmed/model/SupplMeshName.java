@@ -25,7 +25,7 @@ public class SupplMeshName {
     /**
      * 유형: Disease | Protocol | Organism (필수) / Type (required)
      */
-    private String type;
+    private SupplMeshNameType type;
 
     /**
      * UI (고유 식별자, 필수) / UI (unique identifier, required)
