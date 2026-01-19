@@ -1,0 +1,194 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE article PUBLIC "-//NLM//DTD JATS (Z39.96) Journal Archiving and Interchange DTD v1.4 20240930//EN" "JATS-archivearticle1-4.dtd">
+<article xmlns:xlink="http://www.w3.org/1999/xlink" article-type="research-article" dtd-version="1.4" xml:lang="en">
+  <front>
+    <article-meta>
+      <article-id pub-id-type="pmc">PMC4444444</article-id>
+      <article-id pub-id-type="doi">10.1234/test.2024.subarticle</article-id>
+      <title-group>
+        <article-title>Main Article with Sub-Articles and Response</article-title>
+      </title-group>
+      <contrib-group>
+        <contrib contrib-type="author">
+          <name>
+            <surname>MainAuthor</surname>
+            <given-names>Primary</given-names>
+          </name>
+        </contrib>
+      </contrib-group>
+      <pub-date pub-type="epub">
+        <year>2024</year>
+      </pub-date>
+    </article-meta>
+  </front>
+  <body>
+    <sec id="main-sec1">
+      <title>Main Article Introduction</title>
+      <p>This is the main article demonstrating sub-article and response elements. These are used for articles that contain embedded sub-articles or author responses.</p>
+    </sec>
+    <sec id="main-sec2">
+      <title>Main Article Content</title>
+      <p>The main article presents findings that may be discussed or challenged in sub-articles below.</p>
+    </sec>
+  </body>
+  <back>
+    <ref-list>
+      <ref id="ref1">
+        <label>1</label>
+        <element-citation publication-type="journal">
+          <person-group person-group-type="author">
+            <name>
+              <surname>Reference</surname>
+              <given-names>Main</given-names>
+            </name>
+          </person-group>
+          <article-title>Supporting evidence</article-title>
+          <source>Test Journal</source>
+          <year iso-8601-date="2023">2023</year>
+          <volume>10</volume>
+          <fpage>100</fpage>
+          <lpage>110</lpage>
+        </element-citation>
+      </ref>
+    </ref-list>
+  </back>
+
+  <!-- Sub-Article 1: Commentary -->
+  <sub-article article-type="article-commentary" id="sub1" xml:lang="en">
+    <front-stub>
+      <article-id pub-id-type="doi">10.1234/test.2024.subarticle.commentary1</article-id>
+      <title-group>
+        <article-title>Commentary: Critical Analysis of Main Article Findings</article-title>
+      </title-group>
+      <contrib-group>
+        <contrib contrib-type="author">
+          <name>
+            <surname>Commentator</surname>
+            <given-names>First</given-names>
+          </name>
+          <aff id="sub1-aff1">Department of Critical Analysis, Test University</aff>
+        </contrib>
+      </contrib-group>
+    </front-stub>
+    <body>
+      <sec id="sub1-sec1">
+        <title>Commentary Introduction</title>
+        <p>This commentary provides a critical analysis of the main article's methodology and conclusions.</p>
+      </sec>
+      <sec id="sub1-sec2">
+        <title>Critical Points</title>
+        <p>Several aspects of the main article warrant closer examination, particularly regarding data interpretation.</p>
+      </sec>
+      <sec id="sub1-sec3">
+        <title>Commentary Conclusion</title>
+        <p>While the main article presents interesting findings, additional research is needed to validate the conclusions.</p>
+      </sec>
+    </body>
+    <back>
+      <ref-list>
+        <ref id="sub1-ref1">
+          <label>1</label>
+          <element-citation publication-type="journal">
+            <person-group person-group-type="author">
+              <name>
+                <surname>CommentRef</surname>
+                <given-names>A</given-names>
+              </name>
+            </person-group>
+            <article-title>Alternative interpretations</article-title>
+            <source>Critical Review</source>
+            <year iso-8601-date="2023">2023</year>
+            <volume>5</volume>
+            <fpage>50</fpage>
+            <lpage>60</lpage>
+          </element-citation>
+        </ref>
+      </ref-list>
+    </back>
+  </sub-article>
+
+  <!-- Sub-Article 2: Brief Report -->
+  <sub-article article-type="brief-report" id="sub2" xml:lang="en">
+    <front-stub>
+      <article-id pub-id-type="doi">10.1234/test.2024.subarticle.brief1</article-id>
+      <title-group>
+        <article-title>Brief Report: Additional Data Supporting Main Findings</article-title>
+      </title-group>
+      <contrib-group>
+        <contrib contrib-type="author">
+          <name>
+            <surname>Supporter</surname>
+            <given-names>Second</given-names>
+          </name>
+        </contrib>
+      </contrib-group>
+    </front-stub>
+    <body>
+      <sec id="sub2-sec1">
+        <title>Supplementary Findings</title>
+        <p>This brief report presents additional data that supports the conclusions of the main article.</p>
+        <fig id="sub2-fig1">
+          <label>Figure S1</label>
+          <caption>
+            <title>Supplementary Data</title>
+            <p>Additional experimental results.</p>
+          </caption>
+        </fig>
+      </sec>
+    </body>
+  </sub-article>
+
+  <!-- Response element: Author's response to commentary -->
+  <response response-type="reply" id="resp1" xml:lang="en">
+    <front-stub>
+      <article-id pub-id-type="doi">10.1234/test.2024.subarticle.response1</article-id>
+      <title-group>
+        <article-title>Authors' Response to Commentary</article-title>
+      </title-group>
+      <contrib-group>
+        <contrib contrib-type="author">
+          <name>
+            <surname>MainAuthor</surname>
+            <given-names>Primary</given-names>
+          </name>
+        </contrib>
+      </contrib-group>
+      <related-article related-article-type="commentary" id="d1" xlink:href="#sub1"/>
+    </front-stub>
+    <body>
+      <sec id="resp1-sec1">
+        <title>Response to Critical Points</title>
+        <p>We appreciate the thoughtful commentary on our article. We would like to address the concerns raised about our methodology.</p>
+      </sec>
+      <sec id="resp1-sec2">
+        <title>Clarification of Methods</title>
+        <p>The data interpretation follows established protocols as outlined in our methods section. Additional details are provided here to address the commentary's concerns.</p>
+      </sec>
+      <sec id="resp1-sec3">
+        <title>Conclusion</title>
+        <p>We believe our conclusions remain valid given the evidence presented. We welcome further discussion and additional research in this area.</p>
+      </sec>
+    </body>
+    <back>
+      <ref-list>
+        <ref id="resp1-ref1">
+          <label>1</label>
+          <element-citation publication-type="journal">
+            <person-group person-group-type="author">
+              <name>
+                <surname>ResponseRef</surname>
+                <given-names>R</given-names>
+              </name>
+            </person-group>
+            <article-title>Methodological considerations</article-title>
+            <source>Methods Journal</source>
+            <year iso-8601-date="2023">2023</year>
+            <volume>8</volume>
+            <fpage>200</fpage>
+            <lpage>210</lpage>
+          </element-citation>
+        </ref>
+      </ref-list>
+    </back>
+  </response>
+</article>

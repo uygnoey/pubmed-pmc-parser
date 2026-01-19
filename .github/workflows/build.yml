@@ -1,0 +1,129 @@
+name: Build and Test
+
+on:
+  push:
+    branches: [ main, develop ]
+  pull_request:
+    branches: [ main, develop ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+
+    - name: Set up JDK 21
+      uses: actions/setup-java@v4
+      with:
+        java-version: '21'
+        distribution: 'temurin'
+        cache: 'gradle'
+
+    - name: Validate Gradle wrapper
+      uses: gradle/wrapper-validation-action@v2
+
+    - name: Grant execute permission for gradlew
+      run: chmod +x gradlew
+
+    - name: Create test-data directories
+      run: |
+        mkdir -p test-data/pubmed/baseline
+        mkdir -p test-data/pubmed/update
+
+    - name: Download PubMed baseline test data
+      run: |
+        cd test-data/pubmed/baseline
+        echo "Downloading baseline/pubmed25n0001.xml.gz (19MB)..."
+        curl -f -O https://ftp.ncbi.nlm.nih.gov/pubmed/baseline/pubmed25n0001.xml.gz
+        curl -f -O https://ftp.ncbi.nlm.nih.gov/pubmed/baseline/pubmed25n0001.xml.gz.md5
+        echo "Verifying MD5 checksum..."
+        md5sum -c pubmed25n0001.xml.gz.md5
+
+    - name: Download PubMed update test data
+      run: |
+        cd test-data/pubmed/update
+        echo "Downloading update/pubmed25n1275.xml.gz (83MB)..."
+        curl -f -O https://ftp.ncbi.nlm.nih.gov/pubmed/updatefiles/pubmed25n1275.xml.gz
+        curl -f -O https://ftp.ncbi.nlm.nih.gov/pubmed/updatefiles/pubmed25n1275.xml.gz.md5
+        echo "Verifying MD5 checksum..."
+        md5sum -c pubmed25n1275.xml.gz.md5
+
+        echo "Downloading update/pubmed25n1685.xml.gz (59MB)..."
+        curl -f -O https://ftp.ncbi.nlm.nih.gov/pubmed/updatefiles/pubmed25n1685.xml.gz
+        curl -f -O https://ftp.ncbi.nlm.nih.gov/pubmed/updatefiles/pubmed25n1685.xml.gz.md5
+        echo "Verifying MD5 checksum..."
+        md5sum -c pubmed25n1685.xml.gz.md5
+
+    - name: Create symbolic link for pubmed module
+      run: |
+        cd pubmed
+        ln -s ../test-data test-data
+
+    - name: Build with Gradle
+      run: ./gradlew build --no-daemon --stacktrace
+      env:
+        JAVA_OPTS: -Xmx3g
+
+    - name: Run tests
+      run: ./gradlew test --no-daemon --stacktrace
+      env:
+        JAVA_OPTS: -Xmx3g
+
+    - name: Generate JaCoCo coverage report
+      run: ./gradlew jacocoTestReport --no-daemon
+
+    - name: Upload coverage reports
+      uses: actions/upload-artifact@v4
+      if: always()
+      with:
+        name: coverage-reports
+        path: |
+          common/build/reports/jacoco/test/html/
+          pubmed/build/reports/jacoco/test/html/
+          pmc/build/reports/jacoco/test/html/
+        retention-days: 30
+
+    - name: Upload test results
+      uses: actions/upload-artifact@v4
+      if: always()
+      with:
+        name: test-results
+        path: |
+          common/build/test-results/test/
+          pubmed/build/test-results/test/
+          pmc/build/test-results/test/
+        retention-days: 30
+
+    - name: Upload Checkstyle reports
+      uses: actions/upload-artifact@v4
+      if: always()
+      with:
+        name: checkstyle-reports
+        path: |
+          common/build/reports/checkstyle/
+          pubmed/build/reports/checkstyle/
+          pmc/build/reports/checkstyle/
+        retention-days: 30
+
+    - name: Publish test summary
+      uses: EnricoMi/publish-unit-test-result-action@v2
+      if: always()
+      with:
+        files: |
+          common/build/test-results/test/TEST-*.xml
+          pubmed/build/test-results/test/TEST-*.xml
+          pmc/build/test-results/test/TEST-*.xml
+
+    - name: Comment coverage on PR
+      if: github.event_name == 'pull_request'
+      run: |
+        echo "## Test Coverage Report" >> $GITHUB_STEP_SUMMARY
+        echo "" >> $GITHUB_STEP_SUMMARY
+        echo "Coverage reports have been generated and uploaded as artifacts." >> $GITHUB_STEP_SUMMARY
+        echo "" >> $GITHUB_STEP_SUMMARY
+        echo "### Modules" >> $GITHUB_STEP_SUMMARY
+        echo "- Common module" >> $GITHUB_STEP_SUMMARY
+        echo "- PubMed module" >> $GITHUB_STEP_SUMMARY
+        echo "- PMC module" >> $GITHUB_STEP_SUMMARY

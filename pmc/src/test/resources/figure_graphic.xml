@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE article PUBLIC "-//NLM//DTD JATS (Z39.96) Journal Archiving and Interchange DTD v1.4 20240930//EN" "JATS-archivearticle1-4.dtd">
+<article xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" article-type="research-article" dtd-version="1.4" xml:lang="en">
+  <front>
+    <article-meta>
+      <article-id pub-id-type="pmc">PMC6666666</article-id>
+      <article-id pub-id-type="doi">10.1234/test.2024.figures</article-id>
+      <title-group>
+        <article-title>Article with Figures and Graphics for Parser Testing</article-title>
+      </title-group>
+      <contrib-group>
+        <contrib contrib-type="author">
+          <name>
+            <surname>Figure</surname>
+            <given-names>Test</given-names>
+          </name>
+        </contrib>
+      </contrib-group>
+      <pub-date pub-type="epub">
+        <year>2024</year>
+      </pub-date>
+    </article-meta>
+  </front>
+  <body>
+    <sec id="sec1">
+      <title>Results with Figures</title>
+      <p>This section contains various figure examples demonstrating graphic support in JATS 1.4. See <xref ref-type="fig" rid="fig1">Figure 1</xref>, <xref ref-type="fig" rid="fig2">Figure 2</xref>, and <xref ref-type="fig" rid="fig3">Figure 3</xref>.</p>
+
+      <!-- Figure 1: Simple Figure with Single Graphic -->
+      <fig id="fig1" fig-type="diagram" position="float">
+        <label>Figure 1</label>
+        <caption>
+          <title>Simple Diagram Showing Process Flow</title>
+          <p>This figure demonstrates a basic figure element with a single graphic file. The process flow shows the main steps from input to output.</p>
+        </caption>
+        <graphic xlink:href="fig1-process-flow.tif" mimetype="image" mime-subtype="tiff"/>
+        <alt-text>Flow chart showing three boxes connected by arrows: Input → Processing → Output</alt-text>
+        <long-desc>
+          <p>A detailed flow chart diagram illustrating the three-stage process. Stage 1 (Input) receives data from external sources. Stage 2 (Processing) applies transformation algorithms. Stage 3 (Output) delivers results to downstream systems.</p>
+        </long-desc>
+      </fig>
+
+      <!-- Figure 2: Figure with Multiple Graphic Versions -->
+      <fig id="fig2" fig-type="chart" position="float">
+        <label>Figure 2</label>
+        <caption>
+          <title>Bar Chart of Experimental Results</title>
+          <p>Comparison of treatment groups showing mean values with error bars (±SD). <sup>*</sup>P &lt; 0.05, <sup>**</sup>P &lt; 0.01 vs. control.</p>
+        </caption>
+        <graphic xlink:href="fig2-results.tif" mimetype="image" mime-subtype="tiff" xlink:title="High resolution TIFF"/>
+        <graphic xlink:href="fig2-results.jpg" mimetype="image" mime-subtype="jpeg" xlink:title="Web preview JPEG"/>
+        <graphic xlink:href="fig2-results.pdf" mimetype="application" mime-subtype="pdf" xlink:title="Vector PDF"/>
+        <alt-text>Bar chart showing three groups with increasing values from left to right</alt-text>
+      </fig>
+
+      <!-- Figure 3: Figure with Supplementary Data Link -->
+      <fig id="fig3" fig-type="photograph" position="float">
+        <label>Figure 3</label>
+        <caption>
+          <title>Microscopy Images of Cell Cultures</title>
+          <p>Representative images from three independent experiments. Scale bar: 50 μm. Additional high-resolution images are available in the supplementary materials.</p>
+        </caption>
+        <graphic xlink:href="fig3-microscopy.tif" mimetype="image" mime-subtype="tiff"/>
+        <alt-text>Microscopy image showing cellular structures with dark nuclei and lighter cytoplasm</alt-text>
+        <attrib>Images courtesy of the Cellular Imaging Core Facility</attrib>
+        <permissions>
+          <copyright-statement>© 2024 Test University</copyright-statement>
+          <copyright-year>2024</copyright-year>
+          <license license-type="open-access">
+            <license-p>Images are available under CC-BY 4.0 license.</license-p>
+          </license>
+        </permissions>
+      </fig>
+    </sec>
+
+    <sec id="sec2">
+      <title>Methods with Inline Graphics</title>
+      <p>The experimental setup <inline-graphic xlink:href="setup-icon.png" mimetype="image" mime-subtype="png"/> utilized standard protocols. Data analysis was performed using custom software <inline-graphic xlink:href="software-logo.svg" mimetype="image" mime-subtype="svg+xml"/>.</p>
+    </sec>
+  </body>
+  <back>
+    <app-group>
+      <app id="app1">
+        <label>Supplementary Figure 1</label>
+        <caption>
+          <title>Additional Microscopy Data</title>
+          <p>Extended dataset showing time-course analysis.</p>
+        </caption>
+        <graphic xlink:href="suppfig1-timecourse.tif" mimetype="image" mime-subtype="tiff"/>
+      </app>
+    </app-group>
+  </back>
+</article>

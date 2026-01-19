@@ -1,0 +1,25 @@
+<?xml version="1.0"?>
+<!DOCTYPE suppressions PUBLIC
+        "-//Checkstyle//DTD SuppressionFilter Configuration 1.2//EN"
+        "https://checkstyle.org/dtds/suppressions_1_2.dtd">
+
+<suppressions>
+    <!-- 생성된 코드 제외 -->
+    <suppress checks=".*" files="[\\/]generated[\\/]"/>
+    <suppress checks=".*" files="[\\/]target[\\/]"/>
+    <suppress checks=".*" files="[\\/]build[\\/]"/>
+
+    <!-- 테스트 코드는 일부 규칙 완화 -->
+    <suppress checks="JavadocMethod" files="[\\/]test[\\/]"/>
+    <suppress checks="JavadocType" files="[\\/]test[\\/]"/>
+    <suppress checks="MagicNumber" files="[\\/]test[\\/]"/>
+
+    <!-- Model 클래스는 Javadoc 완화 (Lombok 사용) -->
+    <suppress checks="JavadocVariable" files="[\\/]model[\\/].*\.java"/>
+    <suppress checks="VisibilityModifier" files="[\\/]model[\\/].*\.java"/>
+
+    <!-- 예제 코드는 일부 규칙 완화 -->
+    <suppress checks="JavadocMethod" files="[\\/]examples[\\/]"/>
+    <suppress checks="JavadocType" files="[\\/]examples[\\/]"/>
+    <suppress checks="HideUtilityClassConstructor" files="[\\/]examples[\\/]"/>
+</suppressions>

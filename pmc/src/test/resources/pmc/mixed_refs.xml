@@ -1,0 +1,135 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE article PUBLIC "-//NLM//DTD JATS (Z39.96) Journal Archiving and Interchange DTD v1.4 20240930//EN" "JATS-archivearticle1-4.dtd">
+<article xmlns:xlink="http://www.w3.org/1999/xlink" article-type="research-article" dtd-version="1.4" xml:lang="en">
+  <front>
+    <article-meta>
+      <article-id pub-id-type="pmc">PMC3333333</article-id>
+      <article-id pub-id-type="doi">10.1234/test.2024.mixed</article-id>
+      <title-group>
+        <article-title>Article with Mixed-Citation References</article-title>
+      </title-group>
+      <contrib-group>
+        <contrib contrib-type="author">
+          <name>
+            <surname>Mixed</surname>
+            <given-names>Test</given-names>
+          </name>
+        </contrib>
+      </contrib-group>
+      <pub-date pub-type="epub">
+        <year>2024</year>
+      </pub-date>
+    </article-meta>
+  </front>
+  <body>
+    <sec>
+      <title>Introduction</title>
+      <p>This article demonstrates mixed-citation references, which combine structured markup with free text. See references <xref ref-type="bibr" rid="ref1">1</xref>, <xref ref-type="bibr" rid="ref2">2</xref>, and <xref ref-type="bibr" rid="ref3">3</xref>.</p>
+    </sec>
+  </body>
+  <back>
+    <ref-list>
+      <title>References</title>
+
+      <!-- Mixed Citation: Journal Article -->
+      <ref id="ref1">
+        <label>1</label>
+        <mixed-citation publication-type="journal">
+          <string-name><surname>Smith</surname> <given-names>JA</given-names></string-name>,
+          <string-name><surname>Doe</surname> <given-names>JB</given-names></string-name>.
+          <article-title>A comprehensive study on mixed citations</article-title>.
+          <source>J Mixed Ref</source>.
+          <year>2023</year>;<volume>15</volume>(<issue>3</issue>):<fpage>123</fpage>-<lpage>145</lpage>.
+          doi: <pub-id pub-id-type="doi">10.1234/jmr.2023.001</pub-id>.
+          PMID: <pub-id pub-id-type="pmid">12345678</pub-id>.
+        </mixed-citation>
+      </ref>
+
+      <!-- Mixed Citation: Book with inline markup -->
+      <ref id="ref2">
+        <label>2</label>
+        <mixed-citation publication-type="book">
+          <string-name><surname>Author</surname> <given-names>B</given-names></string-name>.
+          <source><italic>Complete Guide to Reference Formatting</italic></source>.
+          <edition>3rd ed</edition>.
+          <publisher-loc>New York</publisher-loc>:
+          <publisher-name>Academic Press</publisher-name>;
+          <year>2022</year>.
+          <page-count count="450"/> p.
+          ISBN: <isbn>978-1-234567-89-0</isbn>.
+        </mixed-citation>
+      </ref>
+
+      <!-- Mixed Citation: Conference Paper -->
+      <ref id="ref3">
+        <label>3</label>
+        <mixed-citation publication-type="confproc">
+          <string-name><surname>Presenter</surname> <given-names>C</given-names></string-name>.
+          <article-title>Advances in reference citation parsing</article-title>.
+          In: <conf-name>Proceedings of the International Conference on Digital Publishing</conf-name>;
+          <conf-date>2023 Jun 15-17</conf-date>;
+          <conf-loc>San Francisco, CA</conf-loc>.
+          <publisher-name>IEEE</publisher-name>;
+          <year>2023</year>. p. <fpage>234</fpage>-<lpage>240</lpage>.
+        </mixed-citation>
+      </ref>
+
+      <!-- Mixed Citation: Web Resource with complex inline content -->
+      <ref id="ref4">
+        <label>4</label>
+        <mixed-citation publication-type="webpage">
+          <collab>JATS Standing Committee</collab>.
+          <article-title>JATS: Journal Article Tag Suite</article-title> [Internet].
+          <publisher-loc>Bethesda (MD)</publisher-loc>:
+          <publisher-name>National Center for Biotechnology Information (US)</publisher-name>;
+          <year>2024</year> [cited <date-in-citation content-type="access-date" iso-8601-date="2024-01-15">2024 Jan 15</date-in-citation>].
+          Available from: <ext-link ext-link-type="uri" xlink:href="https://jats.nlm.nih.gov/">https://jats.nlm.nih.gov/</ext-link>
+        </mixed-citation>
+      </ref>
+
+      <!-- Mixed Citation: Journal Article with complex author list -->
+      <ref id="ref5">
+        <label>5</label>
+        <mixed-citation publication-type="journal">
+          <string-name><surname>First</surname> <given-names>A</given-names></string-name>,
+          <string-name><surname>Second</surname> <given-names>B</given-names></string-name>,
+          <string-name><surname>Third</surname> <given-names>C</given-names></string-name>,
+          <etal>et al</etal>.
+          <article-title>Complex author lists in mixed citations: a <bold>comprehensive</bold> analysis</article-title>.
+          <source>J Complex Ref</source> [Internet].
+          <year>2023</year> <month>Dec</month> <day>1</day> [cited <date-in-citation content-type="access-date" iso-8601-date="2024-01-10">2024 Jan 10</date-in-citation>];
+          <volume>10</volume>(<issue>12</issue>):<elocation-id>e12345</elocation-id>.
+          Available from: <ext-link ext-link-type="uri" xlink:href="https://example.com/article">https://example.com/article</ext-link>
+          doi: <pub-id pub-id-type="doi">10.1234/jcr.2023.e12345</pub-id>
+        </mixed-citation>
+      </ref>
+
+      <!-- Mixed Citation: Book Chapter -->
+      <ref id="ref6">
+        <label>6</label>
+        <mixed-citation publication-type="book">
+          <string-name><surname>Chapter</surname> <given-names>A</given-names></string-name>.
+          <chapter-title>Understanding mixed-citation format</chapter-title>.
+          In: <string-name><surname>Editor</surname> <given-names>E</given-names></string-name>, editor.
+          <source>Handbook of Reference Formatting</source>.
+          <publisher-loc>Boston</publisher-loc>:
+          <publisher-name>Technical Publishers</publisher-name>;
+          <year>2021</year>. p. <fpage>45</fpage>-<lpage>68</lpage>.
+        </mixed-citation>
+      </ref>
+
+      <!-- Mixed Citation: Thesis/Dissertation -->
+      <ref id="ref7">
+        <label>7</label>
+        <mixed-citation publication-type="thesis">
+          <string-name><surname>Student</surname> <given-names>PhD</given-names></string-name>.
+          <article-title>Advanced techniques in reference citation parsing</article-title> [dissertation].
+          <publisher-loc>Cambridge (MA)</publisher-loc>:
+          <publisher-name>Test University</publisher-name>;
+          <year>2022</year>.
+          <page-count count="250"/> p.
+        </mixed-citation>
+      </ref>
+    </ref-list>
+  </back>
+</article>

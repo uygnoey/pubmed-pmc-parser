@@ -1,0 +1,82 @@
+plugins {
+    `java-library`
+    jacoco
+    checkstyle
+    `maven-publish`
+    id("io.freefair.lombok")
+}
+
+repositories {
+    mavenCentral()
+}
+
+description = "PMC (PubMed Central) XML parser with JATS 1.4 support"
+
+dependencies {
+    // Common 모듈 의존성
+    api(project(":common"))
+
+    // Lombok
+    compileOnly("org.projectlombok:lombok:1.18.36")
+    annotationProcessor("org.projectlombok:lombok:1.18.36")
+    testCompileOnly("org.projectlombok:lombok:1.18.36")
+    testAnnotationProcessor("org.projectlombok:lombok:1.18.36")
+
+    // Logging
+    implementation("org.slf4j:slf4j-api:2.0.9")
+    runtimeOnly("ch.qos.logback:logback-classic:1.4.14")
+
+    // Testing
+    testImplementation("org.junit.jupiter:junit-jupiter:5.10.1")
+    testImplementation("org.assertj:assertj-core:3.24.2")
+    testRuntimeOnly("org.junit.platform:junit-platform-launcher")
+
+    // TAR.GZ 압축 파일 처리 (PMC는 tar.gz 아카이브 사용)
+    implementation("org.apache.commons:commons-compress:1.26.0")
+    implementation("commons-codec:commons-codec:1.15")
+}
+
+tasks.test {
+    useJUnitPlatform()
+}
+
+// JAR 설정
+tasks.jar {
+    archiveBaseName.set("pubmed-pmc-parser-pmc")
+    manifest {
+        attributes(
+            "Automatic-Module-Name" to "com.brillianttiger.bio.parser.pmc"
+        )
+    }
+}
+
+// Javadoc 추가 설정
+tasks.javadoc {
+    title = "PubMed & PMC Parser - PMC Module"
+    (options as StandardJavadocDocletOptions).apply {
+        overview = "src/main/java/overview.html"
+        group("PMC Models", "com.brillianttiger.bio.parser.pmc.model")
+        group("PMC Parsers", "com.brillianttiger.bio.parser.pmc.parser")
+        group("PMC Validation", "com.brillianttiger.bio.parser.pmc.validation")
+    }
+}
+
+// Fat JAR 생성 (PMC 단독 실행 가능)
+tasks.register<Jar>("fatJar") {
+    archiveClassifier.set("all")
+    archiveBaseName.set("pmc-parser")
+    from(sourceSets.main.get().output)
+    dependsOn(configurations.runtimeClasspath)
+    from({
+        configurations.runtimeClasspath.get()
+            .filter { it.name.endsWith("jar") }
+            .map { zipTree(it) }
+    })
+    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+
+    manifest {
+        attributes(
+            "Main-Class" to "com.brillianttiger.bio.parser.pmc.PmcXmlParser"
+        )
+    }
+}

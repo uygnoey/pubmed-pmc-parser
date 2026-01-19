@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE PubmedArticleSet PUBLIC "-//NLM//DTD PubMedArticle, 1st January 2024//EN" "https://dtd.nlm.nih.gov/ncbi/pubmed/out/pubmed_240101.dtd">
+<PubmedArticleSet>
+  <!-- Regular articles that exist -->
+  <PubmedArticle>
+    <MedlineCitation Status="MEDLINE" Owner="NLM">
+      <PMID Version="1">10000001</PMID>
+      <Article PubModel="Print">
+        <Journal>
+          <JournalIssue CitedMedium="Print">
+            <Volume>5</Volume>
+            <PubDate>
+              <Year>2024</Year>
+            </PubDate>
+          </JournalIssue>
+          <Title>Test Journal with Deletions</Title>
+        </Journal>
+        <ArticleTitle>Active Article 1</ArticleTitle>
+        <Pagination>
+          <MedlinePgn>10-20</MedlinePgn>
+        </Pagination>
+        <Language>eng</Language>
+        <PublicationTypeList>
+          <PublicationType UI="D016428">Journal Article</PublicationType>
+        </PublicationTypeList>
+      </Article>
+      <MedlineJournalInfo>
+        <Country>United States</Country>
+        <MedlineTA>Test J Del</MedlineTA>
+        <NlmUniqueID>100000001</NlmUniqueID>
+      </MedlineJournalInfo>
+    </MedlineCitation>
+  </PubmedArticle>
+
+  <PubmedArticle>
+    <MedlineCitation Status="MEDLINE" Owner="NLM">
+      <PMID Version="1">10000002</PMID>
+      <Article PubModel="Print">
+        <Journal>
+          <JournalIssue CitedMedium="Print">
+            <Volume>5</Volume>
+            <PubDate>
+              <Year>2024</Year>
+            </PubDate>
+          </JournalIssue>
+          <Title>Test Journal with Deletions</Title>
+        </Journal>
+        <ArticleTitle>Active Article 2</ArticleTitle>
+        <Pagination>
+          <MedlinePgn>21-30</MedlinePgn>
+        </Pagination>
+        <Language>eng</Language>
+        <PublicationTypeList>
+          <PublicationType UI="D016428">Journal Article</PublicationType>
+        </PublicationTypeList>
+      </Article>
+      <MedlineJournalInfo>
+        <Country>United States</Country>
+        <MedlineTA>Test J Del</MedlineTA>
+        <NlmUniqueID>100000001</NlmUniqueID>
+      </MedlineJournalInfo>
+    </MedlineCitation>
+  </PubmedArticle>
+
+  <!-- DeleteCitation element - FTP update files only -->
+  <DeleteCitation>
+    <PMID Version="1">90000001</PMID>
+    <PMID Version="1">90000002</PMID>
+    <PMID Version="1">90000003</PMID>
+    <PMID Version="2">90000004</PMID>
+    <PMID Version="1">90000005</PMID>
+  </DeleteCitation>
+</PubmedArticleSet>

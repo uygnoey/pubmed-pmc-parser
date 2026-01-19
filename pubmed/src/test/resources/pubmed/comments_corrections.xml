@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE PubmedArticleSet PUBLIC "-//NLM//DTD PubMedArticle, 1st January 2024//EN" "https://dtd.nlm.nih.gov/ncbi/pubmed/out/pubmed_240101.dtd">
+<PubmedArticleSet>
+  <!-- Article with CommentsCorrectionsList including Retraction and Erratum -->
+  <PubmedArticle>
+    <MedlineCitation Status="MEDLINE" Owner="NLM">
+      <PMID Version="1">99999999</PMID>
+      <Article PubModel="Print">
+        <Journal>
+          <JournalIssue CitedMedium="Print">
+            <Volume>30</Volume>
+            <Issue>12</Issue>
+            <PubDate>
+              <Year>2024</Year>
+              <Month>Jun</Month>
+            </PubDate>
+          </JournalIssue>
+          <Title>Journal of Corrections</Title>
+        </Journal>
+        <ArticleTitle>Article with Various Comment and Correction Types</ArticleTitle>
+        <Pagination>
+          <MedlinePgn>500-510</MedlinePgn>
+        </Pagination>
+        <Language>eng</Language>
+        <PublicationTypeList>
+          <PublicationType UI="D016428">Journal Article</PublicationType>
+        </PublicationTypeList>
+      </Article>
+      <MedlineJournalInfo>
+        <Country>United States</Country>
+        <MedlineTA>J Correct</MedlineTA>
+        <NlmUniqueID>999999999</NlmUniqueID>
+      </MedlineJournalInfo>
+      <CommentsCorrectionsList>
+        <CommentsCorrections RefType="ErratumIn">
+          <RefSource>J Correct. 2024 Jul;30(13):600</RefSource>
+          <PMID Version="1">88888888</PMID>
+          <Note>Correction of author name: Smith J [corrected to Smith JA].</Note>
+        </CommentsCorrections>
+        <CommentsCorrections RefType="CommentIn">
+          <RefSource>J Correct. 2024 Aug;30(14):650-651</RefSource>
+          <PMID Version="1">77777777</PMID>
+        </CommentsCorrections>
+        <CommentsCorrections RefType="RetractionIn">
+          <RefSource>J Correct. 2024 Sep;30(15):700</RefSource>
+          <PMID Version="1">66666666</PMID>
+          <Note>Retracted due to data integrity concerns.</Note>
+        </CommentsCorrections>
+        <CommentsCorrections RefType="RepublishedFrom">
+          <RefSource>Original J. 2023 Dec;25(10):400-410</RefSource>
+          <PMID Version="1">55555550</PMID>
+        </CommentsCorrections>
+        <CommentsCorrections RefType="ExpressionOfConcernIn">
+          <RefSource>J Correct. 2024 Oct;30(16):750</RefSource>
+          <PMID Version="1">44444444</PMID>
+          <Note>Expression of concern regarding methodology.</Note>
+        </CommentsCorrections>
+        <CommentsCorrections RefType="UpdateIn">
+          <RefSource>J Correct. 2024 Nov;30(17):800-805</RefSource>
+          <PMID Version="1">33333333</PMID>
+        </CommentsCorrections>
+        <CommentsCorrections RefType="Cites">
+          <RefSource>Reference J. 2020 Jan;15(1):100-110</RefSource>
+          <PMID Version="1">11111110</PMID>
+        </CommentsCorrections>
+      </CommentsCorrectionsList>
+    </MedlineCitation>
+  </PubmedArticle>
+</PubmedArticleSet>

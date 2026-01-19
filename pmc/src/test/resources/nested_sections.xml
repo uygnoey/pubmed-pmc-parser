@@ -1,0 +1,133 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE article PUBLIC "-//NLM//DTD JATS (Z39.96) Journal Archiving and Interchange DTD v1.4 20240930//EN" "JATS-archivearticle1-4.dtd">
+<article xmlns:xlink="http://www.w3.org/1999/xlink" article-type="research-article" dtd-version="1.4" xml:lang="en">
+  <front>
+    <article-meta>
+      <article-id pub-id-type="pmc">PMC1111111</article-id>
+      <article-id pub-id-type="doi">10.1234/test.2024.nested</article-id>
+      <title-group>
+        <article-title>Article with Deep Nested Sections for Recursive Parser Testing</article-title>
+      </title-group>
+      <contrib-group>
+        <contrib contrib-type="author">
+          <name>
+            <surname>Nested</surname>
+            <given-names>Test</given-names>
+          </name>
+        </contrib>
+      </contrib-group>
+      <pub-date pub-type="epub">
+        <year>2024</year>
+      </pub-date>
+    </article-meta>
+  </front>
+  <body>
+    <!-- Level 1 Section -->
+    <sec id="sec1">
+      <label>1</label>
+      <title>Level 1: Introduction</title>
+      <p>This is the first level section. It demonstrates recursive section parsing.</p>
+
+      <!-- Level 2 Section -->
+      <sec id="sec1-1">
+        <label>1.1</label>
+        <title>Level 2: Background</title>
+        <p>This is a second level nested section under Introduction.</p>
+
+        <!-- Level 3 Section -->
+        <sec id="sec1-1-1">
+          <label>1.1.1</label>
+          <title>Level 3: Historical Context</title>
+          <p>This is a third level nested section. JATS supports deep nesting.</p>
+
+          <!-- Level 4 Section -->
+          <sec id="sec1-1-1-1">
+            <label>1.1.1.1</label>
+            <title>Level 4: Early Studies</title>
+            <p>Fourth level of nesting. Parser must handle recursive structures correctly.</p>
+
+            <!-- Level 5 Section -->
+            <sec id="sec1-1-1-1-1">
+              <label>1.1.1.1.1</label>
+              <title>Level 5: Foundational Work</title>
+              <p>Fifth level of nesting. This is the deepest level in this test.</p>
+            </sec>
+
+            <sec id="sec1-1-1-1-2">
+              <label>1.1.1.1.2</label>
+              <title>Level 5: Pioneering Research</title>
+              <p>Another fifth level section showing multiple sections at same depth.</p>
+            </sec>
+          </sec>
+
+          <sec id="sec1-1-1-2">
+            <label>1.1.1.2</label>
+            <title>Level 4: Recent Developments</title>
+            <p>Another fourth level section with sibling relationship.</p>
+          </sec>
+        </sec>
+
+        <sec id="sec1-1-2">
+          <label>1.1.2</label>
+          <title>Level 3: Current State</title>
+          <p>Another third level section showing sibling sections work correctly.</p>
+        </sec>
+      </sec>
+
+      <sec id="sec1-2">
+        <label>1.2</label>
+        <title>Level 2: Motivation</title>
+        <p>Second major subsection of Introduction.</p>
+
+        <sec id="sec1-2-1">
+          <label>1.2.1</label>
+          <title>Level 3: Research Gap</title>
+          <p>Identifying the research gap that this study addresses.</p>
+        </sec>
+      </sec>
+    </sec>
+
+    <!-- Another Level 1 Section -->
+    <sec id="sec2">
+      <label>2</label>
+      <title>Level 1: Methods</title>
+      <p>Another top-level section with its own nested structure.</p>
+
+      <sec id="sec2-1">
+        <label>2.1</label>
+        <title>Level 2: Study Design</title>
+        <p>Methods subsection with nested content.</p>
+
+        <sec id="sec2-1-1">
+          <label>2.1.1</label>
+          <title>Level 3: Participants</title>
+          <p>Details about study participants.</p>
+
+          <sec id="sec2-1-1-1">
+            <label>2.1.1.1</label>
+            <title>Level 4: Inclusion Criteria</title>
+            <p>Specific inclusion criteria for participants.</p>
+          </sec>
+
+          <sec id="sec2-1-1-2">
+            <label>2.1.1.2</label>
+            <title>Level 4: Exclusion Criteria</title>
+            <p>Specific exclusion criteria for participants.</p>
+          </sec>
+        </sec>
+      </sec>
+
+      <sec id="sec2-2">
+        <label>2.2</label>
+        <title>Level 2: Data Collection</title>
+        <p>Information about data collection procedures.</p>
+      </sec>
+    </sec>
+
+    <sec id="sec3">
+      <label>3</label>
+      <title>Level 1: Results</title>
+      <p>Results section demonstrating complete recursive parsing validation.</p>
+    </sec>
+  </body>
+</article>

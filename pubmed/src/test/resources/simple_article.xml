@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE PubmedArticleSet PUBLIC "-//NLM//DTD PubMedArticle, 1st January 2024//EN" "https://dtd.nlm.nih.gov/ncbi/pubmed/out/pubmed_240101.dtd">
+<PubmedArticleSet>
+  <PubmedArticle>
+    <MedlineCitation Status="MEDLINE" Owner="NLM">
+      <PMID Version="1">12345678</PMID>
+      <Article PubModel="Print">
+        <Journal>
+          <JournalIssue CitedMedium="Print">
+            <Volume>10</Volume>
+            <Issue>5</Issue>
+            <PubDate>
+              <Year>2024</Year>
+              <Month>01</Month>
+            </PubDate>
+          </JournalIssue>
+          <Title>Test Journal</Title>
+        </Journal>
+        <ArticleTitle>Simple Test Article for Parser Validation</ArticleTitle>
+        <Pagination>
+          <StartPage>100</StartPage>
+          <EndPage>110</EndPage>
+          <MedlinePgn>100-110</MedlinePgn>
+        </Pagination>
+        <Language>eng</Language>
+        <PublicationTypeList>
+          <PublicationType UI="D016428">Journal Article</PublicationType>
+        </PublicationTypeList>
+      </Article>
+      <MedlineJournalInfo>
+        <Country>United States</Country>
+        <MedlineTA>Test J</MedlineTA>
+        <NlmUniqueID>123456789</NlmUniqueID>
+      </MedlineJournalInfo>
+    </MedlineCitation>
+  </PubmedArticle>
+</PubmedArticleSet>

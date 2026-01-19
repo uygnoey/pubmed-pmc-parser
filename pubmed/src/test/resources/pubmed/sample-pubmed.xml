@@ -1,0 +1,308 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE PubmedArticleSet PUBLIC "-//NLM//DTD PubMedArticle, 1st January 2023//EN" "https://dtd.nlm.nih.gov/ncbi/pubmed/out/pubmed_230101.dtd">
+<PubmedArticleSet>
+    <!-- Complete PubmedArticle with all elements -->
+    <PubmedArticle>
+        <MedlineCitation Status="MEDLINE" Owner="NLM" IndexingMethod="Automated">
+            <PMID Version="1">12345678</PMID>
+            <DateCompleted>
+                <Year>2024</Year>
+                <Month>01</Month>
+                <Day>15</Day>
+            </DateCompleted>
+            <DateRevised>
+                <Year>2024</Year>
+                <Month>03</Month>
+                <Day>20</Day>
+            </DateRevised>
+            <Article PubModel="Print-Electronic">
+                <Journal>
+                    <ISSN IssnType="Electronic">1234-5678</ISSN>
+                    <JournalIssue CitedMedium="Internet">
+                        <Volume>123</Volume>
+                        <Issue>4</Issue>
+                        <PubDate>
+                            <Year>2024</Year>
+                            <Month>Jan</Month>
+                        </PubDate>
+                    </JournalIssue>
+                    <Title>Journal of Biomedical Research</Title>
+                    <ISOAbbreviation>J Biomed Res</ISOAbbreviation>
+                </Journal>
+                <ArticleTitle>A Comprehensive Study of XML Parsing in Biomedical Literature Mining</ArticleTitle>
+                <Pagination>
+                    <StartPage>100</StartPage>
+                    <EndPage>125</EndPage>
+                    <MedlinePgn>100-125</MedlinePgn>
+                </Pagination>
+                <ELocationID EIdType="doi" ValidYN="Y">10.1234/jbr.2024.001</ELocationID>
+                <ELocationID EIdType="pii" ValidYN="Y">S1234-5678(24)00001-X</ELocationID>
+                <Abstract>
+                    <AbstractText Label="BACKGROUND" NlmCategory="BACKGROUND">This study investigates XML parsing techniques for biomedical literature.</AbstractText>
+                    <AbstractText Label="METHODS" NlmCategory="METHODS">We developed a StAX-based streaming parser with XXE prevention.</AbstractText>
+                    <AbstractText Label="RESULTS" NlmCategory="RESULTS">The parser achieved 95% accuracy with constant memory usage.</AbstractText>
+                    <AbstractText Label="CONCLUSIONS" NlmCategory="CONCLUSIONS">Streaming parsers are essential for large-scale biomedical text mining.</AbstractText>
+                    <CopyrightInformation>Copyright © 2024 National Library of Medicine.</CopyrightInformation>
+                </Abstract>
+                <AuthorList CompleteYN="Y">
+                    <Author ValidYN="Y">
+                        <LastName>Smith</LastName>
+                        <ForeName>John</ForeName>
+                        <Initials>J</Initials>
+                        <Suffix>Jr</Suffix>
+                        <Identifier Source="ORCID">0000-0001-2345-6789</Identifier>
+                        <AffiliationInfo>
+                            <Affiliation>Department of Computer Science, University of Example, USA.</Affiliation>
+                            <Identifier Source="ROR">https://ror.org/01234abcd</Identifier>
+                        </AffiliationInfo>
+                    </Author>
+                    <Author ValidYN="Y">
+                        <LastName>Johnson</LastName>
+                        <ForeName>Mary</ForeName>
+                        <Initials>M</Initials>
+                        <AffiliationInfo>
+                            <Affiliation>National Institute of Health, USA.</Affiliation>
+                        </AffiliationInfo>
+                    </Author>
+                    <Author ValidYN="Y">
+                        <CollectiveName>Biomedical Informatics Consortium</CollectiveName>
+                    </Author>
+                </AuthorList>
+                <Language>eng</Language>
+                <PublicationTypeList>
+                    <PublicationType UI="D016428">Journal Article</PublicationType>
+                    <PublicationType UI="D013485">Research Support, Non-U.S. Gov't</PublicationType>
+                </PublicationTypeList>
+                <ArticleDate DateType="Electronic">
+                    <Year>2023</Year>
+                    <Month>12</Month>
+                    <Day>15</Day>
+                </ArticleDate>
+            </Article>
+            <MedlineJournalInfo>
+                <Country>United States</Country>
+                <MedlineTA>J Biomed Res</MedlineTA>
+                <NlmUniqueID>101234567</NlmUniqueID>
+                <ISSNLinking>0000-0000</ISSNLinking>
+            </MedlineJournalInfo>
+            <ChemicalList>
+                <Chemical>
+                    <RegistryNumber>50-99-7</RegistryNumber>
+                    <NameOfSubstance UI="D005947">Glucose</NameOfSubstance>
+                </Chemical>
+                <Chemical>
+                    <RegistryNumber>0</RegistryNumber>
+                    <NameOfSubstance UI="D001426">Bacterial Proteins</NameOfSubstance>
+                </Chemical>
+            </ChemicalList>
+            <SupplMeshList>
+                <SupplMeshName Type="Disease" UI="C123456">Example Disease</SupplMeshName>
+            </SupplMeshList>
+            <CitationSubset>IM</CitationSubset>
+            <CommentsCorrectionsList>
+                <CommentsCorrections RefType="CommentIn">
+                    <RefSource>J Biomed Res. 2024 Feb;124(2):200-201</RefSource>
+                    <PMID Version="1">87654321</PMID>
+                </CommentsCorrections>
+                <CommentsCorrections RefType="ErratumIn">
+                    <RefSource>J Biomed Res. 2024 Mar;124(3):300</RefSource>
+                    <PMID Version="1">11111111</PMID>
+                </CommentsCorrections>
+            </CommentsCorrectionsList>
+            <GeneSymbolList>
+                <GeneSymbol>TP53</GeneSymbol>
+                <GeneSymbol>BRCA1</GeneSymbol>
+            </GeneSymbolList>
+            <MeshHeadingList>
+                <MeshHeading>
+                    <DescriptorName UI="D000818" MajorTopicYN="N">Animals</DescriptorName>
+                </MeshHeading>
+                <MeshHeading>
+                    <DescriptorName UI="D003920" MajorTopicYN="N">Diabetes Mellitus</DescriptorName>
+                    <QualifierName UI="Q000235" MajorTopicYN="Y">genetics</QualifierName>
+                    <QualifierName UI="Q000628" MajorTopicYN="N">therapy</QualifierName>
+                </MeshHeading>
+                <MeshHeading>
+                    <DescriptorName UI="D006801" MajorTopicYN="N">Humans</DescriptorName>
+                </MeshHeading>
+            </MeshHeadingList>
+            <NumberOfReferences>25</NumberOfReferences>
+            <PersonalNameSubjectList>
+                <PersonalNameSubject>
+                    <LastName>Darwin</LastName>
+                    <ForeName>Charles</ForeName>
+                    <Initials>C</Initials>
+                    <Suffix>FRS</Suffix>
+                </PersonalNameSubject>
+            </PersonalNameSubjectList>
+            <OtherID Source="NASA">NASA-12345</OtherID>
+            <OtherAbstract Type="Publisher" Language="fre">
+                <AbstractText>Résumé en français de l'étude.</AbstractText>
+                <CopyrightInformation>Droits d'auteur 2024.</CopyrightInformation>
+            </OtherAbstract>
+            <KeywordList Owner="NOTNLM">
+                <Keyword MajorTopicYN="N">XML parsing</Keyword>
+                <Keyword MajorTopicYN="Y">biomedical informatics</Keyword>
+                <Keyword MajorTopicYN="N">text mining</Keyword>
+            </KeywordList>
+            <CoiStatement>The authors declare no conflict of interest.</CoiStatement>
+            <SpaceFlightMission>STS-95</SpaceFlightMission>
+            <InvestigatorList>
+                <Investigator ValidYN="Y">
+                    <LastName>Brown</LastName>
+                    <ForeName>Robert</ForeName>
+                    <Initials>R</Initials>
+                    <AffiliationInfo>
+                        <Affiliation>Research Institute Example.</Affiliation>
+                    </AffiliationInfo>
+                </Investigator>
+            </InvestigatorList>
+            <GeneralNote Owner="NLM">This is a general note about the citation.</GeneralNote>
+        </MedlineCitation>
+        <PubmedData>
+            <History>
+                <PubMedPubDate PubStatus="received">
+                    <Year>2023</Year>
+                    <Month>10</Month>
+                    <Day>01</Day>
+                </PubMedPubDate>
+                <PubMedPubDate PubStatus="revised">
+                    <Year>2023</Year>
+                    <Month>11</Month>
+                    <Day>15</Day>
+                </PubMedPubDate>
+                <PubMedPubDate PubStatus="accepted">
+                    <Year>2023</Year>
+                    <Month>12</Month>
+                    <Day>01</Day>
+                </PubMedPubDate>
+                <PubMedPubDate PubStatus="pubmed">
+                    <Year>2023</Year>
+                    <Month>12</Month>
+                    <Day>15</Day>
+                    <Hour>10</Hour>
+                    <Minute>0</Minute>
+                </PubMedPubDate>
+            </History>
+            <PublicationStatus>ppublish</PublicationStatus>
+            <ArticleIdList>
+                <ArticleId IdType="pubmed">12345678</ArticleId>
+                <ArticleId IdType="doi">10.1234/jbr.2024.001</ArticleId>
+                <ArticleId IdType="pii">S1234-5678(24)00001-X</ArticleId>
+                <ArticleId IdType="pmc">PMC1234567</ArticleId>
+            </ArticleIdList>
+            <ObjectList>
+                <Object Type="keyword">
+                    <Param Name="category">Methods</Param>
+                    <Param Name="value">StAX Parser</Param>
+                </Object>
+            </ObjectList>
+            <ReferenceList>
+                <Title>References</Title>
+                <Reference>
+                    <Citation>Smith J, et al. J Biomed Res. 2023;122(1):1-10.</Citation>
+                    <ArticleIdList>
+                        <ArticleId IdType="pubmed">11111111</ArticleId>
+                    </ArticleIdList>
+                </Reference>
+                <Reference>
+                    <Citation>Johnson M. XML Parsing Techniques. 2022.</Citation>
+                    <ArticleIdList>
+                        <ArticleId IdType="doi">10.1234/example.2022.001</ArticleId>
+                    </ArticleIdList>
+                </Reference>
+                <ReferenceList>
+                    <Title>Nested References</Title>
+                    <Reference>
+                        <Citation>Nested reference example.</Citation>
+                    </Reference>
+                </ReferenceList>
+            </ReferenceList>
+        </PubmedData>
+    </PubmedArticle>
+
+    <!-- PubmedBookArticle -->
+    <PubmedBookArticle>
+        <BookDocument>
+            <PMID Version="1">99999999</PMID>
+            <ArticleIdList>
+                <ArticleId IdType="bookaccession">NBK123456</ArticleId>
+            </ArticleIdList>
+            <Book>
+                <Publisher>
+                    <PublisherName>National Center for Biotechnology Information (US)</PublisherName>
+                    <PublisherLocation>Bethesda (MD)</PublisherLocation>
+                </Publisher>
+                <BookTitle book="example">Example Medical Book</BookTitle>
+                <PubDate>
+                    <Year>2024</Year>
+                </PubDate>
+                <AuthorList Type="authors">
+                    <Author>
+                        <LastName>Williams</LastName>
+                        <ForeName>David</ForeName>
+                        <Initials>D</Initials>
+                    </Author>
+                    <Author>
+                        <CollectiveName>Medical Book Consortium</CollectiveName>
+                    </Author>
+                </AuthorList>
+                <Volume>1</Volume>
+                <Edition>2nd</Edition>
+                <CollectionTitle book="series">Medical Reference Series</CollectionTitle>
+                <Isbn>978-1-234-56789-0</Isbn>
+                <ELocationID EIdType="bookaccession" ValidYN="Y">NBK123456</ELocationID>
+                <Medium>Internet</Medium>
+            </Book>
+            <LocationLabel Type="chapter">Chapter 5</LocationLabel>
+            <ArticleTitle>XML Standards in Medical Publishing</ArticleTitle>
+            <Language>eng</Language>
+            <AuthorList Type="authors">
+                <Author>
+                    <LastName>Anderson</LastName>
+                    <ForeName>Sarah</ForeName>
+                    <Initials>S</Initials>
+                </Author>
+            </AuthorList>
+            <PublicationType UI="D000072638">Chapter</PublicationType>
+            <Abstract>
+                <AbstractText>This chapter discusses XML standards used in medical publishing.</AbstractText>
+                <CopyrightInformation>Copyright 2024, NCBI.</CopyrightInformation>
+            </Abstract>
+            <Sections>
+                <Section>
+                    <LocationLabel Type="section">Introduction</LocationLabel>
+                    <Title>Introduction to XML Standards</Title>
+                </Section>
+                <Section>
+                    <LocationLabel Type="section">Methods</LocationLabel>
+                    <Title>XML Parsing Methods</Title>
+                </Section>
+            </Sections>
+            <KeywordList Owner="NLM">
+                <Keyword MajorTopicYN="N">XML</Keyword>
+                <Keyword MajorTopicYN="Y">medical publishing</Keyword>
+            </KeywordList>
+        </BookDocument>
+        <PubmedBookData>
+            <History>
+                <PubMedPubDate PubStatus="pubmed">
+                    <Year>2024</Year>
+                    <Month>01</Month>
+                    <Day>01</Day>
+                </PubMedPubDate>
+            </History>
+            <PublicationStatus>epublish</PublicationStatus>
+            <ArticleIdList>
+                <ArticleId IdType="bookaccession">NBK123456</ArticleId>
+            </ArticleIdList>
+        </PubmedBookData>
+    </PubmedBookArticle>
+
+    <!-- DeleteCitation -->
+    <DeleteCitation>
+        <PMID Version="1">77777777</PMID>
+        <PMID Version="1">88888888</PMID>
+        <PMID Version="1">99999998</PMID>
+    </DeleteCitation>
+</PubmedArticleSet>

@@ -1,0 +1,129 @@
+package com.brillianttiger.bio.parser.pmc.model;
+
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+/**
+ * ConfSponsor / 학술대회 후원 기관
+ *
+ * DTD: <!ELEMENT conf-sponsor (#PCDATA | %conf-sponsor-elements;)*>
+ * DTD: <!ATTLIST conf-sponsor
+ *          content-type CDATA #IMPLIED
+ *          specific-use CDATA #IMPLIED
+ *          id ID #IMPLIED
+ *          xml:base CDATA #IMPLIED
+ *          xml:lang CDATA #IMPLIED
+ *          lang-focus CDATA #IMPLIED
+ *          lang-focus-custom CDATA #IMPLIED
+ *          lang-group CDATA #IMPLIED
+ *          lang-source CDATA #IMPLIED
+ *          lang-source-custom CDATA #IMPLIED
+ *          lang-translate (yes|no) #IMPLIED
+ *          lang-variant CDATA #IMPLIED
+ *          lang-variant-custom CDATA #IMPLIED
+ *      >
+ *
+ * KR: 학술대회의 후원 기관 하나
+ * EN: One sponsor organization of the conference
+ *
+ * Usage: 여러 조직이 후원한 경우 각각 별도의 <conf-sponsor> 요소 사용
+ * Container: <conference>, <element-citation>, <mixed-citation>, <product>, <related-article>, <related-object>
+ *
+ * Example:
+ * <conference>
+ *   <conf-name>23rd International Summer School of Brain Research</conf-name>
+ *   <conf-date iso-8601-date="2003-08-25">2003 Aug 25-29</conf-date>
+ *   <conf-sponsor>Royal Netherlands Academy of Arts and Sciences</conf-sponsor>
+ * </conference>
+ */
+@Data
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
+public class ConfSponsor {
+    /**
+     * KR: 콘텐츠 유형
+     * EN: Content type
+     */
+    private String contentType;
+
+    /**
+     * KR: 특정 용도
+     * EN: Specific use
+     */
+    private String specificUse;
+
+    /**
+     * KR: ID 속성
+     * EN: ID attribute
+     */
+    private String id;
+
+    /**
+     * KR: XML base
+     * EN: XML base
+     */
+    private String xmlBase;
+
+    /**
+     * KR: XML 언어
+     * EN: XML language
+     */
+    private String xmlLang;
+
+    /**
+     * KR: 언어 초점
+     * EN: Language focus
+     */
+    private String langFocus;
+
+    /**
+     * KR: 사용자 정의 언어 초점
+     * EN: Custom language focus
+     */
+    private String langFocusCustom;
+
+    /**
+     * KR: 언어 그룹
+     * EN: Language group
+     */
+    private String langGroup;
+
+    /**
+     * KR: 언어 출처
+     * EN: Language source
+     */
+    private String langSource;
+
+    /**
+     * KR: 사용자 정의 언어 출처
+     * EN: Custom language source
+     */
+    private String langSourceCustom;
+
+    /**
+     * KR: 번역 여부 (yes, no)
+     * EN: Language translate (yes, no)
+     */
+    private String langTranslate;
+
+    /**
+     * KR: 언어 변형
+     * EN: Language variant
+     */
+    private String langVariant;
+
+    /**
+     * KR: 사용자 정의 언어 변형
+     * EN: Custom language variant
+     */
+    private String langVariantCustom;
+
+    /**
+     * KR: 후원 기관명
+     * EN: Sponsor organization name
+     */
+    private String value;
+}

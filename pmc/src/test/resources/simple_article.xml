@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE article PUBLIC "-//NLM//DTD JATS (Z39.96) Journal Archiving and Interchange DTD v1.4 20240930//EN" "JATS-archivearticle1-4.dtd">
+<article xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" article-type="research-article" dtd-version="1.4" xml:lang="en">
+  <front>
+    <article-meta>
+      <article-id pub-id-type="pmc">PMC1234567</article-id>
+      <article-id pub-id-type="pmid">12345678</article-id>
+      <article-id pub-id-type="doi">10.1234/test.2024.simple</article-id>
+      <title-group>
+        <article-title>Simple JATS Article for Parser Testing</article-title>
+      </title-group>
+      <contrib-group>
+        <contrib contrib-type="author">
+          <name>
+            <surname>Smith</surname>
+            <given-names>John</given-names>
+          </name>
+        </contrib>
+      </contrib-group>
+      <pub-date pub-type="epub">
+        <year>2024</year>
+        <month>01</month>
+        <day>15</day>
+      </pub-date>
+    </article-meta>
+  </front>
+  <body>
+    <sec>
+      <title>Introduction</title>
+      <p>This is a simple test article.</p>
+    </sec>
+  </body>
+</article>

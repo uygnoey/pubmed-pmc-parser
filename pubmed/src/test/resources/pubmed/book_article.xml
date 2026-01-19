@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE PubmedArticleSet PUBLIC "-//NLM//DTD PubMedArticle, 1st January 2024//EN" "https://dtd.nlm.nih.gov/ncbi/pubmed/out/pubmed_240101.dtd">
+<PubmedArticleSet>
+  <PubmedBookArticle>
+    <BookDocument>
+      <PMID Version="1">20000001</PMID>
+      <ArticleIdList>
+        <ArticleId IdType="bookaccession">NBK123456</ArticleId>
+      </ArticleIdList>
+      <Book>
+        <Publisher>
+          <PublisherName>Test Publisher</PublisherName>
+          <PublisherLocation>Test City</PublisherLocation>
+        </Publisher>
+        <BookTitle book="testbook">Test Medical Book</BookTitle>
+        <PubDate>
+          <Year>2024</Year>
+        </PubDate>
+        <AuthorList Type="authors">
+          <Author>
+            <LastName>BookAuthor</LastName>
+            <ForeName>Test</ForeName>
+            <Initials>T</Initials>
+          </Author>
+          <Author>
+            <CollectiveName>Medical Book Collaboration</CollectiveName>
+          </Author>
+        </AuthorList>
+        <Volume>1</Volume>
+        <Edition>3rd</Edition>
+        <CollectionTitle>Medical Reference Collection</CollectionTitle>
+        <Isbn>978-1-234567-89-0</Isbn>
+      </Book>
+      <Language>eng</Language>
+      <ArticleTitle book="testbook" part="chapter5">Chapter 5: Test Medical Procedures</ArticleTitle>
+      <Abstract>
+        <AbstractText>This chapter discusses various test medical procedures for educational purposes. It includes detailed descriptions and step-by-step guidance.</AbstractText>
+      </Abstract>
+      <Sections>
+        <Section>
+          <SectionTitle book="testbook" part="chapter5" sec="5.1">Introduction to Test Procedures</SectionTitle>
+        </Section>
+        <Section>
+          <SectionTitle book="testbook" part="chapter5" sec="5.2">Advanced Techniques</SectionTitle>
+        </Section>
+        <Section>
+          <SectionTitle book="testbook" part="chapter5" sec="5.3">Safety Considerations</SectionTitle>
+        </Section>
+      </Sections>
+      <KeywordList Owner="NLM">
+        <Keyword MajorTopicYN="N">medical procedures</Keyword>
+        <Keyword MajorTopicYN="N">test methodology</Keyword>
+        <Keyword MajorTopicYN="Y">clinical techniques</Keyword>
+      </KeywordList>
+    </BookDocument>
+    <PubmedBookData>
+      <History>
+        <PubMedPubDate PubStatus="pubmed">
+          <Year>2024</Year>
+          <Month>1</Month>
+          <Day>15</Day>
+        </PubMedPubDate>
+      </History>
+      <PublicationStatus>ppublish</PublicationStatus>
+      <ArticleIdList>
+        <ArticleId IdType="bookaccession">NBK123456</ArticleId>
+      </ArticleIdList>
+    </PubmedBookData>
+  </PubmedBookArticle>
+</PubmedArticleSet>

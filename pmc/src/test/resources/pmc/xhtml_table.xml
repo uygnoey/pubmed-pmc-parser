@@ -1,0 +1,205 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE article PUBLIC "-//NLM//DTD JATS (Z39.96) Journal Archiving and Interchange DTD v1.4 20240930//EN" "JATS-archivearticle1-4.dtd">
+<article xmlns:xlink="http://www.w3.org/1999/xlink" article-type="research-article" dtd-version="1.4" xml:lang="en">
+  <front>
+    <article-meta>
+      <article-id pub-id-type="pmc">PMC5555555</article-id>
+      <article-id pub-id-type="doi">10.1234/test.2024.table</article-id>
+      <title-group>
+        <article-title>Article with XHTML Tables for Parser Testing</article-title>
+      </title-group>
+      <contrib-group>
+        <contrib contrib-type="author">
+          <name>
+            <surname>Table</surname>
+            <given-names>Test</given-names>
+          </name>
+        </contrib>
+      </contrib-group>
+      <pub-date pub-type="epub">
+        <year>2024</year>
+      </pub-date>
+    </article-meta>
+  </front>
+  <body>
+    <sec id="sec1">
+      <title>Results with Tables</title>
+      <p>This section contains various table examples demonstrating XHTML table support in JATS 1.4.</p>
+
+      <!-- Table 1: Simple Table -->
+      <table-wrap id="tbl1" position="float">
+        <label>Table 1</label>
+        <caption>
+          <title>Simple XHTML Table with Basic Structure</title>
+          <p>This table demonstrates basic XHTML table structure with thead, tbody, and simple cells.</p>
+        </caption>
+        <table frame="hsides" rules="groups">
+          <thead>
+            <tr>
+              <th>Parameter</th>
+              <th>Value</th>
+              <th>Unit</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Temperature</td>
+              <td>25</td>
+              <td>°C</td>
+            </tr>
+            <tr>
+              <td>Pressure</td>
+              <td>1.0</td>
+              <td>atm</td>
+            </tr>
+            <tr>
+              <td>Volume</td>
+              <td>100</td>
+              <td>mL</td>
+            </tr>
+          </tbody>
+        </table>
+        <table-wrap-foot>
+          <fn id="tbl1-fn1">
+            <p>All measurements were taken at standard conditions.</p>
+          </fn>
+        </table-wrap-foot>
+      </table-wrap>
+
+      <!-- Table 2: Complex Table with colspan and rowspan -->
+      <table-wrap id="tbl2" position="float">
+        <label>Table 2</label>
+        <caption>
+          <title>Complex Table with Merged Cells</title>
+          <p>Demonstrates colspan and rowspan attributes for complex table structures.</p>
+        </caption>
+        <table frame="box" rules="all">
+          <thead>
+            <tr>
+              <th rowspan="2">Study Group</th>
+              <th colspan="3">Baseline</th>
+              <th colspan="3">Follow-up</th>
+            </tr>
+            <tr>
+              <th>Mean</th>
+              <th>SD</th>
+              <th>N</th>
+              <th>Mean</th>
+              <th>SD</th>
+              <th>N</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Control</td>
+              <td>75.2</td>
+              <td>10.5</td>
+              <td>50</td>
+              <td>76.1</td>
+              <td>11.2</td>
+              <td>48</td>
+            </tr>
+            <tr>
+              <td>Treatment A</td>
+              <td>74.8</td>
+              <td>9.8</td>
+              <td>52</td>
+              <td>82.3</td>
+              <td>8.5</td>
+              <td>51</td>
+            </tr>
+            <tr>
+              <td>Treatment B</td>
+              <td>75.5</td>
+              <td>10.2</td>
+              <td>51</td>
+              <td>85.7</td>
+              <td>7.9</td>
+              <td>50</td>
+            </tr>
+          </tbody>
+          <tfoot>
+            <tr>
+              <td colspan="7">SD = Standard Deviation; N = Sample Size</td>
+            </tr>
+          </tfoot>
+        </table>
+      </table-wrap>
+
+      <!-- Table 3: Table with inline markup -->
+      <table-wrap id="tbl3" position="float">
+        <label>Table 3</label>
+        <caption>
+          <title>Table with <italic>Inline</italic> <bold>Formatting</bold></title>
+          <p>Demonstrates inline markup within table cells including <sup>superscripts</sup> and <sub>subscripts</sub>.</p>
+        </caption>
+        <table frame="hsides" rules="rows">
+          <thead>
+            <tr>
+              <th>Gene</th>
+              <th>Expression Level</th>
+              <th>P-value</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><italic>BRCA1</italic></td>
+              <td>2.5 × 10<sup>3</sup></td>
+              <td>&lt; 0.001</td>
+            </tr>
+            <tr>
+              <td><italic>TP53</italic></td>
+              <td>1.8 × 10<sup>4</sup></td>
+              <td>&lt; 0.0001</td>
+            </tr>
+            <tr>
+              <td><italic>KRAS</italic></td>
+              <td>3.2 × 10<sup>2</sup></td>
+              <td>0.023</td>
+            </tr>
+          </tbody>
+        </table>
+        <table-wrap-foot>
+          <fn id="tbl3-fn1">
+            <p>Expression levels are given in arbitrary units (AU).</p>
+          </fn>
+          <fn id="tbl3-fn2">
+            <p><sup>*</sup>Statistically significant at α = 0.05 level.</p>
+          </fn>
+        </table-wrap-foot>
+      </table-wrap>
+
+      <!-- Table 4: Table with column groups -->
+      <table-wrap id="tbl4" position="float">
+        <label>Table 4</label>
+        <caption>
+          <title>Table with Column Grouping</title>
+        </caption>
+        <table frame="border" rules="all">
+          <colgroup>
+            <col width="25%"/>
+            <col width="25%"/>
+            <col width="25%"/>
+            <col width="25%"/>
+          </colgroup>
+          <thead>
+            <tr>
+              <th>Q1 2024</th>
+              <th>Q2 2024</th>
+              <th>Q3 2024</th>
+              <th>Q4 2024</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>1,250</td>
+              <td>1,480</td>
+              <td>1,720</td>
+              <td>1,950</td>
+            </tr>
+          </tbody>
+        </table>
+      </table-wrap>
+    </sec>
+  </body>
+</article>

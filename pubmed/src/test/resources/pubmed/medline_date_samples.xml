@@ -1,0 +1,160 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE PubmedArticleSet PUBLIC "-//NLM//DTD PubMedArticle, 1st January 2024//EN" "https://dtd.nlm.nih.gov/ncbi/pubmed/out/pubmed_240101.dtd">
+<PubmedArticleSet>
+  <!-- Sample 1: Season-based date -->
+  <PubmedArticle>
+    <MedlineCitation Status="MEDLINE" Owner="NLM">
+      <PMID Version="1">11111111</PMID>
+      <Article PubModel="Print">
+        <Journal>
+          <JournalIssue CitedMedium="Print">
+            <Volume>5</Volume>
+            <PubDate>
+              <MedlineDate>2024 Spring</MedlineDate>
+            </PubDate>
+          </JournalIssue>
+          <Title>Seasonal Journal</Title>
+        </Journal>
+        <ArticleTitle>Article with Spring 2024 Publication Date</ArticleTitle>
+        <Pagination>
+          <MedlinePgn>10-20</MedlinePgn>
+        </Pagination>
+        <Language>eng</Language>
+        <PublicationTypeList>
+          <PublicationType UI="D016428">Journal Article</PublicationType>
+        </PublicationTypeList>
+      </Article>
+      <MedlineJournalInfo>
+        <Country>United States</Country>
+        <MedlineTA>Season J</MedlineTA>
+        <NlmUniqueID>111111111</NlmUniqueID>
+      </MedlineJournalInfo>
+    </MedlineCitation>
+  </PubmedArticle>
+
+  <!-- Sample 2: Month range -->
+  <PubmedArticle>
+    <MedlineCitation Status="MEDLINE" Owner="NLM">
+      <PMID Version="1">22222222</PMID>
+      <Article PubModel="Print">
+        <Journal>
+          <JournalIssue CitedMedium="Print">
+            <Volume>10</Volume>
+            <Issue>1-2</Issue>
+            <PubDate>
+              <MedlineDate>2024 Jan-Feb</MedlineDate>
+            </PubDate>
+          </JournalIssue>
+          <Title>Bimonthly Test Journal</Title>
+        </Journal>
+        <ArticleTitle>Article Published Across Two Months</ArticleTitle>
+        <Pagination>
+          <MedlinePgn>50-65</MedlinePgn>
+        </Pagination>
+        <Language>eng</Language>
+        <PublicationTypeList>
+          <PublicationType UI="D016428">Journal Article</PublicationType>
+        </PublicationTypeList>
+      </Article>
+      <MedlineJournalInfo>
+        <Country>United States</Country>
+        <MedlineTA>Bimon Test J</MedlineTA>
+        <NlmUniqueID>222222222</NlmUniqueID>
+      </MedlineJournalInfo>
+    </MedlineCitation>
+  </PubmedArticle>
+
+  <!-- Sample 3: Quarter -->
+  <PubmedArticle>
+    <MedlineCitation Status="MEDLINE" Owner="NLM">
+      <PMID Version="1">33333333</PMID>
+      <Article PubModel="Print">
+        <Journal>
+          <JournalIssue CitedMedium="Print">
+            <Volume>15</Volume>
+            <PubDate>
+              <MedlineDate>2024 Q1</MedlineDate>
+            </PubDate>
+          </JournalIssue>
+          <Title>Quarterly Review</Title>
+        </Journal>
+        <ArticleTitle>First Quarter 2024 Publication</ArticleTitle>
+        <Pagination>
+          <MedlinePgn>100-120</MedlinePgn>
+        </Pagination>
+        <Language>eng</Language>
+        <PublicationTypeList>
+          <PublicationType UI="D016428">Journal Article</PublicationType>
+        </PublicationTypeList>
+      </Article>
+      <MedlineJournalInfo>
+        <Country>United States</Country>
+        <MedlineTA>Q Rev</MedlineTA>
+        <NlmUniqueID>333333333</NlmUniqueID>
+      </MedlineJournalInfo>
+    </MedlineCitation>
+  </PubmedArticle>
+
+  <!-- Sample 4: Multiple seasons -->
+  <PubmedArticle>
+    <MedlineCitation Status="MEDLINE" Owner="NLM">
+      <PMID Version="1">44444444</PMID>
+      <Article PubModel="Print">
+        <Journal>
+          <JournalIssue CitedMedium="Print">
+            <Volume>20</Volume>
+            <PubDate>
+              <MedlineDate>2024 Winter-Spring</MedlineDate>
+            </PubDate>
+          </JournalIssue>
+          <Title>Dual Season Journal</Title>
+        </Journal>
+        <ArticleTitle>Cross-Season Publication Example</ArticleTitle>
+        <Pagination>
+          <MedlinePgn>200-210</MedlinePgn>
+        </Pagination>
+        <Language>eng</Language>
+        <PublicationTypeList>
+          <PublicationType UI="D016428">Journal Article</PublicationType>
+        </PublicationTypeList>
+      </Article>
+      <MedlineJournalInfo>
+        <Country>United States</Country>
+        <MedlineTA>Dual Seas J</MedlineTA>
+        <NlmUniqueID>444444444</NlmUniqueID>
+      </MedlineJournalInfo>
+    </MedlineCitation>
+  </PubmedArticle>
+
+  <!-- Sample 5: Year range -->
+  <PubmedArticle>
+    <MedlineCitation Status="MEDLINE" Owner="NLM">
+      <PMID Version="1">55555555</PMID>
+      <Article PubModel="Print">
+        <Journal>
+          <JournalIssue CitedMedium="Print">
+            <Volume>8</Volume>
+            <PubDate>
+              <MedlineDate>2023-2024</MedlineDate>
+            </PubDate>
+          </JournalIssue>
+          <Title>Annual Review</Title>
+        </Journal>
+        <ArticleTitle>Publication Spanning Two Years</ArticleTitle>
+        <Pagination>
+          <MedlinePgn>1-50</MedlinePgn>
+        </Pagination>
+        <Language>eng</Language>
+        <PublicationTypeList>
+          <PublicationType UI="D016428">Journal Article</PublicationType>
+          <PublicationType UI="D016454">Review</PublicationType>
+        </PublicationTypeList>
+      </Article>
+      <MedlineJournalInfo>
+        <Country>United States</Country>
+        <MedlineTA>Annu Rev</MedlineTA>
+        <NlmUniqueID>555555555</NlmUniqueID>
+      </MedlineJournalInfo>
+    </MedlineCitation>
+  </PubmedArticle>
+</PubmedArticleSet>

@@ -1,0 +1,250 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE article PUBLIC "-//NLM//DTD JATS (Z39.96) Journal Archiving and Interchange DTD v1.4 20240930//EN" "JATS-archivearticle1-4.dtd">
+<article xmlns:xlink="http://www.w3.org/1999/xlink" article-type="research-article" dtd-version="1.4" xml:lang="en">
+  <front>
+    <article-meta>
+      <article-id pub-id-type="pmc">PMC7777777</article-id>
+      <article-id pub-id-type="doi">10.1234/test.2024.floats</article-id>
+      <title-group>
+        <article-title>Article with Floats Group for Parser Testing</article-title>
+      </title-group>
+      <contrib-group>
+        <contrib contrib-type="author">
+          <name>
+            <surname>Floats</surname>
+            <given-names>Test</given-names>
+          </name>
+        </contrib>
+      </contrib-group>
+      <pub-date pub-type="epub">
+        <year>2024</year>
+      </pub-date>
+    </article-meta>
+  </front>
+  <body>
+    <sec id="sec1">
+      <title>Introduction</title>
+      <p>This article demonstrates the floats-group element, which is used to contain figures, tables, and boxed text that appear at the end of the article rather than inline with the text. See <xref ref-type="fig" rid="fig1">Figure 1</xref>, <xref ref-type="table" rid="tbl1">Table 1</xref>, and <xref ref-type="boxed-text" rid="box1">Box 1</xref>.</p>
+    </sec>
+    <sec id="sec2">
+      <title>Methods</title>
+      <p>Standard laboratory protocols were followed as outlined in <xref ref-type="boxed-text" rid="box2">Box 2</xref>. Results are presented in <xref ref-type="fig" rid="fig2">Figure 2</xref> and <xref ref-type="table" rid="tbl2">Table 2</xref>.</p>
+    </sec>
+    <sec id="sec3">
+      <title>Results</title>
+      <p>The experimental outcomes demonstrated significant effects across all measured parameters. Detailed statistical analyses are provided in the supplementary materials.</p>
+    </sec>
+    <sec id="sec4">
+      <title>Discussion</title>
+      <p>Our findings support the hypothesis and are consistent with previous studies. The chemical structures are shown in <xref ref-type="fig" rid="chem1">Chemical Structure 1</xref>.</p>
+    </sec>
+  </body>
+  <back>
+    <ack>
+      <title>Acknowledgments</title>
+      <p>We thank the research team for their contributions.</p>
+    </ack>
+  </back>
+
+  <!-- Floats Group: Contains all floating elements -->
+  <floats-group>
+    <!-- Figure 1 -->
+    <fig id="fig1" position="float">
+      <label>Figure 1</label>
+      <caption>
+        <title>Experimental Setup Diagram</title>
+        <p>Schematic representation of the experimental apparatus used in this study.</p>
+      </caption>
+      <graphic xlink:href="floats-fig1-setup.tif" mimetype="image" mime-subtype="tiff"/>
+    </fig>
+
+    <!-- Table 1 -->
+    <table-wrap id="tbl1" position="float">
+      <label>Table 1</label>
+      <caption>
+        <title>Sample Characteristics</title>
+        <p>Demographic and baseline characteristics of study participants.</p>
+      </caption>
+      <table frame="hsides" rules="groups">
+        <thead>
+          <tr>
+            <th>Characteristic</th>
+            <th>Group A (n=50)</th>
+            <th>Group B (n=52)</th>
+            <th>P-value</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Age (years)</td>
+            <td>45.2 ± 12.3</td>
+            <td>46.8 ± 11.7</td>
+            <td>0.45</td>
+          </tr>
+          <tr>
+            <td>Male/Female</td>
+            <td>25/25</td>
+            <td>28/24</td>
+            <td>0.67</td>
+          </tr>
+          <tr>
+            <td>BMI (kg/m<sup>2</sup>)</td>
+            <td>24.5 ± 3.2</td>
+            <td>25.1 ± 3.8</td>
+            <td>0.38</td>
+          </tr>
+        </tbody>
+      </table>
+      <table-wrap-foot>
+        <fn>
+          <p>Values are mean ± SD or number of participants.</p>
+        </fn>
+      </table-wrap-foot>
+    </table-wrap>
+
+    <!-- Boxed Text 1: Key Concepts -->
+    <boxed-text id="box1" position="float">
+      <label>Box 1</label>
+      <caption>
+        <title>Key Concepts and Definitions</title>
+      </caption>
+      <sec>
+        <title>Primary Outcome</title>
+        <p>The main variable measured to determine treatment efficacy.</p>
+      </sec>
+      <sec>
+        <title>Secondary Outcome</title>
+        <p>Additional variables measured to assess treatment effects.</p>
+      </sec>
+      <sec>
+        <title>Statistical Significance</title>
+        <p>A result is considered statistically significant when P &lt; 0.05.</p>
+      </sec>
+    </boxed-text>
+
+    <!-- Figure 2 -->
+    <fig id="fig2" position="float">
+      <label>Figure 2</label>
+      <caption>
+        <title>Treatment Response Over Time</title>
+        <p>Line graph showing mean response values (±SEM) for each treatment group across the study period.</p>
+      </caption>
+      <graphic xlink:href="floats-fig2-response.tif" mimetype="image" mime-subtype="tiff"/>
+      <graphic xlink:href="floats-fig2-response.jpg" mimetype="image" mime-subtype="jpeg"/>
+    </fig>
+
+    <!-- Table 2 -->
+    <table-wrap id="tbl2" position="float">
+      <label>Table 2</label>
+      <caption>
+        <title>Primary and Secondary Outcomes</title>
+        <p>Comparison of outcomes between treatment groups at study endpoint.</p>
+      </caption>
+      <table frame="box" rules="all">
+        <thead>
+          <tr>
+            <th>Outcome Measure</th>
+            <th>Group A</th>
+            <th>Group B</th>
+            <th>Difference (95% CI)</th>
+            <th>P-value</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Primary outcome</td>
+            <td>82.3 ± 8.5</td>
+            <td>75.2 ± 10.2</td>
+            <td>7.1 (3.2-11.0)</td>
+            <td>0.001</td>
+          </tr>
+          <tr>
+            <td>Secondary outcome 1</td>
+            <td>65.8 ± 12.4</td>
+            <td>63.2 ± 13.1</td>
+            <td>2.6 (-2.4-7.6)</td>
+            <td>0.31</td>
+          </tr>
+          <tr>
+            <td>Secondary outcome 2</td>
+            <td>91.5 ± 6.7</td>
+            <td>88.3 ± 8.2</td>
+            <td>3.2 (0.1-6.3)</td>
+            <td>0.04</td>
+          </tr>
+        </tbody>
+        <tfoot>
+          <tr>
+            <td colspan="5">All values are mean ± SD. P-values from independent t-test.</td>
+          </tr>
+        </tfoot>
+      </table>
+    </table-wrap>
+
+    <!-- Boxed Text 2: Protocol -->
+    <boxed-text id="box2" position="float">
+      <label>Box 2</label>
+      <caption>
+        <title>Detailed Experimental Protocol</title>
+      </caption>
+      <sec>
+        <title>Sample Preparation</title>
+        <p>Samples were prepared according to the following steps:</p>
+        <list list-type="order">
+          <list-item><p>Collection and initial processing</p></list-item>
+          <list-item><p>Centrifugation at 3000g for 10 minutes</p></list-item>
+          <list-item><p>Supernatant extraction and storage at -80°C</p></list-item>
+        </list>
+      </sec>
+      <sec>
+        <title>Analysis Procedure</title>
+        <p>Analysis was performed using validated methods with the following parameters:</p>
+        <list list-type="bullet">
+          <list-item><p>Temperature: 25°C ± 2°C</p></list-item>
+          <list-item><p>pH: 7.4</p></list-item>
+          <list-item><p>Incubation time: 30 minutes</p></list-item>
+        </list>
+      </sec>
+    </boxed-text>
+
+    <!-- Chemical Structure (Figure group) -->
+    <fig id="chem1" fig-type="chemical-structure" position="float">
+      <label>Chemical Structure 1</label>
+      <caption>
+        <title>Molecular Structure of Test Compound</title>
+        <p>2D structural formula showing all atoms and bonds.</p>
+      </caption>
+      <graphic xlink:href="floats-chem1-structure.svg" mimetype="image" mime-subtype="svg+xml"/>
+    </fig>
+
+    <!-- Figure Group with Multiple Panels -->
+    <fig-group id="figgrp1" position="float">
+      <label>Figure 3</label>
+      <caption>
+        <title>Multi-Panel Figure Showing Complementary Data</title>
+        <p>(A) Western blot results. (B) Quantification of band intensities. (C) Correlation analysis.</p>
+      </caption>
+      <fig id="fig3a" position="anchor">
+        <label>A</label>
+        <graphic xlink:href="floats-fig3a-blot.tif" mimetype="image" mime-subtype="tiff"/>
+      </fig>
+      <fig id="fig3b" position="anchor">
+        <label>B</label>
+        <graphic xlink:href="floats-fig3b-quant.tif" mimetype="image" mime-subtype="tiff"/>
+      </fig>
+      <fig id="fig3c" position="anchor">
+        <label>C</label>
+        <graphic xlink:href="floats-fig3c-corr.tif" mimetype="image" mime-subtype="tiff"/>
+      </fig>
+    </fig-group>
+
+    <!-- Supplementary Material -->
+    <supplementary-material id="supp1" mimetype="application" mime-subtype="pdf" xlink:href="floats-supplementary.pdf">
+      <label>Supplementary Material</label>
+      <caption>
+        <title>Supplementary Figures and Tables</title>
+        <p>Additional data supporting the main findings.</p>
+      </caption>
+    </supplementary-material>
+  </floats-group>
+</article>

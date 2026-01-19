@@ -1,0 +1,199 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE article PUBLIC "-//NLM//DTD JATS (Z39.96) Journal Archiving and Interchange DTD v1.4 20240930//EN" "JATS-archivearticle1-4.dtd">
+<article xmlns:xlink="http://www.w3.org/1999/xlink" article-type="research-article" dtd-version="1.4" xml:lang="en">
+  <front>
+    <article-meta>
+      <article-id pub-id-type="pmc">PMC2222222</article-id>
+      <article-id pub-id-type="doi">10.1234/test.2024.structured</article-id>
+      <title-group>
+        <article-title>Article with Structured References Using element-citation</article-title>
+      </title-group>
+      <contrib-group>
+        <contrib contrib-type="author">
+          <name>
+            <surname>Reference</surname>
+            <given-names>Test</given-names>
+          </name>
+        </contrib>
+      </contrib-group>
+      <pub-date pub-type="epub">
+        <year>2024</year>
+      </pub-date>
+    </article-meta>
+  </front>
+  <body>
+    <sec>
+      <title>Introduction</title>
+      <p>This article demonstrates various reference types using structured element-citation. References include <xref ref-type="bibr" rid="ref1">journal articles</xref>, <xref ref-type="bibr" rid="ref2">books</xref>, <xref ref-type="bibr" rid="ref3">book chapters</xref>, <xref ref-type="bibr" rid="ref4">conference proceedings</xref>, and <xref ref-type="bibr" rid="ref5">web resources</xref>.</p>
+    </sec>
+  </body>
+  <back>
+    <ref-list>
+      <title>References</title>
+
+      <!-- Journal Article -->
+      <ref id="ref1">
+        <label>1</label>
+        <element-citation publication-type="journal">
+          <person-group person-group-type="author">
+            <name>
+              <surname>Smith</surname>
+              <given-names>John A</given-names>
+            </name>
+            <name>
+              <surname>Doe</surname>
+              <given-names>Jane B</given-names>
+            </name>
+            <name>
+              <surname>Brown</surname>
+              <given-names>Robert C</given-names>
+            </name>
+          </person-group>
+          <article-title>A comprehensive study on structured references in JATS</article-title>
+          <source>Journal of XML Standards</source>
+          <year iso-8601-date="2023">2023</year>
+          <volume>15</volume>
+          <issue>3</issue>
+          <fpage>123</fpage>
+          <lpage>145</lpage>
+          <pub-id pub-id-type="doi">10.1234/jxs.2023.001</pub-id>
+          <pub-id pub-id-type="pmid">12345678</pub-id>
+        </element-citation>
+      </ref>
+
+      <!-- Book -->
+      <ref id="ref2">
+        <label>2</label>
+        <element-citation publication-type="book">
+          <person-group person-group-type="author">
+            <name>
+              <surname>Author</surname>
+              <given-names>Book</given-names>
+            </name>
+          </person-group>
+          <source>Complete Guide to JATS Publishing</source>
+          <publisher-name>Academic Press</publisher-name>
+          <publisher-loc>New York, NY</publisher-loc>
+          <year iso-8601-date="2022">2022</year>
+          <edition>3rd</edition>
+          <isbn>978-1-234567-89-0</isbn>
+        </element-citation>
+      </ref>
+
+      <!-- Book Chapter -->
+      <ref id="ref3">
+        <label>3</label>
+        <element-citation publication-type="book">
+          <person-group person-group-type="author">
+            <name>
+              <surname>Chapter</surname>
+              <given-names>Author</given-names>
+            </name>
+          </person-group>
+          <chapter-title>XML Parsing Best Practices</chapter-title>
+          <person-group person-group-type="editor">
+            <name>
+              <surname>Editor</surname>
+              <given-names>Book</given-names>
+            </name>
+          </person-group>
+          <source>Handbook of Digital Publishing</source>
+          <publisher-name>Technical Publishers</publisher-name>
+          <publisher-loc>Boston, MA</publisher-loc>
+          <year iso-8601-date="2021">2021</year>
+          <fpage>45</fpage>
+          <lpage>68</lpage>
+        </element-citation>
+      </ref>
+
+      <!-- Conference Proceedings -->
+      <ref id="ref4">
+        <label>4</label>
+        <element-citation publication-type="confproc">
+          <person-group person-group-type="author">
+            <name>
+              <surname>Presenter</surname>
+              <given-names>Conference</given-names>
+            </name>
+          </person-group>
+          <article-title>Advances in XML processing for scholarly publishing</article-title>
+          <conf-name>International Conference on Digital Publishing</conf-name>
+          <conf-loc>San Francisco, CA</conf-loc>
+          <conf-date iso-8601-date="2023-06-15">June 15-17, 2023</conf-date>
+          <source>Proceedings of ICDP 2023</source>
+          <publisher-name>Conference Organizers</publisher-name>
+          <year iso-8601-date="2023">2023</year>
+          <fpage>234</fpage>
+          <lpage>240</lpage>
+        </element-citation>
+      </ref>
+
+      <!-- Web Resource -->
+      <ref id="ref5">
+        <label>5</label>
+        <element-citation publication-type="webpage">
+          <person-group person-group-type="author">
+            <collab>JATS Standing Committee</collab>
+          </person-group>
+          <article-title>JATS: Journal Article Tag Suite, version 1.4</article-title>
+          <source>National Center for Biotechnology Information</source>
+          <year iso-8601-date="2024">2024</year>
+          <date-in-citation content-type="access-date" iso-8601-date="2024-01-15">Accessed January 15, 2024</date-in-citation>
+          <ext-link ext-link-type="uri" xlink:href="https://jats.nlm.nih.gov/">https://jats.nlm.nih.gov/</ext-link>
+        </element-citation>
+      </ref>
+
+      <!-- Preprint -->
+      <ref id="ref6">
+        <label>6</label>
+        <element-citation publication-type="preprint">
+          <person-group person-group-type="author">
+            <name>
+              <surname>Preprint</surname>
+              <given-names>Author</given-names>
+            </name>
+          </person-group>
+          <article-title>Novel approaches to XML validation</article-title>
+          <source>bioRxiv</source>
+          <year iso-8601-date="2024">2024</year>
+          <pub-id pub-id-type="doi">10.1101/2024.01.001</pub-id>
+        </element-citation>
+      </ref>
+
+      <!-- Patent -->
+      <ref id="ref7">
+        <label>7</label>
+        <element-citation publication-type="patent">
+          <person-group person-group-type="inventor">
+            <name>
+              <surname>Inventor</surname>
+              <given-names>Test</given-names>
+            </name>
+          </person-group>
+          <article-title>Method and system for efficient XML parsing</article-title>
+          <source>US Patent</source>
+          <patent country="US">US123456789</patent>
+          <year iso-8601-date="2023">2023</year>
+        </element-citation>
+      </ref>
+
+      <!-- Data Citation -->
+      <ref id="ref8">
+        <label>8</label>
+        <element-citation publication-type="data">
+          <person-group person-group-type="author">
+            <name>
+              <surname>Data</surname>
+              <given-names>Curator</given-names>
+            </name>
+          </person-group>
+          <data-title>Test Dataset for XML Parser Validation</data-title>
+          <source>Zenodo</source>
+          <year iso-8601-date="2024">2024</year>
+          <pub-id pub-id-type="doi">10.5281/zenodo.123456</pub-id>
+          <version>v1.0</version>
+        </element-citation>
+      </ref>
+    </ref-list>
+  </back>
+</article>

@@ -1,0 +1,231 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE article PUBLIC "-//NLM//DTD JATS (Z39.96) Journal Archiving and Interchange DTD v1.4 20240930//EN" "JATS-archivearticle1-4.dtd">
+<article xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" article-type="research-article" dtd-version="1.4" xml:lang="en">
+  <front>
+    <journal-meta>
+      <journal-id journal-id-type="nlm-ta">Test J Full</journal-id>
+      <journal-id journal-id-type="iso-abbrev">Test J. Full</journal-id>
+      <journal-id journal-id-type="publisher-id">TJF</journal-id>
+      <journal-title-group>
+        <journal-title>Test Journal of Full Features</journal-title>
+        <abbrev-journal-title abbrev-type="publisher">Test J Full</abbrev-journal-title>
+      </journal-title-group>
+      <issn pub-type="ppub">1234-5678</issn>
+      <issn pub-type="epub">1234-5679</issn>
+      <publisher>
+        <publisher-name>Test Publishing House</publisher-name>
+      </publisher>
+    </journal-meta>
+    <article-meta>
+      <article-id pub-id-type="pmc">PMC9876543</article-id>
+      <article-id pub-id-type="pmid">87654321</article-id>
+      <article-id pub-id-type="doi">10.1234/test.2024.full</article-id>
+      <article-id pub-id-type="publisher-id">TJF-2024-001</article-id>
+      <article-categories>
+        <subj-group subj-group-type="heading">
+          <subject>Research Article</subject>
+        </subj-group>
+      </article-categories>
+      <title-group>
+        <article-title>Comprehensive JATS Article with All Elements: A <italic>Complete</italic> <sup>Example</sup> for Testing</article-title>
+        <subtitle>Demonstrating Full DTD Coverage</subtitle>
+        <trans-title-group xml:lang="ko">
+          <trans-title>완전한 JATS 논문 예제</trans-title>
+        </trans-title-group>
+      </title-group>
+      <contrib-group>
+        <contrib contrib-type="author" corresp="yes">
+          <contrib-id contrib-id-type="orcid">0000-0001-2345-6789</contrib-id>
+          <name>
+            <surname>Smith</surname>
+            <given-names>John A.</given-names>
+          </name>
+          <email>john.smith@test.edu</email>
+          <xref ref-type="aff" rid="aff1">1</xref>
+          <xref ref-type="fn" rid="fn1">*</xref>
+        </contrib>
+        <contrib contrib-type="author">
+          <name>
+            <surname>Doe</surname>
+            <given-names>Jane</given-names>
+          </name>
+          <xref ref-type="aff" rid="aff1">1</xref>
+          <xref ref-type="aff" rid="aff2">2</xref>
+        </contrib>
+        <contrib contrib-type="author">
+          <collab>Test Research Consortium</collab>
+        </contrib>
+      </contrib-group>
+      <aff id="aff1"><label>1</label>Department of Testing, Test University, USA</aff>
+      <aff id="aff2"><label>2</label>Research Institute of Examples, Test City</aff>
+      <author-notes>
+        <corresp id="cor1"><label>*</label>Corresponding author: <email>john.smith@test.edu</email></corresp>
+        <fn id="fn1" fn-type="con"><p>Conceptualization, Writing</p></fn>
+        <fn id="fn2" fn-type="conflict"><p>The authors declare no conflicts of interest.</p></fn>
+      </author-notes>
+      <pub-date pub-type="epub">
+        <year>2024</year>
+        <month>01</month>
+        <day>20</day>
+      </pub-date>
+      <pub-date pub-type="ppub">
+        <year>2024</year>
+        <month>03</month>
+      </pub-date>
+      <volume>25</volume>
+      <issue>3</issue>
+      <fpage>100</fpage>
+      <lpage>125</lpage>
+      <permissions>
+        <copyright-statement>© 2024 Smith et al.</copyright-statement>
+        <copyright-year>2024</copyright-year>
+        <copyright-holder>Smith et al.</copyright-holder>
+        <license license-type="open-access" xlink:href="https://creativecommons.org/licenses/by/4.0/">
+          <license-p>This is an open access article distributed under the terms of the Creative Commons Attribution License.</license-p>
+        </license>
+      </permissions>
+      <abstract>
+        <title>Abstract</title>
+        <p>This comprehensive test article demonstrates all major JATS 1.4 elements and attributes. It includes structured sections, multiple authors, affiliations, cross-references, and various content types to validate complete parser implementation.</p>
+      </abstract>
+      <abstract abstract-type="graphical">
+        <title>Graphical Abstract</title>
+        <p>A visual summary of the article.</p>
+      </abstract>
+      <kwd-group>
+        <title>Keywords</title>
+        <kwd>JATS</kwd>
+        <kwd>XML parsing</kwd>
+        <kwd>test data</kwd>
+        <kwd>validation</kwd>
+      </kwd-group>
+      <funding-group>
+        <award-group>
+          <funding-source>National Test Foundation</funding-source>
+          <award-id>TEST-2024-12345</award-id>
+        </award-group>
+      </funding-group>
+    </article-meta>
+  </front>
+  <body>
+    <sec id="sec1">
+      <label>1</label>
+      <title>Introduction</title>
+      <p>This article demonstrates comprehensive JATS 1.4 coverage with <bold>bold text</bold>, <italic>italic text</italic>, <sup>superscript</sup>, <sub>subscript</sub>, and <ext-link ext-link-type="uri" xlink:href="https://example.com">external links</ext-link>.</p>
+      <fig id="fig1">
+        <label>Figure 1</label>
+        <caption>
+          <title>Test Figure</title>
+          <p>An example figure with caption.</p>
+        </caption>
+        <graphic xlink:href="figure1.jpg" mimetype="image" mime-subtype="jpeg"/>
+      </fig>
+    </sec>
+    <sec id="sec2">
+      <label>2</label>
+      <title>Methods</title>
+      <p>This section includes various inline elements and cross-references. See <xref ref-type="fig" rid="fig1">Figure 1</xref> and <xref ref-type="table" rid="table1">Table 1</xref>.</p>
+      <table-wrap id="table1">
+        <label>Table 1</label>
+        <caption>
+          <title>Test Table</title>
+        </caption>
+        <table>
+          <thead>
+            <tr>
+              <th>Column 1</th>
+              <th>Column 2</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Data 1</td>
+              <td>Data 2</td>
+            </tr>
+          </tbody>
+        </table>
+      </table-wrap>
+      <list list-type="bullet">
+        <title>Key Points</title>
+        <list-item>
+          <p>First bullet point</p>
+        </list-item>
+        <list-item>
+          <p>Second bullet point</p>
+        </list-item>
+      </list>
+    </sec>
+    <sec id="sec3">
+      <label>3</label>
+      <title>Results</title>
+      <p>Mathematical notation: <inline-formula><mml:math><mml:mrow><mml:mi>E</mml:mi><mml:mo>=</mml:mo><mml:mi>m</mml:mi><mml:msup><mml:mi>c</mml:mi><mml:mn>2</mml:mn></mml:msup></mml:mrow></mml:math></inline-formula>.</p>
+      <disp-formula id="eq1">
+        <label>(1)</label>
+        <mml:math>
+          <mml:mrow>
+            <mml:mi>x</mml:mi>
+            <mml:mo>=</mml:mo>
+            <mml:mfrac>
+              <mml:mrow><mml:mo>-</mml:mo><mml:mi>b</mml:mi><mml:mo>±</mml:mo><mml:msqrt><mml:mrow><mml:msup><mml:mi>b</mml:mi><mml:mn>2</mml:mn></mml:msup><mml:mo>-</mml:mo><mml:mn>4</mml:mn><mml:mi>a</mml:mi><mml:mi>c</mml:mi></mml:mrow></mml:msqrt></mml:mrow>
+              <mml:mrow><mml:mn>2</mml:mn><mml:mi>a</mml:mi></mml:mrow>
+            </mml:mfrac>
+          </mml:mrow>
+        </mml:math>
+      </disp-formula>
+    </sec>
+    <sec id="sec4">
+      <label>4</label>
+      <title>Discussion</title>
+      <p>Our findings demonstrate comprehensive parsing capabilities. Cross-references to <xref ref-type="bibr" rid="ref1">Reference 1</xref> and <xref ref-type="bibr" rid="ref2">Reference 2</xref>.</p>
+    </sec>
+    <sec id="sec5">
+      <label>5</label>
+      <title>Conclusion</title>
+      <p>This article successfully demonstrates complete JATS 1.4 DTD coverage for parser validation.</p>
+    </sec>
+  </body>
+  <back>
+    <ack id="ack1">
+      <title>Acknowledgments</title>
+      <p>We thank the test data development team.</p>
+    </ack>
+    <fn-group>
+      <fn id="fn-data"><p>Data availability statement.</p></fn>
+    </fn-group>
+    <ref-list>
+      <title>References</title>
+      <ref id="ref1">
+        <label>1</label>
+        <element-citation publication-type="journal">
+          <person-group person-group-type="author">
+            <name>
+              <surname>Author</surname>
+              <given-names>A</given-names>
+            </name>
+          </person-group>
+          <article-title>Test reference article</article-title>
+          <source>Test Journal</source>
+          <year iso-8601-date="2023">2023</year>
+          <volume>10</volume>
+          <fpage>1</fpage>
+          <lpage>10</lpage>
+          <pub-id pub-id-type="doi">10.1234/test.2023.ref1</pub-id>
+        </element-citation>
+      </ref>
+      <ref id="ref2">
+        <label>2</label>
+        <element-citation publication-type="book">
+          <person-group person-group-type="author">
+            <name>
+              <surname>BookAuthor</surname>
+              <given-names>B</given-names>
+            </name>
+          </person-group>
+          <source>Test Medical Book</source>
+          <publisher-name>Test Publisher</publisher-name>
+          <year iso-8601-date="2022">2022</year>
+        </element-citation>
+      </ref>
+    </ref-list>
+  </back>
+</article>
