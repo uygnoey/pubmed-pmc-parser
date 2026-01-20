@@ -1,0 +1,2555 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="ko"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>ArticleMetaParser.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">pmc</a> &gt; <a href="index.source.html" class="el_package">com.brillianttiger.bio.parser.pmc.parser</a> &gt; <span class="el_source">ArticleMetaParser.java</span></div><h1>ArticleMetaParser.java</h1><pre class="source lang-java linenums">package com.brillianttiger.bio.parser.pmc.parser;
+
+import com.brillianttiger.bio.parser.pmc.model.*;
+
+import javax.xml.stream.XMLStreamConstants;
+import javax.xml.stream.XMLStreamException;
+import javax.xml.stream.XMLStreamReader;
+import java.util.ArrayList;
+import java.util.List;
+
+import static com.brillianttiger.bio.parser.pmc.parser.CommonPmcElementParser.*;
+import static com.brillianttiger.bio.parser.pmc.parser.BodyParser.*;
+
+/**
+ * ArticleMetaParser / ArticleMeta 파서
+ *
+ * KR: PMC XML의 ArticleMeta 및 관련 요소들을 파싱하는 클래스
+ * EN: Class for parsing ArticleMeta and related elements in PMC XML
+ */
+<span class="nc" id="L20">public class ArticleMetaParser {</span>
+
+    /**
+     * ArticleMeta 파싱 / Parse ArticleMeta
+     * DTD: &lt;!ELEMENT article-meta (article-id*, article-categories?, title-group, contrib-group*, aff*, ...)&gt;
+     */
+    public static ArticleMeta parseArticleMeta(XMLStreamReader reader) throws XMLStreamException {
+<span class="fc" id="L27">        ArticleMeta.ArticleMetaBuilder builder = ArticleMeta.builder();</span>
+
+<span class="fc" id="L29">        List&lt;PmcArticleId&gt; articleIds = new ArrayList&lt;&gt;();</span>
+<span class="fc" id="L30">        List&lt;ContribGroup&gt; contribGroups = new ArrayList&lt;&gt;();</span>
+<span class="fc" id="L31">        List&lt;Aff&gt; affiliations = new ArrayList&lt;&gt;();</span>
+<span class="fc" id="L32">        List&lt;PmcPubDate&gt; pubDates = new ArrayList&lt;&gt;();</span>
+<span class="fc" id="L33">        List&lt;PmcIsbn&gt; isbns = new ArrayList&lt;&gt;();</span>
+<span class="fc" id="L34">        List&lt;Email&gt; emails = new ArrayList&lt;&gt;();</span>
+<span class="fc" id="L35">        List&lt;ExtLink&gt; extLinks = new ArrayList&lt;&gt;();</span>
+<span class="fc" id="L36">        List&lt;Uri&gt; uris = new ArrayList&lt;&gt;();</span>
+<span class="fc" id="L37">        List&lt;SupplementaryMaterial&gt; supplementaryMaterials = new ArrayList&lt;&gt;();</span>
+<span class="fc" id="L38">        List&lt;SelfUri&gt; selfUris = new ArrayList&lt;&gt;();</span>
+<span class="fc" id="L39">        List&lt;RelatedArticle&gt; relatedArticles = new ArrayList&lt;&gt;();</span>
+<span class="fc" id="L40">        List&lt;RelatedObject&gt; relatedObjects = new ArrayList&lt;&gt;();</span>
+<span class="fc" id="L41">        List&lt;PmcAbstract&gt; abstracts = new ArrayList&lt;&gt;();</span>
+<span class="fc" id="L42">        List&lt;TransAbstract&gt; transAbstracts = new ArrayList&lt;&gt;();</span>
+<span class="fc" id="L43">        List&lt;KwdGroup&gt; kwdGroups = new ArrayList&lt;&gt;();</span>
+<span class="fc" id="L44">        List&lt;FundingGroup&gt; fundingGroups = new ArrayList&lt;&gt;();</span>
+<span class="fc" id="L45">        List&lt;SupportGroup&gt; supportGroups = new ArrayList&lt;&gt;();</span>
+<span class="fc" id="L46">        List&lt;Conference&gt; conferences = new ArrayList&lt;&gt;();</span>
+
+        while (true) {
+<span class="fc" id="L49">            int event = reader.next();</span>
+
+<span class="fc bfc" id="L51" title="All 2 branches covered.">            if (event == XMLStreamConstants.START_ELEMENT) {</span>
+<span class="fc" id="L52">                String localName = reader.getLocalName();</span>
+
+<span class="fc bfc" id="L54" title="All 40 branches covered.">                switch (localName) {</span>
+                    case &quot;article-id&quot;:
+<span class="fc" id="L56">                        articleIds.add(parsePmcArticleId(reader, localName));</span>
+<span class="fc" id="L57">                        break;</span>
+                    case &quot;article-categories&quot;:
+<span class="fc" id="L59">                        builder.articleCategories(parseArticleCategories(reader));</span>
+<span class="fc" id="L60">                        break;</span>
+                    case &quot;title-group&quot;:
+<span class="fc" id="L62">                        builder.titleGroup(parseTitleGroup(reader));</span>
+<span class="fc" id="L63">                        break;</span>
+                    case &quot;contrib-group&quot;:
+<span class="fc" id="L65">                        contribGroups.add(parseContribGroup(reader));</span>
+<span class="fc" id="L66">                        break;</span>
+                    case &quot;aff&quot;:
+<span class="fc" id="L68">                        affiliations.add(parseAff(reader));</span>
+<span class="fc" id="L69">                        break;</span>
+                    case &quot;author-notes&quot;:
+<span class="fc" id="L71">                        builder.authorNotes(parseAuthorNotes(reader));</span>
+<span class="fc" id="L72">                        break;</span>
+                    case &quot;pub-date&quot;:
+<span class="fc" id="L74">                        pubDates.add(parsePmcPubDate(reader));</span>
+<span class="fc" id="L75">                        break;</span>
+                    case &quot;volume&quot;:
+<span class="fc" id="L77">                        builder.volume(parseVolume(reader));</span>
+<span class="fc" id="L78">                        break;</span>
+                    case &quot;volume-id&quot;:
+<span class="fc" id="L80">                        builder.volumeId(parseVolumeId(reader));</span>
+<span class="fc" id="L81">                        break;</span>
+                    case &quot;volume-series&quot;:
+<span class="fc" id="L83">                        builder.volumeSeries(parseVolumeSeries(reader));</span>
+<span class="fc" id="L84">                        break;</span>
+                    case &quot;issue&quot;:
+<span class="fc" id="L86">                        builder.issue(parsePmcIssue(reader));</span>
+<span class="fc" id="L87">                        break;</span>
+                    case &quot;issue-id&quot;:
+<span class="fc" id="L89">                        builder.issueId(parseIssueId(reader));</span>
+<span class="fc" id="L90">                        break;</span>
+                    case &quot;issue-title&quot;:
+<span class="fc" id="L92">                        builder.issueTitle(parseIssueTitle(reader));</span>
+<span class="fc" id="L93">                        break;</span>
+                    case &quot;issue-sponsor&quot;:
+<span class="fc" id="L95">                        builder.issueSponsor(parseIssueSponsor(reader));</span>
+<span class="fc" id="L96">                        break;</span>
+                    case &quot;issue-part&quot;:
+<span class="fc" id="L98">                        builder.issuePart(parseIssuePart(reader));</span>
+<span class="fc" id="L99">                        break;</span>
+                    case &quot;isbn&quot;:
+<span class="fc" id="L101">                        isbns.add(parsePmcIsbn(reader));</span>
+<span class="fc" id="L102">                        break;</span>
+                    case &quot;supplement&quot;:
+<span class="fc" id="L104">                        builder.supplement(parseSupplement(reader));</span>
+<span class="fc" id="L105">                        break;</span>
+                    case &quot;fpage&quot;:
+<span class="fc" id="L107">                        builder.fpage(parseFpage(reader));</span>
+<span class="fc" id="L108">                        break;</span>
+                    case &quot;lpage&quot;:
+<span class="fc" id="L110">                        builder.lpage(parseLpage(reader));</span>
+<span class="fc" id="L111">                        break;</span>
+                    case &quot;page-range&quot;:
+<span class="fc" id="L113">                        builder.pageRange(parsePageRange(reader));</span>
+<span class="fc" id="L114">                        break;</span>
+                    case &quot;elocation-id&quot;:
+<span class="fc" id="L116">                        builder.elocationId(parseElocationId(reader));</span>
+<span class="fc" id="L117">                        break;</span>
+                    case &quot;email&quot;:
+<span class="fc" id="L119">                        emails.add(parseEmail(reader));</span>
+<span class="fc" id="L120">                        break;</span>
+                    case &quot;ext-link&quot;:
+<span class="fc" id="L122">                        extLinks.add(parseExtLink(reader));</span>
+<span class="fc" id="L123">                        break;</span>
+                    case &quot;uri&quot;:
+<span class="fc" id="L125">                        uris.add(parseUri(reader));</span>
+<span class="fc" id="L126">                        break;</span>
+                    case &quot;supplementary-material&quot;:
+<span class="fc" id="L128">                        supplementaryMaterials.add(parseSupplementaryMaterial(reader));</span>
+<span class="fc" id="L129">                        break;</span>
+                    case &quot;history&quot;:
+<span class="fc" id="L131">                        builder.history(parsePmcHistory(reader));</span>
+<span class="fc" id="L132">                        break;</span>
+                    case &quot;pub-history&quot;:
+<span class="fc" id="L134">                        builder.pubHistory(parsePubHistory(reader));</span>
+<span class="fc" id="L135">                        break;</span>
+                    case &quot;permissions&quot;:
+<span class="fc" id="L137">                        builder.permissions(parsePermissions(reader));</span>
+<span class="fc" id="L138">                        break;</span>
+                    case &quot;self-uri&quot;:
+<span class="fc" id="L140">                        selfUris.add(parseSelfUri(reader));</span>
+<span class="fc" id="L141">                        break;</span>
+                    case &quot;related-article&quot;:
+<span class="fc" id="L143">                        relatedArticles.add(parseRelatedArticle(reader));</span>
+<span class="fc" id="L144">                        break;</span>
+                    case &quot;related-object&quot;:
+<span class="fc" id="L146">                        relatedObjects.add(parseRelatedObject(reader));</span>
+<span class="fc" id="L147">                        break;</span>
+                    case &quot;abstract&quot;:
+<span class="fc" id="L149">                        abstracts.add(parsePmcAbstract(reader));</span>
+<span class="fc" id="L150">                        break;</span>
+                    case &quot;trans-abstract&quot;:
+<span class="fc" id="L152">                        transAbstracts.add(parseTransAbstract(reader));</span>
+<span class="fc" id="L153">                        break;</span>
+                    case &quot;kwd-group&quot;:
+<span class="fc" id="L155">                        kwdGroups.add(parseKwdGroup(reader));</span>
+<span class="fc" id="L156">                        break;</span>
+                    case &quot;funding-group&quot;:
+<span class="fc" id="L158">                        fundingGroups.add(parseFundingGroup(reader));</span>
+<span class="fc" id="L159">                        break;</span>
+                    case &quot;support-group&quot;:
+<span class="fc" id="L161">                        supportGroups.add(parseSupportGroup(reader));</span>
+<span class="fc" id="L162">                        break;</span>
+                    case &quot;conference&quot;:
+<span class="fc" id="L164">                        conferences.add(parseConference(reader));</span>
+<span class="fc" id="L165">                        break;</span>
+                    case &quot;counts&quot;:
+<span class="fc" id="L167">                        builder.counts(parseCounts(reader));</span>
+<span class="fc" id="L168">                        break;</span>
+                    case &quot;custom-meta-group&quot;:
+<span class="fc" id="L170">                        builder.customMetaGroup(parseCustomMetaGroup(reader));</span>
+<span class="fc" id="L171">                        break;</span>
+                    default:
+<span class="fc" id="L173">                        skipElement(reader);</span>
+                        break;
+                }
+<span class="fc bfc" id="L176" title="All 2 branches covered.">            } else if (event == XMLStreamConstants.END_ELEMENT) {</span>
+<span class="pc bpc" id="L177" title="1 of 2 branches missed.">                if (reader.getLocalName().equals(&quot;article-meta&quot;)) {</span>
+<span class="fc" id="L178">                    break;</span>
+                }
+            }
+<span class="fc" id="L181">        }</span>
+
+<span class="fc bfc" id="L183" title="All 2 branches covered.">        builder.articleIds(articleIds.isEmpty() ? null : articleIds);</span>
+<span class="fc bfc" id="L184" title="All 2 branches covered.">        builder.contribGroups(contribGroups.isEmpty() ? null : contribGroups);</span>
+<span class="fc bfc" id="L185" title="All 2 branches covered.">        builder.affiliations(affiliations.isEmpty() ? null : affiliations);</span>
+<span class="fc bfc" id="L186" title="All 2 branches covered.">        builder.pubDates(pubDates.isEmpty() ? null : pubDates);</span>
+<span class="fc bfc" id="L187" title="All 2 branches covered.">        builder.isbns(isbns.isEmpty() ? null : isbns);</span>
+<span class="fc bfc" id="L188" title="All 2 branches covered.">        builder.emails(emails.isEmpty() ? null : emails);</span>
+<span class="fc bfc" id="L189" title="All 2 branches covered.">        builder.extLinks(extLinks.isEmpty() ? null : extLinks);</span>
+<span class="fc bfc" id="L190" title="All 2 branches covered.">        builder.uris(uris.isEmpty() ? null : uris);</span>
+<span class="fc bfc" id="L191" title="All 2 branches covered.">        builder.supplementaryMaterials(supplementaryMaterials.isEmpty() ? null : supplementaryMaterials);</span>
+<span class="fc bfc" id="L192" title="All 2 branches covered.">        builder.selfUris(selfUris.isEmpty() ? null : selfUris);</span>
+<span class="fc bfc" id="L193" title="All 2 branches covered.">        builder.relatedArticles(relatedArticles.isEmpty() ? null : relatedArticles);</span>
+<span class="fc bfc" id="L194" title="All 2 branches covered.">        builder.relatedObjects(relatedObjects.isEmpty() ? null : relatedObjects);</span>
+<span class="fc bfc" id="L195" title="All 2 branches covered.">        builder.abstracts(abstracts.isEmpty() ? null : abstracts);</span>
+<span class="fc bfc" id="L196" title="All 2 branches covered.">        builder.transAbstracts(transAbstracts.isEmpty() ? null : transAbstracts);</span>
+<span class="fc bfc" id="L197" title="All 2 branches covered.">        builder.kwdGroups(kwdGroups.isEmpty() ? null : kwdGroups);</span>
+<span class="fc bfc" id="L198" title="All 2 branches covered.">        builder.fundingGroups(fundingGroups.isEmpty() ? null : fundingGroups);</span>
+<span class="fc bfc" id="L199" title="All 2 branches covered.">        builder.supportGroups(supportGroups.isEmpty() ? null : supportGroups);</span>
+<span class="fc bfc" id="L200" title="All 2 branches covered.">        builder.conferences(conferences.isEmpty() ? null : conferences);</span>
+
+<span class="fc" id="L202">        return builder.build();</span>
+    }
+
+    /**
+     * TitleGroup 파싱 / Parse TitleGroup
+     */
+    public static TitleGroup parseTitleGroup(XMLStreamReader reader) throws XMLStreamException {
+<span class="fc" id="L209">        TitleGroup.TitleGroupBuilder builder = TitleGroup.builder();</span>
+
+<span class="fc" id="L211">        List&lt;Subtitle&gt; subtitles = new ArrayList&lt;&gt;();</span>
+<span class="fc" id="L212">        List&lt;TransTitleGroup&gt; transTitleGroups = new ArrayList&lt;&gt;();</span>
+<span class="fc" id="L213">        List&lt;AltTitle&gt; altTitles = new ArrayList&lt;&gt;();</span>
+
+        while (true) {
+<span class="fc" id="L216">            int event = reader.next();</span>
+
+<span class="fc bfc" id="L218" title="All 2 branches covered.">            if (event == XMLStreamConstants.START_ELEMENT) {</span>
+<span class="fc" id="L219">                String localName = reader.getLocalName();</span>
+
+<span class="fc bfc" id="L221" title="All 6 branches covered.">                switch (localName) {</span>
+                    case &quot;article-title&quot;:
+<span class="fc" id="L223">                        builder.articleTitle(parseArticleTitle(reader));</span>
+<span class="fc" id="L224">                        break;</span>
+                    case &quot;subtitle&quot;:
+<span class="fc" id="L226">                        subtitles.add(parseSubtitle(reader));</span>
+<span class="fc" id="L227">                        break;</span>
+                    case &quot;trans-title-group&quot;:
+<span class="fc" id="L229">                        transTitleGroups.add(parseTransTitleGroup(reader));</span>
+<span class="fc" id="L230">                        break;</span>
+                    case &quot;alt-title&quot;:
+<span class="fc" id="L232">                        altTitles.add(parseAltTitle(reader));</span>
+<span class="fc" id="L233">                        break;</span>
+                    case &quot;fn-group&quot;:
+<span class="fc" id="L235">                        builder.fnGroup(parseFnGroup(reader));</span>
+<span class="fc" id="L236">                        break;</span>
+                    default:
+<span class="fc" id="L238">                        skipElement(reader);</span>
+                        break;
+                }
+<span class="fc bfc" id="L241" title="All 2 branches covered.">            } else if (event == XMLStreamConstants.END_ELEMENT) {</span>
+<span class="pc bpc" id="L242" title="1 of 2 branches missed.">                if (reader.getLocalName().equals(&quot;title-group&quot;)) {</span>
+<span class="fc" id="L243">                    break;</span>
+                }
+            }
+<span class="fc" id="L246">        }</span>
+
+<span class="fc bfc" id="L248" title="All 2 branches covered.">        builder.subtitles(subtitles.isEmpty() ? null : subtitles);</span>
+<span class="fc bfc" id="L249" title="All 2 branches covered.">        builder.transTitleGroups(transTitleGroups.isEmpty() ? null : transTitleGroups);</span>
+<span class="fc bfc" id="L250" title="All 2 branches covered.">        builder.altTitles(altTitles.isEmpty() ? null : altTitles);</span>
+
+<span class="fc" id="L252">        return builder.build();</span>
+    }
+
+    /**
+     * ContribGroup 파싱 / Parse ContribGroup
+     * DTD: &lt;!ELEMENT contrib-group (contrib+, xref*, aff*)&gt;
+     * DTD: &lt;!ATTLIST contrib-group content-type CDATA #IMPLIED&gt;
+     */
+    public static ContribGroup parseContribGroup(XMLStreamReader reader) throws XMLStreamException {
+<span class="fc" id="L261">        String contentType = reader.getAttributeValue(null, &quot;content-type&quot;);</span>
+
+<span class="fc" id="L263">        ContribGroup.ContribGroupBuilder builder = ContribGroup.builder()</span>
+<span class="fc" id="L264">                .contentType(contentType);</span>
+
+<span class="fc" id="L266">        List&lt;Contrib&gt; contributors = new ArrayList&lt;&gt;();</span>
+<span class="fc" id="L267">        List&lt;Xref&gt; xrefs = new ArrayList&lt;&gt;();</span>
+<span class="fc" id="L268">        List&lt;Aff&gt; affiliations = new ArrayList&lt;&gt;();</span>
+
+        while (true) {
+<span class="fc" id="L271">            int event = reader.next();</span>
+
+<span class="fc bfc" id="L273" title="All 2 branches covered.">            if (event == XMLStreamConstants.START_ELEMENT) {</span>
+<span class="fc" id="L274">                String localName = reader.getLocalName();</span>
+
+<span class="fc bfc" id="L276" title="All 4 branches covered.">                switch (localName) {</span>
+                    case &quot;contrib&quot;:
+<span class="fc" id="L278">                        contributors.add(parseContrib(reader));</span>
+<span class="fc" id="L279">                        break;</span>
+                    case &quot;xref&quot;:
+<span class="fc" id="L281">                        xrefs.add(parseXref(reader));</span>
+<span class="fc" id="L282">                        break;</span>
+                    case &quot;aff&quot;:
+<span class="fc" id="L284">                        affiliations.add(parseAff(reader));</span>
+<span class="fc" id="L285">                        break;</span>
+                    default:
+<span class="fc" id="L287">                        skipElement(reader);</span>
+                        break;
+                }
+<span class="fc bfc" id="L290" title="All 2 branches covered.">            } else if (event == XMLStreamConstants.END_ELEMENT) {</span>
+<span class="pc bpc" id="L291" title="1 of 2 branches missed.">                if (reader.getLocalName().equals(&quot;contrib-group&quot;)) {</span>
+<span class="fc" id="L292">                    break;</span>
+                }
+            }
+<span class="fc" id="L295">        }</span>
+
+<span class="fc bfc" id="L297" title="All 2 branches covered.">        builder.contributors(contributors.isEmpty() ? null : contributors);</span>
+<span class="fc bfc" id="L298" title="All 2 branches covered.">        builder.xrefs(xrefs.isEmpty() ? null : xrefs);</span>
+<span class="fc bfc" id="L299" title="All 2 branches covered.">        builder.affiliations(affiliations.isEmpty() ? null : affiliations);</span>
+
+<span class="fc" id="L301">        return builder.build();</span>
+    }
+
+    /**
+     * Contrib 파싱 / Parse Contrib
+     * DTD: &lt;!ATTLIST contrib contrib-type CDATA #IMPLIED corresp (yes | no) #IMPLIED ...&gt;
+     */
+    public static Contrib parseContrib(XMLStreamReader reader) throws XMLStreamException {
+<span class="fc" id="L309">        String contribType = reader.getAttributeValue(null, &quot;contrib-type&quot;);</span>
+<span class="fc" id="L310">        String corresp = reader.getAttributeValue(null, &quot;corresp&quot;);</span>
+<span class="fc" id="L311">        String deceased = reader.getAttributeValue(null, &quot;deceased&quot;);</span>
+<span class="fc" id="L312">        String equalContrib = reader.getAttributeValue(null, &quot;equal-contrib&quot;);</span>
+<span class="fc" id="L313">        String id = reader.getAttributeValue(null, &quot;id&quot;);</span>
+<span class="fc" id="L314">        String rid = reader.getAttributeValue(null, &quot;rid&quot;);</span>
+
+<span class="fc" id="L316">        Contrib.ContribBuilder builder = Contrib.builder()</span>
+<span class="fc" id="L317">                .contribType(contribType)</span>
+<span class="fc" id="L318">                .corresp(corresp)</span>
+<span class="fc" id="L319">                .deceased(deceased)</span>
+<span class="fc" id="L320">                .equalContrib(equalContrib)</span>
+<span class="fc" id="L321">                .id(id)</span>
+<span class="fc" id="L322">                .rid(rid);</span>
+
+<span class="fc" id="L324">        List&lt;ContribId&gt; contribIds = new ArrayList&lt;&gt;();</span>
+<span class="fc" id="L325">        List&lt;Degrees&gt; degrees = new ArrayList&lt;&gt;();</span>
+<span class="fc" id="L326">        List&lt;Address&gt; addresses = new ArrayList&lt;&gt;();</span>
+<span class="fc" id="L327">        List&lt;Aff&gt; affiliations = new ArrayList&lt;&gt;();</span>
+<span class="fc" id="L328">        List&lt;Email&gt; emails = new ArrayList&lt;&gt;();</span>
+<span class="fc" id="L329">        List&lt;ExtLink&gt; extLinks = new ArrayList&lt;&gt;();</span>
+<span class="fc" id="L330">        List&lt;Fn&gt; footnotes = new ArrayList&lt;&gt;();</span>
+<span class="fc" id="L331">        List&lt;Role&gt; roles = new ArrayList&lt;&gt;();</span>
+<span class="fc" id="L332">        List&lt;Uri&gt; uris = new ArrayList&lt;&gt;();</span>
+<span class="fc" id="L333">        List&lt;Xref&gt; xrefs = new ArrayList&lt;&gt;();</span>
+
+        while (true) {
+<span class="fc" id="L336">            int event = reader.next();</span>
+
+<span class="fc bfc" id="L338" title="All 2 branches covered.">            if (event == XMLStreamConstants.START_ELEMENT) {</span>
+<span class="fc" id="L339">                String localName = reader.getLocalName();</span>
+
+<span class="fc bfc" id="L341" title="All 19 branches covered.">                switch (localName) {</span>
+                    case &quot;contrib-id&quot;:
+<span class="fc" id="L343">                        contribIds.add(parseContribId(reader));</span>
+<span class="fc" id="L344">                        break;</span>
+                    case &quot;name&quot;:
+<span class="fc" id="L346">                        builder.name(parseName(reader));</span>
+<span class="fc" id="L347">                        break;</span>
+                    case &quot;string-name&quot;:
+<span class="fc" id="L349">                        builder.stringName(parseStringName(reader));</span>
+<span class="fc" id="L350">                        break;</span>
+                    case &quot;collab&quot;:
+<span class="fc" id="L352">                        builder.collab(parseCollab(reader));</span>
+<span class="fc" id="L353">                        break;</span>
+                    case &quot;anonymous&quot;:
+<span class="fc" id="L355">                        builder.anonymous(parseAnonymous(reader));</span>
+<span class="fc" id="L356">                        break;</span>
+                    case &quot;degrees&quot;:
+<span class="fc" id="L358">                        degrees.add(parseDegrees(reader));</span>
+<span class="fc" id="L359">                        break;</span>
+                    case &quot;address&quot;:
+<span class="fc" id="L361">                        addresses.add(parseAddress(reader));</span>
+<span class="fc" id="L362">                        break;</span>
+                    case &quot;aff&quot;:
+<span class="fc" id="L364">                        affiliations.add(parseAff(reader));</span>
+<span class="fc" id="L365">                        break;</span>
+                    case &quot;author-comment&quot;:
+<span class="fc" id="L367">                        builder.authorComment(parseAuthorComment(reader));</span>
+<span class="fc" id="L368">                        break;</span>
+                    case &quot;bio&quot;:
+<span class="fc" id="L370">                        builder.bio(parseBio(reader));</span>
+<span class="fc" id="L371">                        break;</span>
+                    case &quot;email&quot;:
+<span class="fc" id="L373">                        emails.add(parseEmail(reader));</span>
+<span class="fc" id="L374">                        break;</span>
+                    case &quot;etal&quot;:
+<span class="fc" id="L376">                        builder.etal(parseEtal(reader));</span>
+<span class="fc" id="L377">                        break;</span>
+                    case &quot;ext-link&quot;:
+<span class="fc" id="L379">                        extLinks.add(parseExtLink(reader));</span>
+<span class="fc" id="L380">                        break;</span>
+                    case &quot;fn&quot;:
+<span class="fc" id="L382">                        footnotes.add(parseFn(reader));</span>
+<span class="fc" id="L383">                        break;</span>
+                    case &quot;on-behalf-of&quot;:
+<span class="fc" id="L385">                        builder.onBehalfOf(parseOnBehalfOf(reader));</span>
+<span class="fc" id="L386">                        break;</span>
+                    case &quot;role&quot;:
+<span class="fc" id="L388">                        roles.add(parseRole(reader));</span>
+<span class="fc" id="L389">                        break;</span>
+                    case &quot;uri&quot;:
+<span class="fc" id="L391">                        uris.add(parseUri(reader));</span>
+<span class="fc" id="L392">                        break;</span>
+                    case &quot;xref&quot;:
+<span class="fc" id="L394">                        xrefs.add(parseXref(reader));</span>
+<span class="fc" id="L395">                        break;</span>
+                    default:
+<span class="fc" id="L397">                        skipElement(reader);</span>
+                        break;
+                }
+<span class="fc bfc" id="L400" title="All 2 branches covered.">            } else if (event == XMLStreamConstants.END_ELEMENT) {</span>
+<span class="pc bpc" id="L401" title="1 of 2 branches missed.">                if (reader.getLocalName().equals(&quot;contrib&quot;)) {</span>
+<span class="fc" id="L402">                    break;</span>
+                }
+            }
+<span class="fc" id="L405">        }</span>
+
+<span class="fc bfc" id="L407" title="All 2 branches covered.">        builder.contribIds(contribIds.isEmpty() ? null : contribIds);</span>
+<span class="fc bfc" id="L408" title="All 2 branches covered.">        builder.degrees(degrees.isEmpty() ? null : degrees);</span>
+<span class="fc bfc" id="L409" title="All 2 branches covered.">        builder.addresses(addresses.isEmpty() ? null : addresses);</span>
+<span class="fc bfc" id="L410" title="All 2 branches covered.">        builder.affiliations(affiliations.isEmpty() ? null : affiliations);</span>
+<span class="fc bfc" id="L411" title="All 2 branches covered.">        builder.emails(emails.isEmpty() ? null : emails);</span>
+<span class="fc bfc" id="L412" title="All 2 branches covered.">        builder.extLinks(extLinks.isEmpty() ? null : extLinks);</span>
+<span class="fc bfc" id="L413" title="All 2 branches covered.">        builder.footnotes(footnotes.isEmpty() ? null : footnotes);</span>
+<span class="fc bfc" id="L414" title="All 2 branches covered.">        builder.roles(roles.isEmpty() ? null : roles);</span>
+<span class="fc bfc" id="L415" title="All 2 branches covered.">        builder.uris(uris.isEmpty() ? null : uris);</span>
+<span class="fc bfc" id="L416" title="All 2 branches covered.">        builder.xrefs(xrefs.isEmpty() ? null : xrefs);</span>
+
+<span class="fc" id="L418">        return builder.build();</span>
+    }
+
+    /**
+     * Aff 파싱 / Parse Aff
+     * DTD: &lt;!ATTLIST aff id ID #IMPLIED&gt;
+     */
+    /**
+     * Aff (소속) 파싱 / Parse Aff (Affiliation)
+     *
+     * KR: 소속 정보 파싱. 텍스트 또는 구조화된 institution-wrap, addr-line 등을 포함.
+     * EN: Parse affiliation info. Contains text or structured institution-wrap, addr-line, etc.
+     *
+     * DTD: &lt;!ELEMENT aff (#PCDATA | %address-elements; | %aff-elements;)*&gt;
+     */
+    public static Aff parseAff(XMLStreamReader reader) throws XMLStreamException {
+<span class="fc" id="L434">        String id = reader.getAttributeValue(null, &quot;id&quot;);</span>
+<span class="fc" id="L435">        String rid = reader.getAttributeValue(null, &quot;rid&quot;);</span>
+<span class="fc" id="L436">        String contentType = reader.getAttributeValue(null, &quot;content-type&quot;);</span>
+<span class="fc" id="L437">        String specificUse = reader.getAttributeValue(null, &quot;specific-use&quot;);</span>
+
+<span class="fc" id="L439">        List&lt;InstitutionWrap&gt; institutionWraps = new ArrayList&lt;&gt;();</span>
+<span class="fc" id="L440">        List&lt;AddrLine&gt; addrLines = new ArrayList&lt;&gt;();</span>
+<span class="fc" id="L441">        StringBuilder textContent = new StringBuilder();</span>
+
+        while (true) {
+<span class="fc" id="L444">            int event = reader.next();</span>
+
+<span class="fc bfc" id="L446" title="All 2 branches covered.">            if (event == XMLStreamConstants.START_ELEMENT) {</span>
+<span class="fc" id="L447">                String localName = reader.getLocalName();</span>
+
+<span class="fc bfc" id="L449" title="All 3 branches covered.">                switch (localName) {</span>
+                    case &quot;institution-wrap&quot;:
+<span class="fc" id="L451">                        institutionWraps.add(parseInstitutionWrap(reader));</span>
+<span class="fc" id="L452">                        break;</span>
+                    case &quot;addr-line&quot;:
+<span class="fc" id="L454">                        addrLines.add(parseAddrLine(reader));</span>
+<span class="fc" id="L455">                        break;</span>
+                    default:
+                        // 기타 요소는 스킵하되 텍스트는 수집
+<span class="fc" id="L458">                        skipElement(reader);</span>
+                        break;
+                }
+<span class="fc bfc" id="L461" title="All 2 branches covered.">            } else if (event == XMLStreamConstants.CHARACTERS) {</span>
+<span class="fc" id="L462">                String text = reader.getText().trim();</span>
+<span class="fc bfc" id="L463" title="All 2 branches covered.">                if (!text.isEmpty()) {</span>
+<span class="fc bfc" id="L464" title="All 2 branches covered.">                    if (textContent.length() &gt; 0) {</span>
+<span class="fc" id="L465">                        textContent.append(&quot; &quot;);</span>
+                    }
+<span class="fc" id="L467">                    textContent.append(text);</span>
+                }
+<span class="pc bpc" id="L469" title="1 of 2 branches missed.">            } else if (event == XMLStreamConstants.END_ELEMENT) {</span>
+<span class="pc bpc" id="L470" title="1 of 2 branches missed.">                if (reader.getLocalName().equals(&quot;aff&quot;)) {</span>
+<span class="fc" id="L471">                    break;</span>
+                }
+            }
+<span class="fc" id="L474">        }</span>
+
+<span class="fc" id="L476">        return Aff.builder()</span>
+<span class="fc" id="L477">                .id(id)</span>
+<span class="fc" id="L478">                .rid(rid)</span>
+<span class="fc" id="L479">                .contentType(contentType)</span>
+<span class="fc" id="L480">                .specificUse(specificUse)</span>
+<span class="fc bfc" id="L481" title="All 2 branches covered.">                .institutionWraps(institutionWraps.isEmpty() ? null : institutionWraps)</span>
+<span class="fc bfc" id="L482" title="All 2 branches covered.">                .addrLines(addrLines.isEmpty() ? null : addrLines)</span>
+<span class="fc bfc" id="L483" title="All 2 branches covered.">                .value(textContent.length() &gt; 0 ? textContent.toString() : null)</span>
+<span class="fc" id="L484">                .build();</span>
+    }
+
+    /**
+     * AddrLine 파싱 / Parse AddrLine
+     *
+     * KR: 주소 라인 파싱 (하나의 물리적/논리적 주소 라인).
+     * EN: Parse address line (one physical/logical line of address).
+     */
+    private static AddrLine parseAddrLine(XMLStreamReader reader) throws XMLStreamException {
+<span class="fc" id="L494">        String content = parseTextContent(reader, &quot;addr-line&quot;);</span>
+<span class="fc" id="L495">        return AddrLine.builder().value(content).build();</span>
+    }
+
+    /**
+     * InstitutionWrap 파싱 / Parse InstitutionWrap
+     *
+     * KR: 기관 래퍼 파싱 (재귀 구조 지원).
+     * EN: Parse institution wrap (supports recursive structure).
+     */
+    private static InstitutionWrap parseInstitutionWrap(XMLStreamReader reader) throws XMLStreamException {
+<span class="fc" id="L505">        List&lt;InstitutionId&gt; institutionIds = new ArrayList&lt;&gt;();</span>
+<span class="fc" id="L506">        List&lt;Institution&gt; institutions = new ArrayList&lt;&gt;();</span>
+<span class="fc" id="L507">        List&lt;InstitutionWrap&gt; childWraps = new ArrayList&lt;&gt;();</span>
+
+        while (true) {
+<span class="fc" id="L510">            int event = reader.next();</span>
+
+<span class="fc bfc" id="L512" title="All 2 branches covered.">            if (event == XMLStreamConstants.START_ELEMENT) {</span>
+<span class="fc" id="L513">                String localName = reader.getLocalName();</span>
+
+<span class="fc bfc" id="L515" title="All 4 branches covered.">                switch (localName) {</span>
+                    case &quot;institution-id&quot;:
+<span class="fc" id="L517">                        institutionIds.add(parseInstitutionId(reader));</span>
+<span class="fc" id="L518">                        break;</span>
+                    case &quot;institution&quot;:
+<span class="fc" id="L520">                        institutions.add(parseInstitution(reader));</span>
+<span class="fc" id="L521">                        break;</span>
+                    case &quot;institution-wrap&quot;:
+<span class="fc" id="L523">                        childWraps.add(parseInstitutionWrap(reader)); // Recursive</span>
+<span class="fc" id="L524">                        break;</span>
+                    default:
+<span class="fc" id="L526">                        skipElement(reader);</span>
+                        break;
+                }
+<span class="fc bfc" id="L529" title="All 2 branches covered.">            } else if (event == XMLStreamConstants.END_ELEMENT) {</span>
+<span class="pc bpc" id="L530" title="1 of 2 branches missed.">                if (reader.getLocalName().equals(&quot;institution-wrap&quot;)) {</span>
+<span class="fc" id="L531">                    break;</span>
+                }
+            }
+<span class="fc" id="L534">        }</span>
+
+<span class="fc" id="L536">        return InstitutionWrap.builder()</span>
+<span class="fc bfc" id="L537" title="All 2 branches covered.">                .institutionIds(institutionIds.isEmpty() ? null : institutionIds)</span>
+<span class="fc bfc" id="L538" title="All 2 branches covered.">                .institutions(institutions.isEmpty() ? null : institutions)</span>
+<span class="fc bfc" id="L539" title="All 2 branches covered.">                .institutionWraps(childWraps.isEmpty() ? null : childWraps)</span>
+<span class="fc" id="L540">                .build();</span>
+    }
+
+    /**
+     * Institution 파싱 / Parse Institution
+     *
+     * KR: 기관명 파싱.
+     * EN: Parse institution name.
+     */
+    private static Institution parseInstitution(XMLStreamReader reader) throws XMLStreamException {
+<span class="fc" id="L550">        String contentType = reader.getAttributeValue(null, &quot;content-type&quot;);</span>
+<span class="fc" id="L551">        String id = reader.getAttributeValue(null, &quot;id&quot;);</span>
+<span class="fc" id="L552">        String specificUse = reader.getAttributeValue(null, &quot;specific-use&quot;);</span>
+<span class="fc" id="L553">        String xlinkHref = reader.getAttributeValue(null, &quot;xlink:href&quot;);</span>
+<span class="fc" id="L554">        String value = parseTextContent(reader, &quot;institution&quot;);</span>
+
+<span class="fc" id="L556">        return Institution.builder()</span>
+<span class="fc" id="L557">                .contentType(contentType)</span>
+<span class="fc" id="L558">                .id(id)</span>
+<span class="fc" id="L559">                .specificUse(specificUse)</span>
+<span class="fc" id="L560">                .xlinkHref(xlinkHref)</span>
+<span class="fc" id="L561">                .content(value)</span>
+<span class="fc" id="L562">                .build();</span>
+    }
+
+    /**
+     * InstitutionId 파싱 / Parse InstitutionId
+     *
+     * KR: 기관 ID 파싱 (ROR, ISNI 등).
+     * EN: Parse institution ID (ROR, ISNI, etc.).
+     */
+    private static InstitutionId parseInstitutionId(XMLStreamReader reader) throws XMLStreamException {
+<span class="fc" id="L572">        String contentType = reader.getAttributeValue(null, &quot;content-type&quot;);</span>
+<span class="fc" id="L573">        String institutionIdType = reader.getAttributeValue(null, &quot;institution-id-type&quot;);</span>
+<span class="fc" id="L574">        String specificUse = reader.getAttributeValue(null, &quot;specific-use&quot;);</span>
+<span class="fc" id="L575">        String value = parseTextContent(reader, &quot;institution-id&quot;);</span>
+
+<span class="fc" id="L577">        return InstitutionId.builder()</span>
+<span class="fc" id="L578">                .contentType(contentType)</span>
+<span class="fc" id="L579">                .institutionIdType(InstitutionIdType.fromValue(institutionIdType))</span>
+<span class="fc" id="L580">                .specificUse(specificUse)</span>
+<span class="fc" id="L581">                .value(value)</span>
+<span class="fc" id="L582">                .build();</span>
+    }
+
+    /**
+     * PmcPubDate 파싱 / Parse PmcPubDate
+     * DTD: &lt;!ATTLIST pub-date pub-type CDATA #IMPLIED publication-format CDATA #IMPLIED ...&gt;
+     */
+    public static PmcPubDate parsePmcPubDate(XMLStreamReader reader) throws XMLStreamException {
+<span class="fc" id="L590">        String pubType = reader.getAttributeValue(null, &quot;pub-type&quot;);</span>
+<span class="fc" id="L591">        String publicationFormat = reader.getAttributeValue(null, &quot;publication-format&quot;);</span>
+<span class="fc" id="L592">        String dateType = reader.getAttributeValue(null, &quot;date-type&quot;);</span>
+<span class="fc" id="L593">        String iso8601Date = reader.getAttributeValue(null, &quot;iso-8601-date&quot;);</span>
+
+<span class="fc" id="L595">        PmcPubDate.PmcPubDateBuilder builder = PmcPubDate.builder()</span>
+<span class="fc" id="L596">                .pubType(pubType)</span>
+<span class="fc" id="L597">                .publicationFormat(publicationFormat)</span>
+<span class="fc" id="L598">                .dateType(dateType)</span>
+<span class="fc" id="L599">                .iso8601Date(iso8601Date);</span>
+
+        while (true) {
+<span class="fc" id="L602">            int event = reader.next();</span>
+
+<span class="fc bfc" id="L604" title="All 2 branches covered.">            if (event == XMLStreamConstants.START_ELEMENT) {</span>
+<span class="fc" id="L605">                String localName = reader.getLocalName();</span>
+
+<span class="fc bfc" id="L607" title="All 7 branches covered.">                switch (localName) {</span>
+                    case &quot;day&quot;:
+<span class="fc" id="L609">                        builder.day(parseDay(reader));</span>
+<span class="fc" id="L610">                        break;</span>
+                    case &quot;month&quot;:
+<span class="fc" id="L612">                        builder.month(parseMonth(reader));</span>
+<span class="fc" id="L613">                        break;</span>
+                    case &quot;season&quot;:
+<span class="fc" id="L615">                        builder.season(parseSeason(reader));</span>
+<span class="fc" id="L616">                        break;</span>
+                    case &quot;year&quot;:
+<span class="fc" id="L618">                        builder.year(parseYear(reader));</span>
+<span class="fc" id="L619">                        break;</span>
+                    case &quot;era&quot;:
+<span class="fc" id="L621">                        builder.era(parseEra(reader));</span>
+<span class="fc" id="L622">                        break;</span>
+                    case &quot;string-date&quot;:
+<span class="fc" id="L624">                        builder.stringDate(parseStringDate(reader));</span>
+<span class="fc" id="L625">                        break;</span>
+                    default:
+<span class="fc" id="L627">                        skipElement(reader);</span>
+                        break;
+                }
+<span class="fc bfc" id="L630" title="All 2 branches covered.">            } else if (event == XMLStreamConstants.END_ELEMENT) {</span>
+<span class="pc bpc" id="L631" title="1 of 2 branches missed.">                if (reader.getLocalName().equals(&quot;pub-date&quot;)) {</span>
+<span class="fc" id="L632">                    break;</span>
+                }
+            }
+<span class="fc" id="L635">        }</span>
+
+<span class="fc" id="L637">        return builder.build();</span>
+    }
+
+    /**
+     * KwdGroup 파싱 / Parse KwdGroup
+     */
+    public static KwdGroup parseKwdGroup(XMLStreamReader reader) throws XMLStreamException {
+<span class="fc" id="L644">        String assigningAuthority = reader.getAttributeValue(null, &quot;assigning-authority&quot;);</span>
+<span class="fc" id="L645">        String kwdGroupType = reader.getAttributeValue(null, &quot;kwd-group-type&quot;);</span>
+<span class="fc" id="L646">        String specificUse = reader.getAttributeValue(null, &quot;specific-use&quot;);</span>
+<span class="fc" id="L647">        String vocab = reader.getAttributeValue(null, &quot;vocab&quot;);</span>
+<span class="fc" id="L648">        String vocabIdentifier = reader.getAttributeValue(null, &quot;vocab-identifier&quot;);</span>
+<span class="fc" id="L649">        String xmlLang = reader.getAttributeValue(null, &quot;xml:lang&quot;);</span>
+
+<span class="fc" id="L651">        KwdGroup.KwdGroupBuilder builder = KwdGroup.builder()</span>
+<span class="fc" id="L652">                .assigningAuthority(assigningAuthority)</span>
+<span class="fc" id="L653">                .kwdGroupType(kwdGroupType)</span>
+<span class="fc" id="L654">                .specificUse(specificUse)</span>
+<span class="fc" id="L655">                .vocab(vocab)</span>
+<span class="fc" id="L656">                .vocabIdentifier(vocabIdentifier)</span>
+<span class="fc" id="L657">                .xmlLang(xmlLang);</span>
+
+<span class="fc" id="L659">        List&lt;Label&gt; labels = new ArrayList&lt;&gt;();</span>
+<span class="fc" id="L660">        List&lt;Title&gt; titles = new ArrayList&lt;&gt;();</span>
+<span class="fc" id="L661">        List&lt;Kwd&gt; keywords = new ArrayList&lt;&gt;();</span>
+
+        while (true) {
+<span class="fc" id="L664">            int event = reader.next();</span>
+
+<span class="fc bfc" id="L666" title="All 2 branches covered.">            if (event == XMLStreamConstants.START_ELEMENT) {</span>
+<span class="fc" id="L667">                String localName = reader.getLocalName();</span>
+
+<span class="fc bfc" id="L669" title="All 4 branches covered.">                switch (localName) {</span>
+                    case &quot;label&quot;:
+<span class="fc" id="L671">                        labels.add(parseLabel(reader));</span>
+<span class="fc" id="L672">                        break;</span>
+                    case &quot;title&quot;:
+<span class="fc" id="L674">                        titles.add(parseTitle(reader));</span>
+<span class="fc" id="L675">                        break;</span>
+                    case &quot;kwd&quot;:
+<span class="fc" id="L677">                        keywords.add(parseKwd(reader));</span>
+<span class="fc" id="L678">                        break;</span>
+                    default:
+<span class="fc" id="L680">                        skipElement(reader);</span>
+                        break;
+                }
+<span class="fc bfc" id="L683" title="All 2 branches covered.">            } else if (event == XMLStreamConstants.END_ELEMENT) {</span>
+<span class="pc bpc" id="L684" title="1 of 2 branches missed.">                if (reader.getLocalName().equals(&quot;kwd-group&quot;)) {</span>
+<span class="fc" id="L685">                    break;</span>
+                }
+            }
+<span class="fc" id="L688">        }</span>
+
+<span class="fc bfc" id="L690" title="All 2 branches covered.">        builder.labels(labels.isEmpty() ? null : labels);</span>
+<span class="fc bfc" id="L691" title="All 2 branches covered.">        builder.titles(titles.isEmpty() ? null : titles);</span>
+<span class="fc bfc" id="L692" title="All 2 branches covered.">        builder.keywords(keywords.isEmpty() ? null : keywords);</span>
+<span class="fc" id="L693">        return builder.build();</span>
+    }
+
+    /**
+     * PmcAbstract 파싱 / Parse PmcAbstract
+     */
+    public static PmcAbstract parsePmcAbstract(XMLStreamReader reader) throws XMLStreamException {
+<span class="fc" id="L700">        String abstractType = reader.getAttributeValue(null, &quot;abstract-type&quot;);</span>
+
+<span class="fc" id="L702">        PmcAbstract.PmcAbstractBuilder builder = PmcAbstract.builder()</span>
+<span class="fc" id="L703">                .abstractType(abstractType);</span>
+
+<span class="fc" id="L705">        List&lt;P&gt; paragraphs = new ArrayList&lt;&gt;();</span>
+<span class="fc" id="L706">        List&lt;Sec&gt; sections = new ArrayList&lt;&gt;();</span>
+
+        while (true) {
+<span class="fc" id="L709">            int event = reader.next();</span>
+
+<span class="fc bfc" id="L711" title="All 2 branches covered.">            if (event == XMLStreamConstants.START_ELEMENT) {</span>
+<span class="fc" id="L712">                String localName = reader.getLocalName();</span>
+
+<span class="fc bfc" id="L714" title="All 4 branches covered.">                switch (localName) {</span>
+                    case &quot;title&quot;:
+<span class="fc" id="L716">                        builder.title(parseTitle(reader));</span>
+<span class="fc" id="L717">                        break;</span>
+                    case &quot;p&quot;:
+<span class="fc" id="L719">                        paragraphs.add(parseP(reader));</span>
+<span class="fc" id="L720">                        break;</span>
+                    case &quot;sec&quot;:
+<span class="fc" id="L722">                        sections.add(BodyParser.parseSec(reader));</span>
+<span class="fc" id="L723">                        break;</span>
+                    default:
+<span class="fc" id="L725">                        skipElement(reader);</span>
+                        break;
+                }
+<span class="fc bfc" id="L728" title="All 2 branches covered.">            } else if (event == XMLStreamConstants.END_ELEMENT) {</span>
+<span class="pc bpc" id="L729" title="1 of 2 branches missed.">                if (reader.getLocalName().equals(&quot;abstract&quot;)) {</span>
+<span class="fc" id="L730">                    break;</span>
+                }
+            }
+<span class="fc" id="L733">        }</span>
+
+<span class="fc bfc" id="L735" title="All 2 branches covered.">        builder.paragraphs(paragraphs.isEmpty() ? null : paragraphs);</span>
+<span class="fc bfc" id="L736" title="All 2 branches covered.">        builder.sections(sections.isEmpty() ? null : sections);</span>
+
+<span class="fc" id="L738">        return builder.build();</span>
+    }
+
+    /**
+     * SupplementaryMaterial 파싱 / Parse SupplementaryMaterial
+     * DTD: &lt;!ELEMENT supplementary-material (
+     *          (object-id)*,
+     *          label?,
+     *          (caption)*,
+     *          abstract*,
+     *          kwd-group*,
+     *          alt-text*,
+     *          long-desc*,
+     *          (email | ext-link | uri)*,
+     *          (alternatives | disp-formula | disp-formula-group |
+     *           chem-struct-wrap | disp-quote | speech | statement |
+     *           verse-group | table-wrap | p | def-list | list |
+     *           array | code | graphic | media | preformat)*,
+     *          (attrib | permissions)*
+     *      )&gt;
+     */
+    public static SupplementaryMaterial parseSupplementaryMaterial(XMLStreamReader reader) throws XMLStreamException {
+        // Parse attributes
+<span class="fc" id="L761">        String contentType = reader.getAttributeValue(null, &quot;content-type&quot;);</span>
+<span class="fc" id="L762">        String id = reader.getAttributeValue(null, &quot;id&quot;);</span>
+<span class="fc" id="L763">        String mimeSubtype = reader.getAttributeValue(null, &quot;mime-subtype&quot;);</span>
+<span class="fc" id="L764">        String mimetype = reader.getAttributeValue(null, &quot;mimetype&quot;);</span>
+<span class="fc" id="L765">        String orientation = reader.getAttributeValue(null, &quot;orientation&quot;);</span>
+<span class="fc" id="L766">        String position = reader.getAttributeValue(null, &quot;position&quot;);</span>
+<span class="fc" id="L767">        String specificUse = reader.getAttributeValue(null, &quot;specific-use&quot;);</span>
+
+        // Parse xlink attributes
+<span class="fc" id="L770">        String xlinkActuate = reader.getAttributeValue(&quot;http://www.w3.org/1999/xlink&quot;, &quot;actuate&quot;);</span>
+<span class="fc" id="L771">        String xlinkHref = reader.getAttributeValue(&quot;http://www.w3.org/1999/xlink&quot;, &quot;href&quot;);</span>
+<span class="fc" id="L772">        String xlinkRole = reader.getAttributeValue(&quot;http://www.w3.org/1999/xlink&quot;, &quot;role&quot;);</span>
+<span class="fc" id="L773">        String xlinkShow = reader.getAttributeValue(&quot;http://www.w3.org/1999/xlink&quot;, &quot;show&quot;);</span>
+<span class="fc" id="L774">        String xlinkTitle = reader.getAttributeValue(&quot;http://www.w3.org/1999/xlink&quot;, &quot;title&quot;);</span>
+<span class="fc" id="L775">        String xlinkType = reader.getAttributeValue(&quot;http://www.w3.org/1999/xlink&quot;, &quot;type&quot;);</span>
+
+        // Parse xml attributes
+<span class="fc" id="L778">        String xmlBase = reader.getAttributeValue(&quot;http://www.w3.org/XML/1998/namespace&quot;, &quot;base&quot;);</span>
+<span class="fc" id="L779">        String xmlLang = reader.getAttributeValue(&quot;http://www.w3.org/XML/1998/namespace&quot;, &quot;lang&quot;);</span>
+
+<span class="fc" id="L781">        SupplementaryMaterial.SupplementaryMaterialBuilder builder = SupplementaryMaterial.builder()</span>
+<span class="fc" id="L782">                .contentType(contentType)</span>
+<span class="fc" id="L783">                .id(id)</span>
+<span class="fc" id="L784">                .mimeSubtype(mimeSubtype)</span>
+<span class="fc" id="L785">                .mimetype(mimetype)</span>
+<span class="fc" id="L786">                .orientation(Orientation.fromValue(orientation))</span>
+<span class="fc" id="L787">                .position(Position.fromValue(position))</span>
+<span class="fc" id="L788">                .specificUse(specificUse)</span>
+<span class="fc" id="L789">                .xlinkActuate(XlinkActuate.fromValue(xlinkActuate))</span>
+<span class="fc" id="L790">                .xlinkHref(xlinkHref)</span>
+<span class="fc" id="L791">                .xlinkRole(xlinkRole)</span>
+<span class="fc" id="L792">                .xlinkShow(XlinkShow.fromValue(xlinkShow))</span>
+<span class="fc" id="L793">                .xlinkTitle(xlinkTitle)</span>
+<span class="fc" id="L794">                .xlinkType(xlinkType)</span>
+<span class="fc" id="L795">                .xmlBase(xmlBase)</span>
+<span class="fc" id="L796">                .xmlLang(xmlLang);</span>
+
+        // Parse child elements
+<span class="fc" id="L799">        List&lt;ObjectId&gt; objectIds = new ArrayList&lt;&gt;();</span>
+<span class="fc" id="L800">        List&lt;Caption&gt; captions = new ArrayList&lt;&gt;();</span>
+<span class="fc" id="L801">        List&lt;PmcAbstract&gt; abstracts = new ArrayList&lt;&gt;();</span>
+<span class="fc" id="L802">        List&lt;KwdGroup&gt; kwdGroups = new ArrayList&lt;&gt;();</span>
+<span class="fc" id="L803">        List&lt;AltText&gt; altTexts = new ArrayList&lt;&gt;();</span>
+<span class="fc" id="L804">        List&lt;LongDesc&gt; longDescs = new ArrayList&lt;&gt;();</span>
+<span class="fc" id="L805">        List&lt;Email&gt; emails = new ArrayList&lt;&gt;();</span>
+<span class="fc" id="L806">        List&lt;ExtLink&gt; extLinks = new ArrayList&lt;&gt;();</span>
+<span class="fc" id="L807">        List&lt;Uri&gt; uris = new ArrayList&lt;&gt;();</span>
+<span class="fc" id="L808">        List&lt;Alternatives&gt; alternatives = new ArrayList&lt;&gt;();</span>
+<span class="fc" id="L809">        List&lt;DispFormula&gt; dispFormulas = new ArrayList&lt;&gt;();</span>
+<span class="fc" id="L810">        List&lt;DispFormulaGroup&gt; dispFormulaGroups = new ArrayList&lt;&gt;();</span>
+<span class="fc" id="L811">        List&lt;ChemStructWrap&gt; chemStructWraps = new ArrayList&lt;&gt;();</span>
+<span class="fc" id="L812">        List&lt;DispQuote&gt; dispQuotes = new ArrayList&lt;&gt;();</span>
+<span class="fc" id="L813">        List&lt;Speech&gt; speeches = new ArrayList&lt;&gt;();</span>
+<span class="fc" id="L814">        List&lt;Statement&gt; statements = new ArrayList&lt;&gt;();</span>
+<span class="fc" id="L815">        List&lt;VerseGroup&gt; verseGroups = new ArrayList&lt;&gt;();</span>
+<span class="fc" id="L816">        List&lt;TableWrap&gt; tableWraps = new ArrayList&lt;&gt;();</span>
+<span class="fc" id="L817">        List&lt;P&gt; paragraphs = new ArrayList&lt;&gt;();</span>
+<span class="fc" id="L818">        List&lt;DefList&gt; defLists = new ArrayList&lt;&gt;();</span>
+<span class="fc" id="L819">        List&lt;PmcList&gt; lists = new ArrayList&lt;&gt;();</span>
+<span class="fc" id="L820">        List&lt;Array&gt; arrays = new ArrayList&lt;&gt;();</span>
+<span class="fc" id="L821">        List&lt;Code&gt; codes = new ArrayList&lt;&gt;();</span>
+<span class="fc" id="L822">        List&lt;Graphic&gt; graphics = new ArrayList&lt;&gt;();</span>
+<span class="fc" id="L823">        List&lt;Media&gt; medias = new ArrayList&lt;&gt;();</span>
+<span class="fc" id="L824">        List&lt;Preformat&gt; preformats = new ArrayList&lt;&gt;();</span>
+<span class="fc" id="L825">        List&lt;Attrib&gt; attribs = new ArrayList&lt;&gt;();</span>
+<span class="fc" id="L826">        List&lt;Permissions&gt; permissionsList = new ArrayList&lt;&gt;();</span>
+
+        while (true) {
+<span class="fc" id="L829">            int event = reader.next();</span>
+
+<span class="fc bfc" id="L831" title="All 2 branches covered.">            if (event == XMLStreamConstants.START_ELEMENT) {</span>
+<span class="fc" id="L832">                String localName = reader.getLocalName();</span>
+
+<span class="fc bfc" id="L834" title="All 30 branches covered.">                switch (localName) {</span>
+                    case &quot;object-id&quot;:
+<span class="fc" id="L836">                        objectIds.add(parseObjectId(reader));</span>
+<span class="fc" id="L837">                        break;</span>
+                    case &quot;label&quot;:
+<span class="fc" id="L839">                        builder.label(parseLabel(reader));</span>
+<span class="fc" id="L840">                        break;</span>
+                    case &quot;caption&quot;:
+<span class="fc" id="L842">                        captions.add(parseCaption(reader));</span>
+<span class="fc" id="L843">                        break;</span>
+                    case &quot;abstract&quot;:
+<span class="fc" id="L845">                        abstracts.add(parsePmcAbstract(reader));</span>
+<span class="fc" id="L846">                        break;</span>
+                    case &quot;kwd-group&quot;:
+<span class="fc" id="L848">                        kwdGroups.add(parseKwdGroup(reader));</span>
+<span class="fc" id="L849">                        break;</span>
+                    case &quot;alt-text&quot;:
+<span class="fc" id="L851">                        altTexts.add(PmcXmlParser.parseAltText(reader));</span>
+<span class="fc" id="L852">                        break;</span>
+                    case &quot;long-desc&quot;:
+<span class="fc" id="L854">                        longDescs.add(PmcXmlParser.parseLongDesc(reader));</span>
+<span class="fc" id="L855">                        break;</span>
+                    case &quot;email&quot;:
+<span class="fc" id="L857">                        emails.add(parseEmail(reader));</span>
+<span class="fc" id="L858">                        break;</span>
+                    case &quot;ext-link&quot;:
+<span class="fc" id="L860">                        extLinks.add(parseExtLink(reader));</span>
+<span class="fc" id="L861">                        break;</span>
+                    case &quot;uri&quot;:
+<span class="fc" id="L863">                        uris.add(parseUri(reader));</span>
+<span class="fc" id="L864">                        break;</span>
+                    case &quot;alternatives&quot;:
+<span class="fc" id="L866">                        alternatives.add(parseAlternatives(reader));</span>
+<span class="fc" id="L867">                        break;</span>
+                    case &quot;disp-formula&quot;:
+<span class="fc" id="L869">                        dispFormulas.add(parseDispFormula(reader));</span>
+<span class="fc" id="L870">                        break;</span>
+                    case &quot;disp-formula-group&quot;:
+<span class="fc" id="L872">                        dispFormulaGroups.add(parseDispFormulaGroup(reader));</span>
+<span class="fc" id="L873">                        break;</span>
+                    case &quot;chem-struct-wrap&quot;:
+<span class="fc" id="L875">                        chemStructWraps.add(parseChemStructWrap(reader));</span>
+<span class="fc" id="L876">                        break;</span>
+                    case &quot;disp-quote&quot;:
+<span class="fc" id="L878">                        dispQuotes.add(parseDispQuote(reader));</span>
+<span class="fc" id="L879">                        break;</span>
+                    case &quot;speech&quot;:
+<span class="fc" id="L881">                        speeches.add(parseSpeech(reader));</span>
+<span class="fc" id="L882">                        break;</span>
+                    case &quot;statement&quot;:
+<span class="fc" id="L884">                        statements.add(parseStatement(reader));</span>
+<span class="fc" id="L885">                        break;</span>
+                    case &quot;verse-group&quot;:
+<span class="fc" id="L887">                        verseGroups.add(parseVerseGroup(reader));</span>
+<span class="fc" id="L888">                        break;</span>
+                    case &quot;table-wrap&quot;:
+<span class="fc" id="L890">                        tableWraps.add(PmcXmlParser.parseTableWrap(reader));</span>
+<span class="fc" id="L891">                        break;</span>
+                    case &quot;p&quot;:
+<span class="fc" id="L893">                        paragraphs.add(parseP(reader));</span>
+<span class="fc" id="L894">                        break;</span>
+                    case &quot;def-list&quot;:
+<span class="fc" id="L896">                        defLists.add(parseDefList(reader));</span>
+<span class="fc" id="L897">                        break;</span>
+                    case &quot;list&quot;:
+<span class="fc" id="L899">                        lists.add(parseList(reader));</span>
+<span class="fc" id="L900">                        break;</span>
+                    case &quot;array&quot;:
+<span class="fc" id="L902">                        arrays.add(parseArray(reader));</span>
+<span class="fc" id="L903">                        break;</span>
+                    case &quot;code&quot;:
+<span class="fc" id="L905">                        codes.add(parseCode(reader));</span>
+<span class="fc" id="L906">                        break;</span>
+                    case &quot;graphic&quot;:
+<span class="fc" id="L908">                        graphics.add(PmcXmlParser.parseGraphic(reader));</span>
+<span class="fc" id="L909">                        break;</span>
+                    case &quot;media&quot;:
+<span class="fc" id="L911">                        medias.add(PmcXmlParser.parseMedia(reader));</span>
+<span class="fc" id="L912">                        break;</span>
+                    case &quot;preformat&quot;:
+<span class="fc" id="L914">                        preformats.add(parsePreformat(reader));</span>
+<span class="fc" id="L915">                        break;</span>
+                    case &quot;attrib&quot;:
+<span class="fc" id="L917">                        attribs.add(parseAttrib(reader));</span>
+<span class="fc" id="L918">                        break;</span>
+                    case &quot;permissions&quot;:
+<span class="fc" id="L920">                        permissionsList.add(parsePermissions(reader));</span>
+<span class="fc" id="L921">                        break;</span>
+                    default:
+<span class="fc" id="L923">                        skipElement(reader);</span>
+                        break;
+                }
+<span class="fc bfc" id="L926" title="All 2 branches covered.">            } else if (event == XMLStreamConstants.END_ELEMENT) {</span>
+<span class="pc bpc" id="L927" title="1 of 2 branches missed.">                if (reader.getLocalName().equals(&quot;supplementary-material&quot;)) {</span>
+<span class="fc" id="L928">                    break;</span>
+                }
+            }
+<span class="fc" id="L931">        }</span>
+
+<span class="fc" id="L933">        return builder</span>
+<span class="fc bfc" id="L934" title="All 2 branches covered.">                .objectIds(objectIds.isEmpty() ? null : objectIds)</span>
+<span class="fc bfc" id="L935" title="All 2 branches covered.">                .captions(captions.isEmpty() ? null : captions)</span>
+<span class="fc bfc" id="L936" title="All 2 branches covered.">                .abstracts(abstracts.isEmpty() ? null : abstracts)</span>
+<span class="fc bfc" id="L937" title="All 2 branches covered.">                .kwdGroups(kwdGroups.isEmpty() ? null : kwdGroups)</span>
+<span class="fc bfc" id="L938" title="All 2 branches covered.">                .altTexts(altTexts.isEmpty() ? null : altTexts)</span>
+<span class="fc bfc" id="L939" title="All 2 branches covered.">                .longDescs(longDescs.isEmpty() ? null : longDescs)</span>
+<span class="fc bfc" id="L940" title="All 2 branches covered.">                .emails(emails.isEmpty() ? null : emails)</span>
+<span class="fc bfc" id="L941" title="All 2 branches covered.">                .extLinks(extLinks.isEmpty() ? null : extLinks)</span>
+<span class="fc bfc" id="L942" title="All 2 branches covered.">                .uris(uris.isEmpty() ? null : uris)</span>
+<span class="fc bfc" id="L943" title="All 2 branches covered.">                .alternatives(alternatives.isEmpty() ? null : alternatives)</span>
+<span class="fc bfc" id="L944" title="All 2 branches covered.">                .dispFormulas(dispFormulas.isEmpty() ? null : dispFormulas)</span>
+<span class="fc bfc" id="L945" title="All 2 branches covered.">                .dispFormulaGroups(dispFormulaGroups.isEmpty() ? null : dispFormulaGroups)</span>
+<span class="fc bfc" id="L946" title="All 2 branches covered.">                .chemStructWraps(chemStructWraps.isEmpty() ? null : chemStructWraps)</span>
+<span class="fc bfc" id="L947" title="All 2 branches covered.">                .speeches(speeches.isEmpty() ? null : speeches)</span>
+<span class="fc bfc" id="L948" title="All 2 branches covered.">                .statements(statements.isEmpty() ? null : statements)</span>
+<span class="fc bfc" id="L949" title="All 2 branches covered.">                .verseGroups(verseGroups.isEmpty() ? null : verseGroups)</span>
+<span class="fc bfc" id="L950" title="All 2 branches covered.">                .tableWraps(tableWraps.isEmpty() ? null : tableWraps)</span>
+<span class="fc bfc" id="L951" title="All 2 branches covered.">                .arrays(arrays.isEmpty() ? null : arrays)</span>
+<span class="fc bfc" id="L952" title="All 2 branches covered.">                .paragraphs(paragraphs.isEmpty() ? null : paragraphs)</span>
+<span class="fc bfc" id="L953" title="All 2 branches covered.">                .defLists(defLists.isEmpty() ? null : defLists)</span>
+<span class="fc bfc" id="L954" title="All 2 branches covered.">                .lists(lists.isEmpty() ? null : lists)</span>
+<span class="fc bfc" id="L955" title="All 2 branches covered.">                .codes(codes.isEmpty() ? null : codes)</span>
+<span class="fc bfc" id="L956" title="All 2 branches covered.">                .graphics(graphics.isEmpty() ? null : graphics)</span>
+<span class="fc bfc" id="L957" title="All 2 branches covered.">                .medias(medias.isEmpty() ? null : medias)</span>
+<span class="fc bfc" id="L958" title="All 2 branches covered.">                .preformats(preformats.isEmpty() ? null : preformats)</span>
+<span class="fc bfc" id="L959" title="All 2 branches covered.">                .dispQuotes(dispQuotes.isEmpty() ? null : dispQuotes)</span>
+<span class="fc bfc" id="L960" title="All 2 branches covered.">                .attribs(attribs.isEmpty() ? null : attribs)</span>
+<span class="fc bfc" id="L961" title="All 2 branches covered.">                .permissions(permissionsList.isEmpty() ? null : permissionsList)</span>
+<span class="fc" id="L962">                .build();</span>
+    }
+
+    // Simple element parsers
+    public static ArticleCategories parseArticleCategories(XMLStreamReader reader) throws XMLStreamException {
+<span class="fc" id="L967">        String value = parseTextContent(reader, &quot;article-categories&quot;);</span>
+<span class="fc" id="L968">        return ArticleCategories.builder().value(value).build();</span>
+    }
+
+    /**
+     * ArticleTitle 파싱 / Parse ArticleTitle
+     * DTD: &lt;!ELEMENT article-title (#PCDATA | %all-phrase;)*&gt;
+     * DTD: &lt;!ATTLIST article-title xml:lang NMTOKEN #IMPLIED&gt;
+     */
+    public static ArticleTitle parseArticleTitle(XMLStreamReader reader) throws XMLStreamException {
+<span class="fc" id="L977">        String xmlLang = reader.getAttributeValue(&quot;http://www.w3.org/XML/1998/namespace&quot;, &quot;lang&quot;);</span>
+<span class="fc" id="L978">        String content = parseTextContent(reader, &quot;article-title&quot;);</span>
+<span class="fc" id="L979">        return ArticleTitle.builder()</span>
+<span class="fc" id="L980">                .xmlLang(xmlLang)</span>
+<span class="fc" id="L981">                .content(content)</span>
+<span class="fc" id="L982">                .build();</span>
+    }
+
+    /**
+     * PmcArticleTitle 파싱 / Parse PmcArticleTitle (legacy)
+     */
+    public static PmcArticleTitle parsePmcArticleTitle(XMLStreamReader reader) throws XMLStreamException {
+<span class="fc" id="L989">        String value = parseTextContent(reader, &quot;article-title&quot;);</span>
+<span class="fc" id="L990">        return PmcArticleTitle.builder().value(value).build();</span>
+    }
+
+    /**
+     * Subtitle 파싱 / Parse Subtitle
+     * DTD: &lt;!ELEMENT subtitle (#PCDATA | %all-phrase;)*&gt;
+     */
+    public static Subtitle parseSubtitle(XMLStreamReader reader) throws XMLStreamException {
+<span class="fc" id="L998">        String content = parseTextContent(reader, &quot;subtitle&quot;);</span>
+<span class="fc" id="L999">        return Subtitle.builder().content(content).build();</span>
+    }
+
+    /**
+     * TransTitleGroup 파싱 / Parse TransTitleGroup
+     * DTD: &lt;!ELEMENT trans-title-group (trans-title, trans-subtitle*)&gt;
+     * DTD: &lt;!ATTLIST trans-title-group xml:lang NMTOKEN #IMPLIED&gt;
+     */
+    public static TransTitleGroup parseTransTitleGroup(XMLStreamReader reader) throws XMLStreamException {
+<span class="fc" id="L1008">        String xmlLang = reader.getAttributeValue(&quot;http://www.w3.org/XML/1998/namespace&quot;, &quot;lang&quot;);</span>
+
+<span class="fc" id="L1010">        TransTitleGroup.TransTitleGroupBuilder builder = TransTitleGroup.builder()</span>
+<span class="fc" id="L1011">                .xmlLang(xmlLang);</span>
+
+<span class="fc" id="L1013">        List&lt;TransSubtitle&gt; transSubtitles = new ArrayList&lt;&gt;();</span>
+
+        while (true) {
+<span class="fc" id="L1016">            int event = reader.next();</span>
+
+<span class="fc bfc" id="L1018" title="All 2 branches covered.">            if (event == XMLStreamConstants.START_ELEMENT) {</span>
+<span class="fc" id="L1019">                String localName = reader.getLocalName();</span>
+
+<span class="fc bfc" id="L1021" title="All 3 branches covered.">                switch (localName) {</span>
+                    case &quot;trans-title&quot;:
+<span class="fc" id="L1023">                        builder.transTitle(parseTransTitle(reader));</span>
+<span class="fc" id="L1024">                        break;</span>
+                    case &quot;trans-subtitle&quot;:
+<span class="fc" id="L1026">                        transSubtitles.add(parseTransSubtitle(reader));</span>
+<span class="fc" id="L1027">                        break;</span>
+                    default:
+<span class="fc" id="L1029">                        skipElement(reader);</span>
+                        break;
+                }
+<span class="fc bfc" id="L1032" title="All 2 branches covered.">            } else if (event == XMLStreamConstants.END_ELEMENT) {</span>
+<span class="pc bpc" id="L1033" title="1 of 2 branches missed.">                if (reader.getLocalName().equals(&quot;trans-title-group&quot;)) {</span>
+<span class="fc" id="L1034">                    break;</span>
+                }
+            }
+<span class="fc" id="L1037">        }</span>
+
+<span class="fc bfc" id="L1039" title="All 2 branches covered.">        builder.transSubtitles(transSubtitles.isEmpty() ? null : transSubtitles);</span>
+<span class="fc" id="L1040">        return builder.build();</span>
+    }
+
+    /**
+     * TransTitle 파싱 / Parse TransTitle
+     * DTD: &lt;!ELEMENT trans-title (#PCDATA | %all-phrase;)*&gt;
+     */
+    public static TransTitle parseTransTitle(XMLStreamReader reader) throws XMLStreamException {
+<span class="fc" id="L1048">        String content = parseTextContent(reader, &quot;trans-title&quot;);</span>
+<span class="fc" id="L1049">        return TransTitle.builder().content(content).build();</span>
+    }
+
+    /**
+     * TransSubtitle 파싱 / Parse TransSubtitle
+     * DTD: &lt;!ELEMENT trans-subtitle (#PCDATA | %all-phrase;)*&gt;
+     */
+    public static TransSubtitle parseTransSubtitle(XMLStreamReader reader) throws XMLStreamException {
+<span class="fc" id="L1057">        String content = parseTextContent(reader, &quot;trans-subtitle&quot;);</span>
+<span class="fc" id="L1058">        return TransSubtitle.builder().content(content).build();</span>
+    }
+
+    /**
+     * AltTitle 파싱 / Parse AltTitle
+     * DTD: &lt;!ELEMENT alt-title (#PCDATA | %all-phrase;)*&gt;
+     * DTD: &lt;!ATTLIST alt-title alt-title-type CDATA #IMPLIED&gt;
+     */
+    public static AltTitle parseAltTitle(XMLStreamReader reader) throws XMLStreamException {
+<span class="fc" id="L1067">        String altTitleType = reader.getAttributeValue(null, &quot;alt-title-type&quot;);</span>
+<span class="fc" id="L1068">        String content = parseTextContent(reader, &quot;alt-title&quot;);</span>
+<span class="fc" id="L1069">        return AltTitle.builder()</span>
+<span class="fc" id="L1070">                .altTitleType(altTitleType)</span>
+<span class="fc" id="L1071">                .content(content)</span>
+<span class="fc" id="L1072">                .build();</span>
+    }
+
+    /**
+     * FnGroup 파싱 / Parse FnGroup
+     * DTD: &lt;!ELEMENT fn-group (label?, title?, (fn)+)&gt;
+     */
+    public static FnGroup parseFnGroup(XMLStreamReader reader) throws XMLStreamException {
+<span class="fc" id="L1080">        String contentType = reader.getAttributeValue(null, &quot;content-type&quot;);</span>
+<span class="fc" id="L1081">        String id = reader.getAttributeValue(null, &quot;id&quot;);</span>
+<span class="fc" id="L1082">        String specificUse = reader.getAttributeValue(null, &quot;specific-use&quot;);</span>
+<span class="fc" id="L1083">        String xmlBase = reader.getAttributeValue(&quot;http://www.w3.org/XML/1998/namespace&quot;, &quot;base&quot;);</span>
+<span class="fc" id="L1084">        String xmlLang = reader.getAttributeValue(&quot;http://www.w3.org/XML/1998/namespace&quot;, &quot;lang&quot;);</span>
+
+<span class="fc" id="L1086">        FnGroup.FnGroupBuilder builder = FnGroup.builder()</span>
+<span class="fc" id="L1087">                .contentType(contentType)</span>
+<span class="fc" id="L1088">                .id(id)</span>
+<span class="fc" id="L1089">                .specificUse(specificUse)</span>
+<span class="fc" id="L1090">                .xmlBase(xmlBase)</span>
+<span class="fc" id="L1091">                .xmlLang(xmlLang);</span>
+
+<span class="fc" id="L1093">        List&lt;Fn&gt; footnotes = new ArrayList&lt;&gt;();</span>
+
+        while (true) {
+<span class="fc" id="L1096">            int event = reader.next();</span>
+
+<span class="fc bfc" id="L1098" title="All 2 branches covered.">            if (event == XMLStreamConstants.START_ELEMENT) {</span>
+<span class="fc" id="L1099">                String localName = reader.getLocalName();</span>
+
+<span class="fc bfc" id="L1101" title="All 4 branches covered.">                switch (localName) {</span>
+                    case &quot;label&quot;:
+<span class="fc" id="L1103">                        builder.label(parseLabel(reader));</span>
+<span class="fc" id="L1104">                        break;</span>
+                    case &quot;title&quot;:
+<span class="fc" id="L1106">                        builder.title(parseTitle(reader));</span>
+<span class="fc" id="L1107">                        break;</span>
+                    case &quot;fn&quot;:
+<span class="fc" id="L1109">                        footnotes.add(parseFn(reader));</span>
+<span class="fc" id="L1110">                        break;</span>
+                    default:
+<span class="fc" id="L1112">                        skipElement(reader);</span>
+                        break;
+                }
+<span class="fc bfc" id="L1115" title="All 2 branches covered.">            } else if (event == XMLStreamConstants.END_ELEMENT) {</span>
+<span class="pc bpc" id="L1116" title="1 of 2 branches missed.">                if (reader.getLocalName().equals(&quot;fn-group&quot;)) {</span>
+<span class="fc" id="L1117">                    break;</span>
+                }
+            }
+<span class="fc" id="L1120">        }</span>
+
+<span class="fc" id="L1122">        return builder</span>
+<span class="fc bfc" id="L1123" title="All 2 branches covered.">                .footnotes(footnotes.isEmpty() ? null : footnotes)</span>
+<span class="fc" id="L1124">                .build();</span>
+    }
+
+    public static ContribId parseContribId(XMLStreamReader reader) throws XMLStreamException {
+<span class="fc" id="L1128">        String authenticated = reader.getAttributeValue(null, &quot;authenticated&quot;);</span>
+<span class="fc" id="L1129">        String contentType = reader.getAttributeValue(null, &quot;content-type&quot;);</span>
+<span class="fc" id="L1130">        String contribIdTypeStr = reader.getAttributeValue(null, &quot;contrib-id-type&quot;);</span>
+<span class="fc" id="L1131">        String specificUse = reader.getAttributeValue(null, &quot;specific-use&quot;);</span>
+<span class="fc" id="L1132">        String value = parseTextContent(reader, &quot;contrib-id&quot;);</span>
+
+<span class="fc" id="L1134">        return ContribId.builder()</span>
+<span class="fc" id="L1135">                .authenticated(authenticated)</span>
+<span class="fc" id="L1136">                .contentType(contentType)</span>
+<span class="fc" id="L1137">                .contribIdType(ContribIdType.fromValue(contribIdTypeStr))</span>
+<span class="fc" id="L1138">                .specificUse(specificUse)</span>
+<span class="fc" id="L1139">                .value(value)</span>
+<span class="fc" id="L1140">                .build();</span>
+    }
+
+    public static Name parseName(XMLStreamReader reader) throws XMLStreamException {
+        // Parse attributes
+<span class="fc" id="L1145">        String contentType = reader.getAttributeValue(null, &quot;content-type&quot;);</span>
+<span class="fc" id="L1146">        String nameStyleStr = reader.getAttributeValue(null, &quot;name-style&quot;);</span>
+<span class="fc" id="L1147">        String specificUse = reader.getAttributeValue(null, &quot;specific-use&quot;);</span>
+
+<span class="fc" id="L1149">        Name.NameBuilder builder = Name.builder()</span>
+<span class="fc" id="L1150">                .contentType(contentType)</span>
+<span class="fc" id="L1151">                .nameStyle(NameStyle.fromValue(nameStyleStr))</span>
+<span class="fc" id="L1152">                .specificUse(specificUse);</span>
+
+        while (true) {
+<span class="fc" id="L1155">            int event = reader.next();</span>
+
+<span class="fc bfc" id="L1157" title="All 2 branches covered.">            if (event == XMLStreamConstants.START_ELEMENT) {</span>
+<span class="fc" id="L1158">                String localName = reader.getLocalName();</span>
+
+<span class="fc bfc" id="L1160" title="All 5 branches covered.">                switch (localName) {</span>
+                    case &quot;surname&quot;:
+<span class="fc" id="L1162">                        builder.surname(BackParser.parseSurname(reader));</span>
+<span class="fc" id="L1163">                        break;</span>
+                    case &quot;given-names&quot;:
+<span class="fc" id="L1165">                        builder.givenNames(BackParser.parseGivenNames(reader));</span>
+<span class="fc" id="L1166">                        break;</span>
+                    case &quot;prefix&quot;:
+<span class="fc" id="L1168">                        builder.prefix(BackParser.parsePrefix(reader));</span>
+<span class="fc" id="L1169">                        break;</span>
+                    case &quot;suffix&quot;:
+<span class="fc" id="L1171">                        builder.suffix(parsePmcSuffix(reader));</span>
+<span class="fc" id="L1172">                        break;</span>
+                    default:
+<span class="fc" id="L1174">                        skipElement(reader);</span>
+                        break;
+                }
+<span class="fc bfc" id="L1177" title="All 2 branches covered.">            } else if (event == XMLStreamConstants.END_ELEMENT) {</span>
+<span class="pc bpc" id="L1178" title="1 of 2 branches missed.">                if (reader.getLocalName().equals(&quot;name&quot;)) {</span>
+<span class="fc" id="L1179">                    break;</span>
+                }
+            }
+<span class="fc" id="L1182">        }</span>
+
+<span class="fc" id="L1184">        return builder.build();</span>
+    }
+
+    public static StringName parseStringName(XMLStreamReader reader) throws XMLStreamException {
+<span class="fc" id="L1188">        String value = parseTextContent(reader, &quot;string-name&quot;);</span>
+<span class="fc" id="L1189">        return StringName.builder().value(value).build();</span>
+    }
+
+    public static Collab parseCollab(XMLStreamReader reader) throws XMLStreamException {
+<span class="fc" id="L1193">        String value = parseTextContent(reader, &quot;collab&quot;);</span>
+<span class="fc" id="L1194">        return Collab.builder().value(value).build();</span>
+    }
+
+    public static Anonymous parseAnonymous(XMLStreamReader reader) throws XMLStreamException {
+<span class="fc" id="L1198">        String value = parseTextContent(reader, &quot;anonymous&quot;);</span>
+<span class="fc" id="L1199">        return Anonymous.builder().value(value).build();</span>
+    }
+
+    public static Degrees parseDegrees(XMLStreamReader reader) throws XMLStreamException {
+<span class="fc" id="L1203">        String value = parseTextContent(reader, &quot;degrees&quot;);</span>
+<span class="fc" id="L1204">        return Degrees.builder().value(value).build();</span>
+    }
+
+    public static Address parseAddress(XMLStreamReader reader) throws XMLStreamException {
+<span class="fc" id="L1208">        String value = parseTextContent(reader, &quot;address&quot;);</span>
+<span class="fc" id="L1209">        return Address.builder().value(value).build();</span>
+    }
+
+    public static AuthorComment parseAuthorComment(XMLStreamReader reader) throws XMLStreamException {
+<span class="fc" id="L1213">        String value = parseTextContent(reader, &quot;author-comment&quot;);</span>
+<span class="fc" id="L1214">        return AuthorComment.builder().value(value).build();</span>
+    }
+
+    public static Bio parseBio(XMLStreamReader reader) throws XMLStreamException {
+<span class="fc" id="L1218">        String value = parseTextContent(reader, &quot;bio&quot;);</span>
+<span class="fc" id="L1219">        return Bio.builder().value(value).build();</span>
+    }
+
+    public static Etal parseEtal(XMLStreamReader reader) throws XMLStreamException {
+<span class="fc" id="L1223">        String value = parseTextContent(reader, &quot;etal&quot;);</span>
+<span class="fc" id="L1224">        return Etal.builder().value(value).build();</span>
+    }
+
+    /**
+     * Fn 파싱 / Parse Fn
+     * DTD: &lt;!ELEMENT fn (label?, (p)+)&gt;
+     */
+    public static Fn parseFn(XMLStreamReader reader) throws XMLStreamException {
+<span class="fc" id="L1232">        String fnType = reader.getAttributeValue(null, &quot;fn-type&quot;);</span>
+<span class="fc" id="L1233">        String id = reader.getAttributeValue(null, &quot;id&quot;);</span>
+<span class="fc" id="L1234">        String specificUse = reader.getAttributeValue(null, &quot;specific-use&quot;);</span>
+<span class="fc" id="L1235">        String symbol = reader.getAttributeValue(null, &quot;symbol&quot;);</span>
+<span class="fc" id="L1236">        String xmlBase = reader.getAttributeValue(&quot;http://www.w3.org/XML/1998/namespace&quot;, &quot;base&quot;);</span>
+<span class="fc" id="L1237">        String xmlLang = reader.getAttributeValue(&quot;http://www.w3.org/XML/1998/namespace&quot;, &quot;lang&quot;);</span>
+
+<span class="fc" id="L1239">        Fn.FnBuilder builder = Fn.builder()</span>
+<span class="fc" id="L1240">                .fnType(fnType)</span>
+<span class="fc" id="L1241">                .id(id)</span>
+<span class="fc" id="L1242">                .specificUse(specificUse)</span>
+<span class="fc" id="L1243">                .symbol(symbol)</span>
+<span class="fc" id="L1244">                .xmlBase(xmlBase)</span>
+<span class="fc" id="L1245">                .xmlLang(xmlLang);</span>
+
+<span class="fc" id="L1247">        List&lt;P&gt; paragraphs = new ArrayList&lt;&gt;();</span>
+
+        while (true) {
+<span class="fc" id="L1250">            int event = reader.next();</span>
+
+<span class="fc bfc" id="L1252" title="All 2 branches covered.">            if (event == XMLStreamConstants.START_ELEMENT) {</span>
+<span class="fc" id="L1253">                String localName = reader.getLocalName();</span>
+
+<span class="fc bfc" id="L1255" title="All 3 branches covered.">                switch (localName) {</span>
+                    case &quot;label&quot;:
+<span class="fc" id="L1257">                        builder.label(parseLabel(reader));</span>
+<span class="fc" id="L1258">                        break;</span>
+                    case &quot;p&quot;:
+<span class="fc" id="L1260">                        paragraphs.add(parseP(reader));</span>
+<span class="fc" id="L1261">                        break;</span>
+                    default:
+<span class="fc" id="L1263">                        skipElement(reader);</span>
+                        break;
+                }
+<span class="fc bfc" id="L1266" title="All 2 branches covered.">            } else if (event == XMLStreamConstants.END_ELEMENT) {</span>
+<span class="pc bpc" id="L1267" title="1 of 2 branches missed.">                if (reader.getLocalName().equals(&quot;fn&quot;)) {</span>
+<span class="fc" id="L1268">                    break;</span>
+                }
+            }
+<span class="fc" id="L1271">        }</span>
+
+<span class="fc" id="L1273">        return builder</span>
+<span class="fc bfc" id="L1274" title="All 2 branches covered.">                .paragraphs(paragraphs.isEmpty() ? null : paragraphs)</span>
+<span class="fc" id="L1275">                .build();</span>
+    }
+
+    public static OnBehalfOf parseOnBehalfOf(XMLStreamReader reader) throws XMLStreamException {
+<span class="fc" id="L1279">        String value = parseTextContent(reader, &quot;on-behalf-of&quot;);</span>
+<span class="fc" id="L1280">        return OnBehalfOf.builder().value(value).build();</span>
+    }
+
+    public static Role parseRole(XMLStreamReader reader) throws XMLStreamException {
+<span class="fc" id="L1284">        String value = parseTextContent(reader, &quot;role&quot;);</span>
+<span class="fc" id="L1285">        return Role.builder().value(value).build();</span>
+    }
+
+    public static AuthorNotes parseAuthorNotes(XMLStreamReader reader) throws XMLStreamException {
+<span class="fc" id="L1289">        List&lt;Corresp&gt; corresps = new ArrayList&lt;&gt;();</span>
+<span class="fc" id="L1290">        List&lt;Fn&gt; footnotes = new ArrayList&lt;&gt;();</span>
+
+        while (true) {
+<span class="fc" id="L1293">            int event = reader.next();</span>
+
+<span class="fc bfc" id="L1295" title="All 2 branches covered.">            if (event == XMLStreamConstants.START_ELEMENT) {</span>
+<span class="fc" id="L1296">                String localName = reader.getLocalName();</span>
+
+<span class="fc bfc" id="L1298" title="All 3 branches covered.">                switch (localName) {</span>
+                    case &quot;corresp&quot;:
+<span class="fc" id="L1300">                        corresps.add(parseCorresp(reader));</span>
+<span class="fc" id="L1301">                        break;</span>
+                    case &quot;fn&quot;:
+<span class="fc" id="L1303">                        footnotes.add(parseFn(reader));</span>
+<span class="fc" id="L1304">                        break;</span>
+                    default:
+<span class="fc" id="L1306">                        skipElement(reader);</span>
+                        break;
+                }
+<span class="fc bfc" id="L1309" title="All 2 branches covered.">            } else if (event == XMLStreamConstants.END_ELEMENT) {</span>
+<span class="pc bpc" id="L1310" title="1 of 2 branches missed.">                if (reader.getLocalName().equals(&quot;author-notes&quot;)) {</span>
+<span class="fc" id="L1311">                    break;</span>
+                }
+            }
+<span class="fc" id="L1314">        }</span>
+
+<span class="fc" id="L1316">        return AuthorNotes.builder()</span>
+<span class="fc bfc" id="L1317" title="All 2 branches covered.">                .corresps(corresps.isEmpty() ? null : corresps)</span>
+<span class="fc bfc" id="L1318" title="All 2 branches covered.">                .footnotes(footnotes.isEmpty() ? null : footnotes)</span>
+<span class="fc" id="L1319">                .build();</span>
+    }
+
+    public static Corresp parseCorresp(XMLStreamReader reader) throws XMLStreamException {
+<span class="fc" id="L1323">        String id = reader.getAttributeValue(null, &quot;id&quot;);</span>
+<span class="fc" id="L1324">        String value = parseTextContent(reader, &quot;corresp&quot;);</span>
+
+<span class="fc" id="L1326">        return Corresp.builder()</span>
+<span class="fc" id="L1327">                .id(id)</span>
+<span class="fc" id="L1328">                .value(value)</span>
+<span class="fc" id="L1329">                .build();</span>
+    }
+
+    public static PmcHistory parsePmcHistory(XMLStreamReader reader) throws XMLStreamException {
+<span class="fc" id="L1333">        List&lt;PmcDate&gt; dates = new ArrayList&lt;&gt;();</span>
+
+        while (true) {
+<span class="fc" id="L1336">            int event = reader.next();</span>
+
+<span class="fc bfc" id="L1338" title="All 2 branches covered.">            if (event == XMLStreamConstants.START_ELEMENT) {</span>
+<span class="fc" id="L1339">                String localName = reader.getLocalName();</span>
+
+<span class="fc bfc" id="L1341" title="All 2 branches covered.">                if (&quot;date&quot;.equals(localName)) {</span>
+<span class="fc" id="L1342">                    dates.add(parsePmcDate(reader));</span>
+                } else {
+<span class="fc" id="L1344">                    skipElement(reader);</span>
+                }
+<span class="fc bfc" id="L1346" title="All 2 branches covered.">            } else if (event == XMLStreamConstants.END_ELEMENT) {</span>
+<span class="pc bpc" id="L1347" title="1 of 2 branches missed.">                if (reader.getLocalName().equals(&quot;history&quot;)) {</span>
+<span class="fc" id="L1348">                    break;</span>
+                }
+            }
+<span class="fc" id="L1351">        }</span>
+
+<span class="fc" id="L1353">        return PmcHistory.builder()</span>
+<span class="fc bfc" id="L1354" title="All 2 branches covered.">                .dates(dates.isEmpty() ? null : dates)</span>
+<span class="fc" id="L1355">                .build();</span>
+    }
+
+    public static PmcDate parsePmcDate(XMLStreamReader reader) throws XMLStreamException {
+<span class="fc" id="L1359">        String dateType = reader.getAttributeValue(null, &quot;date-type&quot;);</span>
+<span class="fc" id="L1360">        PmcDate.PmcDateBuilder builder = PmcDate.builder().dateType(dateType);</span>
+
+        while (true) {
+<span class="fc" id="L1363">            int event = reader.next();</span>
+
+<span class="fc bfc" id="L1365" title="All 2 branches covered.">            if (event == XMLStreamConstants.START_ELEMENT) {</span>
+<span class="fc" id="L1366">                String localName = reader.getLocalName();</span>
+
+<span class="fc bfc" id="L1368" title="All 5 branches covered.">                switch (localName) {</span>
+                    case &quot;day&quot;:
+<span class="fc" id="L1370">                        builder.day(parseDay(reader));</span>
+<span class="fc" id="L1371">                        break;</span>
+                    case &quot;month&quot;:
+<span class="fc" id="L1373">                        builder.month(parseMonth(reader));</span>
+<span class="fc" id="L1374">                        break;</span>
+                    case &quot;year&quot;:
+<span class="fc" id="L1376">                        builder.year(parseYear(reader));</span>
+<span class="fc" id="L1377">                        break;</span>
+                    case &quot;season&quot;:
+<span class="fc" id="L1379">                        builder.season(parseSeason(reader));</span>
+<span class="fc" id="L1380">                        break;</span>
+                    default:
+<span class="fc" id="L1382">                        skipElement(reader);</span>
+                        break;
+                }
+<span class="fc bfc" id="L1385" title="All 2 branches covered.">            } else if (event == XMLStreamConstants.END_ELEMENT) {</span>
+<span class="pc bpc" id="L1386" title="1 of 2 branches missed.">                if (reader.getLocalName().equals(&quot;date&quot;)) {</span>
+<span class="fc" id="L1387">                    break;</span>
+                }
+            }
+<span class="fc" id="L1390">        }</span>
+
+<span class="fc" id="L1392">        return builder.build();</span>
+    }
+
+    public static Permissions parsePermissions(XMLStreamReader reader) throws XMLStreamException {
+<span class="fc" id="L1396">        Permissions.PermissionsBuilder builder = Permissions.builder();</span>
+
+<span class="fc" id="L1398">        List&lt;CopyrightStatement&gt; copyrightStatements = new ArrayList&lt;&gt;();</span>
+<span class="fc" id="L1399">        List&lt;CopyrightYear&gt; copyrightYears = new ArrayList&lt;&gt;();</span>
+<span class="fc" id="L1400">        List&lt;CopyrightHolder&gt; copyrightHolders = new ArrayList&lt;&gt;();</span>
+<span class="fc" id="L1401">        List&lt;License&gt; licenses = new ArrayList&lt;&gt;();</span>
+
+        while (true) {
+<span class="fc" id="L1404">            int event = reader.next();</span>
+
+<span class="fc bfc" id="L1406" title="All 2 branches covered.">            if (event == XMLStreamConstants.START_ELEMENT) {</span>
+<span class="fc" id="L1407">                String localName = reader.getLocalName();</span>
+
+<span class="fc bfc" id="L1409" title="All 5 branches covered.">                switch (localName) {</span>
+                    case &quot;copyright-statement&quot;:
+<span class="fc" id="L1411">                        copyrightStatements.add(parseCopyrightStatement(reader));</span>
+<span class="fc" id="L1412">                        break;</span>
+                    case &quot;copyright-year&quot;:
+<span class="fc" id="L1414">                        copyrightYears.add(parseCopyrightYear(reader));</span>
+<span class="fc" id="L1415">                        break;</span>
+                    case &quot;copyright-holder&quot;:
+<span class="fc" id="L1417">                        copyrightHolders.add(parseCopyrightHolder(reader));</span>
+<span class="fc" id="L1418">                        break;</span>
+                    case &quot;license&quot;:
+<span class="fc" id="L1420">                        licenses.add(parseLicense(reader));</span>
+<span class="fc" id="L1421">                        break;</span>
+                    default:
+<span class="fc" id="L1423">                        skipElement(reader);</span>
+                        break;
+                }
+<span class="fc bfc" id="L1426" title="All 2 branches covered.">            } else if (event == XMLStreamConstants.END_ELEMENT) {</span>
+<span class="pc bpc" id="L1427" title="1 of 2 branches missed.">                if (reader.getLocalName().equals(&quot;permissions&quot;)) {</span>
+<span class="fc" id="L1428">                    break;</span>
+                }
+            }
+<span class="fc" id="L1431">        }</span>
+
+<span class="fc bfc" id="L1433" title="All 2 branches covered.">        builder.copyrightStatements(copyrightStatements.isEmpty() ? null : copyrightStatements);</span>
+<span class="fc bfc" id="L1434" title="All 2 branches covered.">        builder.copyrightYears(copyrightYears.isEmpty() ? null : copyrightYears);</span>
+<span class="fc bfc" id="L1435" title="All 2 branches covered.">        builder.copyrightHolders(copyrightHolders.isEmpty() ? null : copyrightHolders);</span>
+<span class="fc bfc" id="L1436" title="All 2 branches covered.">        builder.licenses(licenses.isEmpty() ? null : licenses);</span>
+
+<span class="fc" id="L1438">        return builder.build();</span>
+    }
+
+    public static RelatedArticle parseRelatedArticle(XMLStreamReader reader) throws XMLStreamException {
+<span class="fc" id="L1442">        String value = parseTextContent(reader, &quot;related-article&quot;);</span>
+<span class="fc" id="L1443">        return RelatedArticle.builder().value(value).build();</span>
+    }
+
+    public static RelatedObject parseRelatedObject(XMLStreamReader reader) throws XMLStreamException {
+<span class="fc" id="L1447">        String value = parseTextContent(reader, &quot;related-object&quot;);</span>
+<span class="fc" id="L1448">        return RelatedObject.builder().value(value).build();</span>
+    }
+
+    public static TransAbstract parseTransAbstract(XMLStreamReader reader) throws XMLStreamException {
+<span class="fc" id="L1452">        String xmlLang = reader.getAttributeValue(null, &quot;lang&quot;);</span>
+<span class="fc bfc" id="L1453" title="All 2 branches covered.">        if (xmlLang == null) {</span>
+<span class="fc" id="L1454">            xmlLang = reader.getAttributeValue(&quot;http://www.w3.org/XML/1998/namespace&quot;, &quot;lang&quot;);</span>
+        }
+<span class="fc" id="L1456">        String value = parseTextContent(reader, &quot;trans-abstract&quot;);</span>
+
+<span class="fc" id="L1458">        return TransAbstract.builder()</span>
+<span class="fc" id="L1459">                .xmlLang(xmlLang)</span>
+<span class="fc" id="L1460">                .value(value)</span>
+<span class="fc" id="L1461">                .build();</span>
+    }
+
+    public static Kwd parseKwd(XMLStreamReader reader) throws XMLStreamException {
+<span class="fc" id="L1465">        String value = parseTextContent(reader, &quot;kwd&quot;);</span>
+<span class="fc" id="L1466">        return Kwd.builder().value(value).build();</span>
+    }
+
+    public static FundingGroup parseFundingGroup(XMLStreamReader reader) throws XMLStreamException {
+<span class="fc" id="L1470">        List&lt;AwardGroup&gt; awardGroups = new ArrayList&lt;&gt;();</span>
+
+        while (true) {
+<span class="fc" id="L1473">            int event = reader.next();</span>
+
+<span class="fc bfc" id="L1475" title="All 2 branches covered.">            if (event == XMLStreamConstants.START_ELEMENT) {</span>
+<span class="fc" id="L1476">                String localName = reader.getLocalName();</span>
+
+<span class="fc bfc" id="L1478" title="All 2 branches covered.">                if (&quot;award-group&quot;.equals(localName)) {</span>
+<span class="fc" id="L1479">                    awardGroups.add(parseAwardGroup(reader));</span>
+                } else {
+<span class="fc" id="L1481">                    skipElement(reader);</span>
+                }
+<span class="fc bfc" id="L1483" title="All 2 branches covered.">            } else if (event == XMLStreamConstants.END_ELEMENT) {</span>
+<span class="pc bpc" id="L1484" title="1 of 2 branches missed.">                if (reader.getLocalName().equals(&quot;funding-group&quot;)) {</span>
+<span class="fc" id="L1485">                    break;</span>
+                }
+            }
+<span class="fc" id="L1488">        }</span>
+
+<span class="fc" id="L1490">        return FundingGroup.builder()</span>
+<span class="fc bfc" id="L1491" title="All 2 branches covered.">                .awardGroups(awardGroups.isEmpty() ? null : awardGroups)</span>
+<span class="fc" id="L1492">                .build();</span>
+    }
+
+    public static AwardGroup parseAwardGroup(XMLStreamReader reader) throws XMLStreamException {
+<span class="fc" id="L1496">        List&lt;FundingSource&gt; fundingSources = new ArrayList&lt;&gt;();</span>
+<span class="fc" id="L1497">        List&lt;AwardId&gt; awardIds = new ArrayList&lt;&gt;();</span>
+
+        while (true) {
+<span class="fc" id="L1500">            int event = reader.next();</span>
+
+<span class="fc bfc" id="L1502" title="All 2 branches covered.">            if (event == XMLStreamConstants.START_ELEMENT) {</span>
+<span class="fc" id="L1503">                String localName = reader.getLocalName();</span>
+
+<span class="fc bfc" id="L1505" title="All 3 branches covered.">                switch (localName) {</span>
+                    case &quot;funding-source&quot;:
+<span class="fc" id="L1507">                        fundingSources.add(parseFundingSource(reader));</span>
+<span class="fc" id="L1508">                        break;</span>
+                    case &quot;award-id&quot;:
+<span class="fc" id="L1510">                        awardIds.add(parseAwardId(reader));</span>
+<span class="fc" id="L1511">                        break;</span>
+                    default:
+<span class="fc" id="L1513">                        skipElement(reader);</span>
+                        break;
+                }
+<span class="fc bfc" id="L1516" title="All 2 branches covered.">            } else if (event == XMLStreamConstants.END_ELEMENT) {</span>
+<span class="pc bpc" id="L1517" title="1 of 2 branches missed.">                if (reader.getLocalName().equals(&quot;award-group&quot;)) {</span>
+<span class="fc" id="L1518">                    break;</span>
+                }
+            }
+<span class="fc" id="L1521">        }</span>
+
+<span class="fc" id="L1523">        return AwardGroup.builder()</span>
+<span class="fc bfc" id="L1524" title="All 2 branches covered.">                .fundingSources(fundingSources.isEmpty() ? null : fundingSources)</span>
+<span class="fc bfc" id="L1525" title="All 2 branches covered.">                .awardIds(awardIds.isEmpty() ? null : awardIds)</span>
+<span class="fc" id="L1526">                .build();</span>
+    }
+
+    public static FundingSource parseFundingSource(XMLStreamReader reader) throws XMLStreamException {
+<span class="fc" id="L1530">        String value = parseTextContent(reader, &quot;funding-source&quot;);</span>
+<span class="fc" id="L1531">        return FundingSource.builder().value(value).build();</span>
+    }
+
+    public static AwardId parseAwardId(XMLStreamReader reader) throws XMLStreamException {
+<span class="fc" id="L1535">        String value = parseTextContent(reader, &quot;award-id&quot;);</span>
+<span class="fc" id="L1536">        return AwardId.builder().value(value).build();</span>
+    }
+
+    public static SupportGroup parseSupportGroup(XMLStreamReader reader) throws XMLStreamException {
+<span class="fc" id="L1540">        String value = parseTextContent(reader, &quot;support-group&quot;);</span>
+<span class="fc" id="L1541">        return SupportGroup.builder().value(value).build();</span>
+    }
+
+    public static Conference parseConference(XMLStreamReader reader) throws XMLStreamException {
+<span class="fc" id="L1545">        String value = parseTextContent(reader, &quot;conference&quot;);</span>
+<span class="fc" id="L1546">        return Conference.builder().value(value).build();</span>
+    }
+
+    public static Counts parseCounts(XMLStreamReader reader) throws XMLStreamException {
+<span class="fc" id="L1550">        Counts.CountsBuilder builder = Counts.builder();</span>
+
+        while (true) {
+<span class="fc" id="L1553">            int event = reader.next();</span>
+
+<span class="fc bfc" id="L1555" title="All 2 branches covered.">            if (event == XMLStreamConstants.START_ELEMENT) {</span>
+<span class="fc" id="L1556">                String localName = reader.getLocalName();</span>
+
+<span class="fc bfc" id="L1558" title="All 7 branches covered.">                switch (localName) {</span>
+                    case &quot;page-count&quot;:
+<span class="fc" id="L1560">                        String pageCountAttr = reader.getAttributeValue(null, &quot;count&quot;);</span>
+<span class="fc bfc" id="L1561" title="All 2 branches covered.">                        if (pageCountAttr != null) {</span>
+<span class="fc" id="L1562">                            builder.pageCount(Integer.parseInt(pageCountAttr));</span>
+                        }
+<span class="fc" id="L1564">                        skipElement(reader);</span>
+<span class="fc" id="L1565">                        break;</span>
+                    case &quot;fig-count&quot;:
+<span class="fc" id="L1567">                        String figCountAttr = reader.getAttributeValue(null, &quot;count&quot;);</span>
+<span class="fc bfc" id="L1568" title="All 2 branches covered.">                        if (figCountAttr != null) {</span>
+<span class="fc" id="L1569">                            builder.figCount(Integer.parseInt(figCountAttr));</span>
+                        }
+<span class="fc" id="L1571">                        skipElement(reader);</span>
+<span class="fc" id="L1572">                        break;</span>
+                    case &quot;table-count&quot;:
+<span class="fc" id="L1574">                        String tableCountAttr = reader.getAttributeValue(null, &quot;count&quot;);</span>
+<span class="fc bfc" id="L1575" title="All 2 branches covered.">                        if (tableCountAttr != null) {</span>
+<span class="fc" id="L1576">                            builder.tableCount(Integer.parseInt(tableCountAttr));</span>
+                        }
+<span class="fc" id="L1578">                        skipElement(reader);</span>
+<span class="fc" id="L1579">                        break;</span>
+                    case &quot;equation-count&quot;:
+<span class="fc" id="L1581">                        String equationCountAttr = reader.getAttributeValue(null, &quot;count&quot;);</span>
+<span class="fc bfc" id="L1582" title="All 2 branches covered.">                        if (equationCountAttr != null) {</span>
+<span class="fc" id="L1583">                            builder.equationCount(Integer.parseInt(equationCountAttr));</span>
+                        }
+<span class="fc" id="L1585">                        skipElement(reader);</span>
+<span class="fc" id="L1586">                        break;</span>
+                    case &quot;ref-count&quot;:
+<span class="fc" id="L1588">                        String refCountAttr = reader.getAttributeValue(null, &quot;count&quot;);</span>
+<span class="fc bfc" id="L1589" title="All 2 branches covered.">                        if (refCountAttr != null) {</span>
+<span class="fc" id="L1590">                            builder.refCount(Integer.parseInt(refCountAttr));</span>
+                        }
+<span class="fc" id="L1592">                        skipElement(reader);</span>
+<span class="fc" id="L1593">                        break;</span>
+                    case &quot;word-count&quot;:
+<span class="fc" id="L1595">                        String wordCountAttr = reader.getAttributeValue(null, &quot;count&quot;);</span>
+<span class="fc bfc" id="L1596" title="All 2 branches covered.">                        if (wordCountAttr != null) {</span>
+<span class="fc" id="L1597">                            builder.wordCount(Integer.parseInt(wordCountAttr));</span>
+                        }
+<span class="fc" id="L1599">                        skipElement(reader);</span>
+<span class="fc" id="L1600">                        break;</span>
+                    default:
+<span class="fc" id="L1602">                        skipElement(reader);</span>
+                        break;
+                }
+<span class="fc bfc" id="L1605" title="All 2 branches covered.">            } else if (event == XMLStreamConstants.END_ELEMENT) {</span>
+<span class="pc bpc" id="L1606" title="1 of 2 branches missed.">                if (reader.getLocalName().equals(&quot;counts&quot;)) {</span>
+<span class="fc" id="L1607">                    break;</span>
+                }
+            }
+<span class="fc" id="L1610">        }</span>
+
+<span class="fc" id="L1612">        return builder.build();</span>
+    }
+
+    public static CustomMetaGroup parseCustomMetaGroup(XMLStreamReader reader) throws XMLStreamException {
+<span class="fc" id="L1616">        String value = parseTextContent(reader, &quot;custom-meta-group&quot;);</span>
+<span class="fc" id="L1617">        return CustomMetaGroup.builder().value(value).build();</span>
+    }
+
+    public static Season parseSeason(XMLStreamReader reader) throws XMLStreamException {
+<span class="fc" id="L1621">        String value = parseTextContent(reader, &quot;season&quot;);</span>
+<span class="fc" id="L1622">        return Season.builder().value(value).build();</span>
+    }
+
+    public static Era parseEra(XMLStreamReader reader) throws XMLStreamException {
+<span class="fc" id="L1626">        String value = parseTextContent(reader, &quot;era&quot;);</span>
+<span class="fc" id="L1627">        return Era.builder().value(value).build();</span>
+    }
+
+    public static StringDate parseStringDate(XMLStreamReader reader) throws XMLStreamException {
+<span class="fc" id="L1631">        String value = parseTextContent(reader, &quot;string-date&quot;);</span>
+<span class="fc" id="L1632">        return StringDate.builder().value(value).build();</span>
+    }
+
+    /**
+     * ObjectId 파싱 / Parse ObjectId
+     * DTD: &lt;!ELEMENT object-id (#PCDATA)&gt;
+     * DTD: &lt;!ATTLIST object-id
+     *          assigning-authority CDATA #IMPLIED
+     *          content-type CDATA #IMPLIED
+     *          id ID #IMPLIED
+     *          pub-id-type CDATA #IMPLIED
+     *          specific-use CDATA #IMPLIED&gt;
+     */
+    public static ObjectId parseObjectId(XMLStreamReader reader) throws XMLStreamException {
+<span class="fc" id="L1646">        String assigningAuthority = reader.getAttributeValue(null, &quot;assigning-authority&quot;);</span>
+<span class="fc" id="L1647">        String contentType = reader.getAttributeValue(null, &quot;content-type&quot;);</span>
+<span class="fc" id="L1648">        String id = reader.getAttributeValue(null, &quot;id&quot;);</span>
+<span class="fc" id="L1649">        String pubIdTypeStr = reader.getAttributeValue(null, &quot;pub-id-type&quot;);</span>
+<span class="fc" id="L1650">        String specificUse = reader.getAttributeValue(null, &quot;specific-use&quot;);</span>
+<span class="fc" id="L1651">        String value = parseTextContent(reader, &quot;object-id&quot;);</span>
+
+<span class="fc" id="L1653">        return ObjectId.builder()</span>
+<span class="fc" id="L1654">                .assigningAuthority(assigningAuthority)</span>
+<span class="fc" id="L1655">                .contentType(contentType)</span>
+<span class="fc" id="L1656">                .id(id)</span>
+<span class="fc" id="L1657">                .pubIdType(PubIdType.fromValue(pubIdTypeStr))</span>
+<span class="fc" id="L1658">                .specificUse(specificUse)</span>
+<span class="fc" id="L1659">                .value(value)</span>
+<span class="fc" id="L1660">                .build();</span>
+    }
+
+    /**
+     * Attrib 파싱 / Parse Attrib
+     * DTD: &lt;!ELEMENT attrib (#PCDATA | %all-phrase;)*&gt;
+     * Note: Attribution/source information, simplest model (value only)
+     */
+    public static Attrib parseAttrib(XMLStreamReader reader) throws XMLStreamException {
+<span class="fc" id="L1669">        String value = parseTextContent(reader, &quot;attrib&quot;);</span>
+<span class="fc" id="L1670">        return Attrib.builder().value(value).build();</span>
+    }
+
+    /**
+     * Speech 파싱 / Parse Speech
+     * DTD: &lt;!ELEMENT speech (speaker, p+)&gt;
+     * DTD: &lt;!ATTLIST speech id ID #IMPLIED xml:lang NMTOKEN #IMPLIED&gt;
+     */
+    public static Speech parseSpeech(XMLStreamReader reader) throws XMLStreamException {
+<span class="fc" id="L1679">        String id = reader.getAttributeValue(null, &quot;id&quot;);</span>
+<span class="fc" id="L1680">        String xmlLang = reader.getAttributeValue(&quot;http://www.w3.org/XML/1998/namespace&quot;, &quot;lang&quot;);</span>
+<span class="fc" id="L1681">        String value = parseTextContent(reader, &quot;speech&quot;);</span>
+
+<span class="fc" id="L1683">        return Speech.builder()</span>
+<span class="fc" id="L1684">                .id(id)</span>
+<span class="fc" id="L1685">                .xmlLang(xmlLang)</span>
+<span class="fc" id="L1686">                .value(value)</span>
+<span class="fc" id="L1687">                .build();</span>
+    }
+
+    /**
+     * Statement 파싱 / Parse Statement
+     * DTD: &lt;!ELEMENT statement (label?, title?, p+)&gt;
+     * DTD: &lt;!ATTLIST statement id ID #IMPLIED xml:lang NMTOKEN #IMPLIED&gt;
+     */
+    public static Statement parseStatement(XMLStreamReader reader) throws XMLStreamException {
+<span class="fc" id="L1696">        String id = reader.getAttributeValue(null, &quot;id&quot;);</span>
+<span class="fc" id="L1697">        String xmlLang = reader.getAttributeValue(&quot;http://www.w3.org/XML/1998/namespace&quot;, &quot;lang&quot;);</span>
+<span class="fc" id="L1698">        String value = parseTextContent(reader, &quot;statement&quot;);</span>
+
+<span class="fc" id="L1700">        return Statement.builder()</span>
+<span class="fc" id="L1701">                .id(id)</span>
+<span class="fc" id="L1702">                .xmlLang(xmlLang)</span>
+<span class="fc" id="L1703">                .value(value)</span>
+<span class="fc" id="L1704">                .build();</span>
+    }
+
+    /**
+     * VerseGroup 파싱 / Parse VerseGroup
+     * DTD: &lt;!ELEMENT verse-group (label?, title?, subtitle*, verse-line+, attrib?, permissions?)&gt;
+     * DTD: &lt;!ATTLIST verse-group id ID #IMPLIED xml:lang NMTOKEN #IMPLIED&gt;
+     */
+    public static VerseGroup parseVerseGroup(XMLStreamReader reader) throws XMLStreamException {
+<span class="fc" id="L1713">        String id = reader.getAttributeValue(null, &quot;id&quot;);</span>
+<span class="fc" id="L1714">        String xmlLang = reader.getAttributeValue(&quot;http://www.w3.org/XML/1998/namespace&quot;, &quot;lang&quot;);</span>
+<span class="fc" id="L1715">        String value = parseTextContent(reader, &quot;verse-group&quot;);</span>
+
+<span class="fc" id="L1717">        return VerseGroup.builder()</span>
+<span class="fc" id="L1718">                .id(id)</span>
+<span class="fc" id="L1719">                .xmlLang(xmlLang)</span>
+<span class="fc" id="L1720">                .value(value)</span>
+<span class="fc" id="L1721">                .build();</span>
+    }
+
+    /**
+     * DispFormula 파싱 / Parse DispFormula
+     * DTD: &lt;!ELEMENT disp-formula (
+     *          object-id*,
+     *          label?,
+     *          (tex-math | mml:math)*,
+     *          graphic*,
+     *          attrib?,
+     *          permissions?)&gt;
+     * DTD: &lt;!ATTLIST disp-formula id ID #IMPLIED xml:lang NMTOKEN #IMPLIED&gt;
+     */
+    public static DispFormula parseDispFormula(XMLStreamReader reader) throws XMLStreamException {
+<span class="fc" id="L1736">        String id = reader.getAttributeValue(null, &quot;id&quot;);</span>
+<span class="fc" id="L1737">        String xmlLang = reader.getAttributeValue(&quot;http://www.w3.org/XML/1998/namespace&quot;, &quot;lang&quot;);</span>
+
+<span class="fc" id="L1739">        DispFormula.DispFormulaBuilder builder = DispFormula.builder()</span>
+<span class="fc" id="L1740">                .id(id)</span>
+<span class="fc" id="L1741">                .xmlLang(xmlLang);</span>
+
+        while (true) {
+<span class="fc" id="L1744">            int event = reader.next();</span>
+
+<span class="fc bfc" id="L1746" title="All 2 branches covered.">            if (event == XMLStreamConstants.START_ELEMENT) {</span>
+<span class="fc" id="L1747">                String localName = reader.getLocalName();</span>
+
+<span class="fc bfc" id="L1749" title="All 4 branches covered.">                switch (localName) {</span>
+                    case &quot;label&quot;:
+<span class="fc" id="L1751">                        builder.label(parseTextContent(reader, &quot;label&quot;));</span>
+<span class="fc" id="L1752">                        break;</span>
+                    case &quot;tex-math&quot;:
+<span class="fc" id="L1754">                        builder.texMath(parseTextContent(reader, &quot;tex-math&quot;));</span>
+<span class="fc" id="L1755">                        break;</span>
+                    case &quot;mml:math&quot;:
+                    case &quot;math&quot;:
+<span class="fc" id="L1758">                        builder.mmlMath(parseTextContent(reader, localName));</span>
+<span class="fc" id="L1759">                        break;</span>
+                    default:
+<span class="fc" id="L1761">                        skipElement(reader);</span>
+                        break;
+                }
+<span class="fc bfc" id="L1764" title="All 2 branches covered.">            } else if (event == XMLStreamConstants.END_ELEMENT) {</span>
+<span class="pc bpc" id="L1765" title="1 of 2 branches missed.">                if (reader.getLocalName().equals(&quot;disp-formula&quot;)) {</span>
+<span class="fc" id="L1766">                    break;</span>
+                }
+            }
+<span class="fc" id="L1769">        }</span>
+
+<span class="fc" id="L1771">        return builder.build();</span>
+    }
+
+    /**
+     * DispFormulaGroup 파싱 / Parse DispFormulaGroup
+     * DTD: &lt;!ELEMENT disp-formula-group (label?, (disp-formula)+, caption?)&gt;
+     * DTD: &lt;!ATTLIST disp-formula-group id ID #IMPLIED xml:lang NMTOKEN #IMPLIED&gt;
+     */
+    public static DispFormulaGroup parseDispFormulaGroup(XMLStreamReader reader) throws XMLStreamException {
+<span class="fc" id="L1780">        String id = reader.getAttributeValue(null, &quot;id&quot;);</span>
+<span class="fc" id="L1781">        String xmlLang = reader.getAttributeValue(&quot;http://www.w3.org/XML/1998/namespace&quot;, &quot;lang&quot;);</span>
+
+<span class="fc" id="L1783">        DispFormulaGroup.DispFormulaGroupBuilder builder = DispFormulaGroup.builder()</span>
+<span class="fc" id="L1784">                .id(id)</span>
+<span class="fc" id="L1785">                .xmlLang(xmlLang);</span>
+
+<span class="fc" id="L1787">        List&lt;DispFormula&gt; dispFormulas = new ArrayList&lt;&gt;();</span>
+
+        while (true) {
+<span class="fc" id="L1790">            int event = reader.next();</span>
+
+<span class="fc bfc" id="L1792" title="All 2 branches covered.">            if (event == XMLStreamConstants.START_ELEMENT) {</span>
+<span class="fc" id="L1793">                String localName = reader.getLocalName();</span>
+
+<span class="fc bfc" id="L1795" title="All 3 branches covered.">                switch (localName) {</span>
+                    case &quot;label&quot;:
+<span class="fc" id="L1797">                        builder.label(parseTextContent(reader, &quot;label&quot;));</span>
+<span class="fc" id="L1798">                        break;</span>
+                    case &quot;disp-formula&quot;:
+<span class="fc" id="L1800">                        dispFormulas.add(parseDispFormula(reader));</span>
+<span class="fc" id="L1801">                        break;</span>
+                    default:
+<span class="fc" id="L1803">                        skipElement(reader);</span>
+                        break;
+                }
+<span class="fc bfc" id="L1806" title="All 2 branches covered.">            } else if (event == XMLStreamConstants.END_ELEMENT) {</span>
+<span class="pc bpc" id="L1807" title="1 of 2 branches missed.">                if (reader.getLocalName().equals(&quot;disp-formula-group&quot;)) {</span>
+<span class="fc" id="L1808">                    break;</span>
+                }
+            }
+<span class="fc" id="L1811">        }</span>
+
+<span class="fc" id="L1813">        return builder</span>
+<span class="fc bfc" id="L1814" title="All 2 branches covered.">                .dispFormulas(dispFormulas.isEmpty() ? null : dispFormulas)</span>
+<span class="fc" id="L1815">                .build();</span>
+    }
+
+    /**
+     * Alternatives 파싱 / Parse Alternatives
+     * DTD: &lt;!ELEMENT alternatives (
+     *          object-id*,
+     *          (graphic | media | table | code | textual-form | tex-math |
+     *           supplementary-material | preformat | array | inline-graphic | mml:math)+)&gt;
+     * DTD: &lt;!ATTLIST alternatives id ID #IMPLIED&gt;
+     */
+    public static Alternatives parseAlternatives(XMLStreamReader reader) throws XMLStreamException {
+<span class="fc" id="L1827">        String id = reader.getAttributeValue(null, &quot;id&quot;);</span>
+
+<span class="fc" id="L1829">        Alternatives.AlternativesBuilder builder = Alternatives.builder().id(id);</span>
+
+<span class="fc" id="L1831">        List&lt;ObjectId&gt; objectIds = new ArrayList&lt;&gt;();</span>
+<span class="fc" id="L1832">        List&lt;Graphic&gt; graphics = new ArrayList&lt;&gt;();</span>
+<span class="fc" id="L1833">        List&lt;Media&gt; medias = new ArrayList&lt;&gt;();</span>
+<span class="fc" id="L1834">        List&lt;Table&gt; tables = new ArrayList&lt;&gt;();</span>
+<span class="fc" id="L1835">        List&lt;Code&gt; codes = new ArrayList&lt;&gt;();</span>
+<span class="fc" id="L1836">        List&lt;SupplementaryMaterial&gt; supplementaryMaterials = new ArrayList&lt;&gt;();</span>
+<span class="fc" id="L1837">        List&lt;Preformat&gt; preformats = new ArrayList&lt;&gt;();</span>
+<span class="fc" id="L1838">        List&lt;Array&gt; arrays = new ArrayList&lt;&gt;();</span>
+
+        while (true) {
+<span class="fc" id="L1841">            int event = reader.next();</span>
+
+<span class="fc bfc" id="L1843" title="All 2 branches covered.">            if (event == XMLStreamConstants.START_ELEMENT) {</span>
+<span class="fc" id="L1844">                String localName = reader.getLocalName();</span>
+
+<span class="fc bfc" id="L1846" title="All 10 branches covered.">                switch (localName) {</span>
+                    case &quot;object-id&quot;:
+<span class="fc" id="L1848">                        objectIds.add(parseObjectId(reader));</span>
+<span class="fc" id="L1849">                        break;</span>
+                    case &quot;graphic&quot;:
+<span class="fc" id="L1851">                        graphics.add(PmcXmlParser.parseGraphic(reader));</span>
+<span class="fc" id="L1852">                        break;</span>
+                    case &quot;media&quot;:
+<span class="fc" id="L1854">                        medias.add(PmcXmlParser.parseMedia(reader));</span>
+<span class="fc" id="L1855">                        break;</span>
+                    case &quot;table&quot;:
+<span class="fc" id="L1857">                        tables.add(PmcXmlParser.parseTable(reader));</span>
+<span class="fc" id="L1858">                        break;</span>
+                    case &quot;table-wrap&quot;:
+                        // table-wrap is not supported in Alternatives, only table
+<span class="fc" id="L1861">                        skipElement(reader);</span>
+<span class="fc" id="L1862">                        break;</span>
+                    case &quot;code&quot;:
+<span class="fc" id="L1864">                        codes.add(parseCode(reader));</span>
+<span class="fc" id="L1865">                        break;</span>
+                    case &quot;supplementary-material&quot;:
+<span class="fc" id="L1867">                        supplementaryMaterials.add(parseSupplementaryMaterial(reader));</span>
+<span class="fc" id="L1868">                        break;</span>
+                    case &quot;preformat&quot;:
+<span class="fc" id="L1870">                        preformats.add(parsePreformat(reader));</span>
+<span class="fc" id="L1871">                        break;</span>
+                    case &quot;array&quot;:
+<span class="fc" id="L1873">                        arrays.add(parseArray(reader));</span>
+<span class="fc" id="L1874">                        break;</span>
+                    default:
+<span class="fc" id="L1876">                        skipElement(reader);</span>
+                        break;
+                }
+<span class="fc bfc" id="L1879" title="All 2 branches covered.">            } else if (event == XMLStreamConstants.END_ELEMENT) {</span>
+<span class="pc bpc" id="L1880" title="1 of 2 branches missed.">                if (reader.getLocalName().equals(&quot;alternatives&quot;)) {</span>
+<span class="fc" id="L1881">                    break;</span>
+                }
+            }
+<span class="fc" id="L1884">        }</span>
+
+<span class="fc" id="L1886">        return builder</span>
+<span class="fc bfc" id="L1887" title="All 2 branches covered.">                .objectIds(objectIds.isEmpty() ? null : objectIds)</span>
+<span class="fc bfc" id="L1888" title="All 2 branches covered.">                .graphics(graphics.isEmpty() ? null : graphics)</span>
+<span class="fc bfc" id="L1889" title="All 2 branches covered.">                .medias(medias.isEmpty() ? null : medias)</span>
+<span class="fc bfc" id="L1890" title="All 2 branches covered.">                .tables(tables.isEmpty() ? null : tables)</span>
+<span class="fc bfc" id="L1891" title="All 2 branches covered.">                .codes(codes.isEmpty() ? null : codes)</span>
+<span class="fc bfc" id="L1892" title="All 2 branches covered.">                .supplementaryMaterials(supplementaryMaterials.isEmpty() ? null : supplementaryMaterials)</span>
+<span class="fc bfc" id="L1893" title="All 2 branches covered.">                .preformats(preformats.isEmpty() ? null : preformats)</span>
+<span class="fc bfc" id="L1894" title="All 2 branches covered.">                .arrays(arrays.isEmpty() ? null : arrays)</span>
+<span class="fc" id="L1895">                .build();</span>
+    }
+
+    /**
+     * Preformat 파싱 / Parse Preformat
+     * DTD: &lt;!ELEMENT preformat (#PCDATA | %all-phrase;)*&gt;
+     * DTD: &lt;!ATTLIST preformat
+     *          id ID #IMPLIED
+     *          orientation (portrait | landscape) #IMPLIED
+     *          position (anchor | background | float | margin) &quot;float&quot;
+     *          preformat-type CDATA #IMPLIED
+     *          specific-use CDATA #IMPLIED
+     *          xml:lang NMTOKEN #IMPLIED
+     *          xml:space (preserve) #FIXED &quot;preserve&quot;&gt;
+     */
+    public static Preformat parsePreformat(XMLStreamReader reader) throws XMLStreamException {
+<span class="fc" id="L1911">        String id = reader.getAttributeValue(null, &quot;id&quot;);</span>
+<span class="fc" id="L1912">        String orientation = reader.getAttributeValue(null, &quot;orientation&quot;);</span>
+<span class="fc" id="L1913">        String position = reader.getAttributeValue(null, &quot;position&quot;);</span>
+<span class="fc" id="L1914">        String preformatType = reader.getAttributeValue(null, &quot;preformat-type&quot;);</span>
+<span class="fc" id="L1915">        String specificUse = reader.getAttributeValue(null, &quot;specific-use&quot;);</span>
+<span class="fc" id="L1916">        String xmlLang = reader.getAttributeValue(&quot;http://www.w3.org/XML/1998/namespace&quot;, &quot;lang&quot;);</span>
+<span class="fc" id="L1917">        String xmlSpace = reader.getAttributeValue(&quot;http://www.w3.org/XML/1998/namespace&quot;, &quot;space&quot;);</span>
+
+<span class="fc" id="L1919">        Preformat.PreformatBuilder builder = Preformat.builder()</span>
+<span class="fc" id="L1920">                .id(id)</span>
+<span class="fc" id="L1921">                .orientation(Orientation.fromValue(orientation))</span>
+<span class="fc" id="L1922">                .position(Position.fromValue(position))</span>
+<span class="fc" id="L1923">                .preformatType(preformatType)</span>
+<span class="fc" id="L1924">                .specificUse(specificUse)</span>
+<span class="fc" id="L1925">                .xmlLang(xmlLang)</span>
+<span class="fc" id="L1926">                .xmlSpace(xmlSpace);</span>
+
+<span class="fc" id="L1928">        List&lt;Attrib&gt; attribs = new ArrayList&lt;&gt;();</span>
+<span class="fc" id="L1929">        List&lt;Permissions&gt; permissionsList = new ArrayList&lt;&gt;();</span>
+
+<span class="fc" id="L1931">        StringBuilder content = new StringBuilder();</span>
+        while (true) {
+<span class="fc" id="L1933">            int event = reader.next();</span>
+
+<span class="fc bfc" id="L1935" title="All 2 branches covered.">            if (event == XMLStreamConstants.START_ELEMENT) {</span>
+<span class="fc" id="L1936">                String localName = reader.getLocalName();</span>
+
+<span class="fc bfc" id="L1938" title="All 3 branches covered.">                switch (localName) {</span>
+                    case &quot;attrib&quot;:
+<span class="fc" id="L1940">                        attribs.add(parseAttrib(reader));</span>
+<span class="fc" id="L1941">                        break;</span>
+                    case &quot;permissions&quot;:
+<span class="fc" id="L1943">                        permissionsList.add(parsePermissions(reader));</span>
+<span class="fc" id="L1944">                        break;</span>
+                    default:
+<span class="fc" id="L1946">                        skipElement(reader);</span>
+                        break;
+                }
+<span class="fc bfc" id="L1949" title="All 2 branches covered.">            } else if (event == XMLStreamConstants.CHARACTERS) {</span>
+<span class="fc" id="L1950">                content.append(reader.getText());</span>
+<span class="pc bpc" id="L1951" title="1 of 2 branches missed.">            } else if (event == XMLStreamConstants.END_ELEMENT) {</span>
+<span class="pc bpc" id="L1952" title="1 of 2 branches missed.">                if (reader.getLocalName().equals(&quot;preformat&quot;)) {</span>
+<span class="fc" id="L1953">                    break;</span>
+                }
+            }
+<span class="fc" id="L1956">        }</span>
+
+<span class="fc" id="L1958">        return builder</span>
+<span class="fc bfc" id="L1959" title="All 2 branches covered.">                .content(content.length() &gt; 0 ? content.toString() : null)</span>
+<span class="fc bfc" id="L1960" title="All 2 branches covered.">                .attribs(attribs.isEmpty() ? null : attribs)</span>
+<span class="fc bfc" id="L1961" title="All 2 branches covered.">                .permissions(permissionsList.isEmpty() ? null : permissionsList)</span>
+<span class="fc" id="L1962">                .build();</span>
+    }
+
+    /**
+     * Array 파싱 / Parse Array
+     * DTD: &lt;!ELEMENT array (
+     *          object-id*,
+     *          label?,
+     *          caption?,
+     *          alt-text*,
+     *          long-desc*,
+     *          (email | ext-link | uri)*,
+     *          alternatives?,
+     *          (graphic | media)*,
+     *          tbody+,
+     *          (attrib | permissions)*)&gt;
+     * DTD: &lt;!ATTLIST array
+     *          content-type CDATA #IMPLIED
+     *          id ID #IMPLIED
+     *          orientation (portrait | landscape) #IMPLIED
+     *          specific-use CDATA #IMPLIED
+     *          xml:lang NMTOKEN #IMPLIED&gt;
+     */
+    public static Array parseArray(XMLStreamReader reader) throws XMLStreamException {
+<span class="fc" id="L1986">        String contentType = reader.getAttributeValue(null, &quot;content-type&quot;);</span>
+<span class="fc" id="L1987">        String id = reader.getAttributeValue(null, &quot;id&quot;);</span>
+<span class="fc" id="L1988">        String orientation = reader.getAttributeValue(null, &quot;orientation&quot;);</span>
+<span class="fc" id="L1989">        String specificUse = reader.getAttributeValue(null, &quot;specific-use&quot;);</span>
+<span class="fc" id="L1990">        String xmlLang = reader.getAttributeValue(&quot;http://www.w3.org/XML/1998/namespace&quot;, &quot;lang&quot;);</span>
+
+<span class="fc" id="L1992">        Array.ArrayBuilder builder = Array.builder()</span>
+<span class="fc" id="L1993">                .contentType(contentType)</span>
+<span class="fc" id="L1994">                .id(id)</span>
+<span class="fc" id="L1995">                .orientation(Orientation.fromValue(orientation))</span>
+<span class="fc" id="L1996">                .specificUse(specificUse)</span>
+<span class="fc" id="L1997">                .xmlLang(xmlLang);</span>
+
+<span class="fc" id="L1999">        List&lt;AltText&gt; altTexts = new ArrayList&lt;&gt;();</span>
+<span class="fc" id="L2000">        List&lt;LongDesc&gt; longDescs = new ArrayList&lt;&gt;();</span>
+<span class="fc" id="L2001">        List&lt;Email&gt; emails = new ArrayList&lt;&gt;();</span>
+<span class="fc" id="L2002">        List&lt;ExtLink&gt; extLinks = new ArrayList&lt;&gt;();</span>
+<span class="fc" id="L2003">        List&lt;Uri&gt; uris = new ArrayList&lt;&gt;();</span>
+<span class="fc" id="L2004">        List&lt;Alternatives&gt; alternatives = new ArrayList&lt;&gt;();</span>
+<span class="fc" id="L2005">        List&lt;Graphic&gt; graphics = new ArrayList&lt;&gt;();</span>
+<span class="fc" id="L2006">        List&lt;Media&gt; medias = new ArrayList&lt;&gt;();</span>
+<span class="fc" id="L2007">        List&lt;Tbody&gt; tbodies = new ArrayList&lt;&gt;();</span>
+<span class="fc" id="L2008">        List&lt;Attrib&gt; attribs = new ArrayList&lt;&gt;();</span>
+<span class="fc" id="L2009">        List&lt;Permissions&gt; permissionsList = new ArrayList&lt;&gt;();</span>
+
+        while (true) {
+<span class="fc" id="L2012">            int event = reader.next();</span>
+
+<span class="fc bfc" id="L2014" title="All 2 branches covered.">            if (event == XMLStreamConstants.START_ELEMENT) {</span>
+<span class="fc" id="L2015">                String localName = reader.getLocalName();</span>
+
+<span class="fc bfc" id="L2017" title="All 13 branches covered.">                switch (localName) {</span>
+                    case &quot;label&quot;:
+<span class="fc" id="L2019">                        builder.label(parseLabel(reader));</span>
+<span class="fc" id="L2020">                        break;</span>
+                    case &quot;alt-text&quot;:
+<span class="fc" id="L2022">                        altTexts.add(PmcXmlParser.parseAltText(reader));</span>
+<span class="fc" id="L2023">                        break;</span>
+                    case &quot;long-desc&quot;:
+<span class="fc" id="L2025">                        longDescs.add(PmcXmlParser.parseLongDesc(reader));</span>
+<span class="fc" id="L2026">                        break;</span>
+                    case &quot;email&quot;:
+<span class="fc" id="L2028">                        emails.add(parseEmail(reader));</span>
+<span class="fc" id="L2029">                        break;</span>
+                    case &quot;ext-link&quot;:
+<span class="fc" id="L2031">                        extLinks.add(parseExtLink(reader));</span>
+<span class="fc" id="L2032">                        break;</span>
+                    case &quot;uri&quot;:
+<span class="fc" id="L2034">                        uris.add(parseUri(reader));</span>
+<span class="fc" id="L2035">                        break;</span>
+                    case &quot;alternatives&quot;:
+<span class="fc" id="L2037">                        alternatives.add(parseAlternatives(reader));</span>
+<span class="fc" id="L2038">                        break;</span>
+                    case &quot;graphic&quot;:
+<span class="fc" id="L2040">                        graphics.add(PmcXmlParser.parseGraphic(reader));</span>
+<span class="fc" id="L2041">                        break;</span>
+                    case &quot;media&quot;:
+<span class="fc" id="L2043">                        medias.add(PmcXmlParser.parseMedia(reader));</span>
+<span class="fc" id="L2044">                        break;</span>
+                    case &quot;tbody&quot;:
+<span class="fc" id="L2046">                        tbodies.add(PmcXmlParser.parseTbody(reader));</span>
+<span class="fc" id="L2047">                        break;</span>
+                    case &quot;attrib&quot;:
+<span class="fc" id="L2049">                        attribs.add(parseAttrib(reader));</span>
+<span class="fc" id="L2050">                        break;</span>
+                    case &quot;permissions&quot;:
+<span class="fc" id="L2052">                        permissionsList.add(parsePermissions(reader));</span>
+<span class="fc" id="L2053">                        break;</span>
+                    default:
+<span class="fc" id="L2055">                        skipElement(reader);</span>
+                        break;
+                }
+<span class="fc bfc" id="L2058" title="All 2 branches covered.">            } else if (event == XMLStreamConstants.END_ELEMENT) {</span>
+<span class="pc bpc" id="L2059" title="1 of 2 branches missed.">                if (reader.getLocalName().equals(&quot;array&quot;)) {</span>
+<span class="fc" id="L2060">                    break;</span>
+                }
+            }
+<span class="fc" id="L2063">        }</span>
+
+<span class="fc" id="L2065">        return builder</span>
+<span class="fc bfc" id="L2066" title="All 2 branches covered.">                .altTexts(altTexts.isEmpty() ? null : altTexts)</span>
+<span class="fc bfc" id="L2067" title="All 2 branches covered.">                .longDescs(longDescs.isEmpty() ? null : longDescs)</span>
+<span class="fc bfc" id="L2068" title="All 2 branches covered.">                .emails(emails.isEmpty() ? null : emails)</span>
+<span class="fc bfc" id="L2069" title="All 2 branches covered.">                .extLinks(extLinks.isEmpty() ? null : extLinks)</span>
+<span class="fc bfc" id="L2070" title="All 2 branches covered.">                .uris(uris.isEmpty() ? null : uris)</span>
+<span class="fc bfc" id="L2071" title="All 2 branches covered.">                .alternatives(alternatives.isEmpty() ? null : alternatives)</span>
+<span class="fc bfc" id="L2072" title="All 2 branches covered.">                .graphics(graphics.isEmpty() ? null : graphics)</span>
+<span class="fc bfc" id="L2073" title="All 2 branches covered.">                .medias(medias.isEmpty() ? null : medias)</span>
+<span class="fc bfc" id="L2074" title="All 2 branches covered.">                .tbodies(tbodies.isEmpty() ? null : tbodies)</span>
+<span class="fc bfc" id="L2075" title="All 2 branches covered.">                .attribs(attribs.isEmpty() ? null : attribs)</span>
+<span class="fc bfc" id="L2076" title="All 2 branches covered.">                .permissions(permissionsList.isEmpty() ? null : permissionsList)</span>
+<span class="fc" id="L2077">                .build();</span>
+    }
+
+    /**
+     * ChemStructWrap 파싱 / Parse ChemStructWrap
+     * DTD: &lt;!ELEMENT chem-struct-wrap (
+     *          object-id*,
+     *          label?,
+     *          caption?,
+     *          abstract*,
+     *          kwd-group*,
+     *          alt-text*,
+     *          long-desc*,
+     *          (email | ext-link | uri)*,
+     *          alternatives?,
+     *          chem-struct+,
+     *          (code | graphic | media | preformat | textual-form)*,
+     *          (attrib | permissions)*)&gt;
+     * DTD: &lt;!ATTLIST chem-struct-wrap
+     *          content-type CDATA #IMPLIED
+     *          id ID #IMPLIED
+     *          orientation (portrait | landscape) #IMPLIED
+     *          position (anchor | background | float | margin) &quot;float&quot;
+     *          specific-use CDATA #IMPLIED
+     *          xml:base CDATA #IMPLIED
+     *          xml:lang NMTOKEN #IMPLIED&gt;
+     */
+    public static ChemStructWrap parseChemStructWrap(XMLStreamReader reader) throws XMLStreamException {
+<span class="fc" id="L2105">        String contentType = reader.getAttributeValue(null, &quot;content-type&quot;);</span>
+<span class="fc" id="L2106">        String id = reader.getAttributeValue(null, &quot;id&quot;);</span>
+<span class="fc" id="L2107">        String orientation = reader.getAttributeValue(null, &quot;orientation&quot;);</span>
+<span class="fc" id="L2108">        String position = reader.getAttributeValue(null, &quot;position&quot;);</span>
+<span class="fc" id="L2109">        String specificUse = reader.getAttributeValue(null, &quot;specific-use&quot;);</span>
+<span class="fc" id="L2110">        String xmlBase = reader.getAttributeValue(&quot;http://www.w3.org/XML/1998/namespace&quot;, &quot;base&quot;);</span>
+<span class="fc" id="L2111">        String xmlLang = reader.getAttributeValue(&quot;http://www.w3.org/XML/1998/namespace&quot;, &quot;lang&quot;);</span>
+
+<span class="fc" id="L2113">        ChemStructWrap.ChemStructWrapBuilder builder = ChemStructWrap.builder()</span>
+<span class="fc" id="L2114">                .contentType(contentType)</span>
+<span class="fc" id="L2115">                .id(id)</span>
+<span class="fc" id="L2116">                .orientation(Orientation.fromValue(orientation))</span>
+<span class="fc" id="L2117">                .position(Position.fromValue(position))</span>
+<span class="fc" id="L2118">                .specificUse(specificUse)</span>
+<span class="fc" id="L2119">                .xmlBase(xmlBase)</span>
+<span class="fc" id="L2120">                .xmlLang(xmlLang);</span>
+
+<span class="fc" id="L2122">        List&lt;ObjectId&gt; objectIds = new ArrayList&lt;&gt;();</span>
+<span class="fc" id="L2123">        List&lt;Caption&gt; captions = new ArrayList&lt;&gt;();</span>
+<span class="fc" id="L2124">        List&lt;PmcAbstract&gt; abstracts = new ArrayList&lt;&gt;();</span>
+<span class="fc" id="L2125">        List&lt;KwdGroup&gt; kwdGroups = new ArrayList&lt;&gt;();</span>
+<span class="fc" id="L2126">        List&lt;AltText&gt; altTexts = new ArrayList&lt;&gt;();</span>
+<span class="fc" id="L2127">        List&lt;LongDesc&gt; longDescs = new ArrayList&lt;&gt;();</span>
+<span class="fc" id="L2128">        List&lt;Email&gt; emails = new ArrayList&lt;&gt;();</span>
+<span class="fc" id="L2129">        List&lt;ExtLink&gt; extLinks = new ArrayList&lt;&gt;();</span>
+<span class="fc" id="L2130">        List&lt;Uri&gt; uris = new ArrayList&lt;&gt;();</span>
+<span class="fc" id="L2131">        List&lt;Alternatives&gt; alternatives = new ArrayList&lt;&gt;();</span>
+<span class="fc" id="L2132">        List&lt;ChemStruct&gt; chemStructs = new ArrayList&lt;&gt;();</span>
+<span class="fc" id="L2133">        List&lt;Code&gt; codes = new ArrayList&lt;&gt;();</span>
+<span class="fc" id="L2134">        List&lt;Graphic&gt; graphics = new ArrayList&lt;&gt;();</span>
+<span class="fc" id="L2135">        List&lt;Media&gt; medias = new ArrayList&lt;&gt;();</span>
+<span class="fc" id="L2136">        List&lt;Preformat&gt; preformats = new ArrayList&lt;&gt;();</span>
+<span class="fc" id="L2137">        List&lt;TextualForm&gt; textualForms = new ArrayList&lt;&gt;();</span>
+<span class="fc" id="L2138">        List&lt;Attrib&gt; attribs = new ArrayList&lt;&gt;();</span>
+<span class="fc" id="L2139">        List&lt;Permissions&gt; permissionsList = new ArrayList&lt;&gt;();</span>
+
+        while (true) {
+<span class="fc" id="L2142">            int event = reader.next();</span>
+
+<span class="fc bfc" id="L2144" title="All 2 branches covered.">            if (event == XMLStreamConstants.START_ELEMENT) {</span>
+<span class="fc" id="L2145">                String localName = reader.getLocalName();</span>
+
+<span class="fc bfc" id="L2147" title="All 20 branches covered.">                switch (localName) {</span>
+                    case &quot;object-id&quot;:
+<span class="fc" id="L2149">                        objectIds.add(parseObjectId(reader));</span>
+<span class="fc" id="L2150">                        break;</span>
+                    case &quot;label&quot;:
+<span class="fc" id="L2152">                        builder.label(parseLabel(reader));</span>
+<span class="fc" id="L2153">                        break;</span>
+                    case &quot;caption&quot;:
+<span class="fc" id="L2155">                        captions.add(parseCaption(reader));</span>
+<span class="fc" id="L2156">                        break;</span>
+                    case &quot;abstract&quot;:
+<span class="fc" id="L2158">                        abstracts.add(parsePmcAbstract(reader));</span>
+<span class="fc" id="L2159">                        break;</span>
+                    case &quot;kwd-group&quot;:
+<span class="fc" id="L2161">                        kwdGroups.add(parseKwdGroup(reader));</span>
+<span class="fc" id="L2162">                        break;</span>
+                    case &quot;alt-text&quot;:
+<span class="fc" id="L2164">                        altTexts.add(PmcXmlParser.parseAltText(reader));</span>
+<span class="fc" id="L2165">                        break;</span>
+                    case &quot;long-desc&quot;:
+<span class="fc" id="L2167">                        longDescs.add(PmcXmlParser.parseLongDesc(reader));</span>
+<span class="fc" id="L2168">                        break;</span>
+                    case &quot;email&quot;:
+<span class="fc" id="L2170">                        emails.add(parseEmail(reader));</span>
+<span class="fc" id="L2171">                        break;</span>
+                    case &quot;ext-link&quot;:
+<span class="fc" id="L2173">                        extLinks.add(parseExtLink(reader));</span>
+<span class="fc" id="L2174">                        break;</span>
+                    case &quot;uri&quot;:
+<span class="fc" id="L2176">                        uris.add(parseUri(reader));</span>
+<span class="fc" id="L2177">                        break;</span>
+                    case &quot;alternatives&quot;:
+<span class="fc" id="L2179">                        alternatives.add(parseAlternatives(reader));</span>
+<span class="fc" id="L2180">                        break;</span>
+                    case &quot;chem-struct&quot;:
+<span class="fc" id="L2182">                        chemStructs.add(parseChemStruct(reader));</span>
+<span class="fc" id="L2183">                        break;</span>
+                    case &quot;code&quot;:
+<span class="fc" id="L2185">                        codes.add(parseCode(reader));</span>
+<span class="fc" id="L2186">                        break;</span>
+                    case &quot;graphic&quot;:
+<span class="fc" id="L2188">                        graphics.add(PmcXmlParser.parseGraphic(reader));</span>
+<span class="fc" id="L2189">                        break;</span>
+                    case &quot;media&quot;:
+<span class="fc" id="L2191">                        medias.add(PmcXmlParser.parseMedia(reader));</span>
+<span class="fc" id="L2192">                        break;</span>
+                    case &quot;preformat&quot;:
+<span class="fc" id="L2194">                        preformats.add(parsePreformat(reader));</span>
+<span class="fc" id="L2195">                        break;</span>
+                    case &quot;textual-form&quot;:
+<span class="fc" id="L2197">                        textualForms.add(parseTextualForm(reader));</span>
+<span class="fc" id="L2198">                        break;</span>
+                    case &quot;attrib&quot;:
+<span class="fc" id="L2200">                        attribs.add(parseAttrib(reader));</span>
+<span class="fc" id="L2201">                        break;</span>
+                    case &quot;permissions&quot;:
+<span class="fc" id="L2203">                        permissionsList.add(parsePermissions(reader));</span>
+<span class="fc" id="L2204">                        break;</span>
+                    default:
+<span class="fc" id="L2206">                        skipElement(reader);</span>
+                        break;
+                }
+<span class="fc bfc" id="L2209" title="All 2 branches covered.">            } else if (event == XMLStreamConstants.END_ELEMENT) {</span>
+<span class="pc bpc" id="L2210" title="1 of 2 branches missed.">                if (reader.getLocalName().equals(&quot;chem-struct-wrap&quot;)) {</span>
+<span class="fc" id="L2211">                    break;</span>
+                }
+            }
+<span class="fc" id="L2214">        }</span>
+
+<span class="fc" id="L2216">        return builder</span>
+<span class="fc bfc" id="L2217" title="All 2 branches covered.">                .objectIds(objectIds.isEmpty() ? null : objectIds)</span>
+<span class="fc bfc" id="L2218" title="All 2 branches covered.">                .captions(captions.isEmpty() ? null : captions)</span>
+<span class="fc bfc" id="L2219" title="All 2 branches covered.">                .abstracts(abstracts.isEmpty() ? null : abstracts)</span>
+<span class="fc bfc" id="L2220" title="All 2 branches covered.">                .kwdGroups(kwdGroups.isEmpty() ? null : kwdGroups)</span>
+<span class="fc bfc" id="L2221" title="All 2 branches covered.">                .altTexts(altTexts.isEmpty() ? null : altTexts)</span>
+<span class="fc bfc" id="L2222" title="All 2 branches covered.">                .longDescs(longDescs.isEmpty() ? null : longDescs)</span>
+<span class="fc bfc" id="L2223" title="All 2 branches covered.">                .emails(emails.isEmpty() ? null : emails)</span>
+<span class="fc bfc" id="L2224" title="All 2 branches covered.">                .extLinks(extLinks.isEmpty() ? null : extLinks)</span>
+<span class="fc bfc" id="L2225" title="All 2 branches covered.">                .uris(uris.isEmpty() ? null : uris)</span>
+<span class="fc bfc" id="L2226" title="All 2 branches covered.">                .alternatives(alternatives.isEmpty() ? null : alternatives)</span>
+<span class="fc bfc" id="L2227" title="All 2 branches covered.">                .codes(codes.isEmpty() ? null : codes)</span>
+<span class="fc bfc" id="L2228" title="All 2 branches covered.">                .graphics(graphics.isEmpty() ? null : graphics)</span>
+<span class="fc bfc" id="L2229" title="All 2 branches covered.">                .medias(medias.isEmpty() ? null : medias)</span>
+<span class="fc bfc" id="L2230" title="All 2 branches covered.">                .preformats(preformats.isEmpty() ? null : preformats)</span>
+<span class="fc bfc" id="L2231" title="All 2 branches covered.">                .attribs(attribs.isEmpty() ? null : attribs)</span>
+<span class="fc bfc" id="L2232" title="All 2 branches covered.">                .permissions(permissionsList.isEmpty() ? null : permissionsList)</span>
+<span class="fc bfc" id="L2233" title="All 2 branches covered.">                .chemStructs(chemStructs.isEmpty() ? null : chemStructs)</span>
+<span class="fc bfc" id="L2234" title="All 2 branches covered.">                .textualForms(textualForms.isEmpty() ? null : textualForms)</span>
+<span class="fc" id="L2235">                .build();</span>
+    }
+
+    /**
+     * TextualForm 파싱 / Parse TextualForm
+     *
+     * KR: 대안 표현의 텍스트 형식을 파싱합니다.
+     * EN: Parses textual form of alternative representation.
+     *
+     * DTD: &lt;!ELEMENT textual-form (#PCDATA | %all-phrase;)*&gt;
+     * DTD: &lt;!ATTLIST textual-form
+     *          id ID #IMPLIED
+     *          specific-use CDATA #IMPLIED
+     *          xml:lang NMTOKEN #IMPLIED&gt;
+     */
+    public static TextualForm parseTextualForm(XMLStreamReader reader) throws XMLStreamException {
+<span class="fc" id="L2251">        String id = reader.getAttributeValue(null, &quot;id&quot;);</span>
+<span class="fc" id="L2252">        String specificUse = reader.getAttributeValue(null, &quot;specific-use&quot;);</span>
+<span class="fc" id="L2253">        String xmlLang = reader.getAttributeValue(&quot;http://www.w3.org/XML/1998/namespace&quot;, &quot;lang&quot;);</span>
+
+<span class="fc" id="L2255">        String content = parseTextContent(reader, &quot;textual-form&quot;);</span>
+
+<span class="fc" id="L2257">        return TextualForm.builder()</span>
+<span class="fc" id="L2258">                .id(id)</span>
+<span class="fc" id="L2259">                .specificUse(specificUse)</span>
+<span class="fc" id="L2260">                .xmlLang(xmlLang)</span>
+<span class="fc" id="L2261">                .content(content)</span>
+<span class="fc" id="L2262">                .build();</span>
+    }
+
+    /**
+     * ChemStruct 파싱 / Parse ChemStruct
+     *
+     * KR: 화학 구조 요소를 파싱합니다.
+     * EN: Parses chemical structure element.
+     *
+     * DTD: &lt;!ELEMENT chem-struct (#PCDATA | %access.class; | %address-link.class; |
+     *          %break.class; | %emphasis.class; | %inline-display-noalt.class; |
+     *          %inline-math.class; | %list.class; | %simple-link.class; |
+     *          %simple-text.class; | %subsup.class; | alt-text | array |
+     *          attrib | code | graphic | label | long-desc | media |
+     *          permissions | preformat | textual-form)*&gt;
+     *
+     * DTD: &lt;!ATTLIST chem-struct
+     *          content-type CDATA #IMPLIED
+     *          id ID #IMPLIED
+     *          specific-use CDATA #IMPLIED
+     *          xlink:actuate (onLoad | onRequest | other | none) #IMPLIED
+     *          xlink:href CDATA #IMPLIED
+     *          xlink:role CDATA #IMPLIED
+     *          xlink:show (embed | new | none | other | replace) #IMPLIED
+     *          xlink:title CDATA #IMPLIED
+     *          xlink:type (simple) #IMPLIED
+     *          xml:base CDATA #IMPLIED
+     *          xml:lang NMTOKEN #IMPLIED&gt;
+     */
+    public static ChemStruct parseChemStruct(XMLStreamReader reader) throws XMLStreamException {
+        // Attributes
+<span class="fc" id="L2293">        String contentType = reader.getAttributeValue(null, &quot;content-type&quot;);</span>
+<span class="fc" id="L2294">        String id = reader.getAttributeValue(null, &quot;id&quot;);</span>
+<span class="fc" id="L2295">        String specificUse = reader.getAttributeValue(null, &quot;specific-use&quot;);</span>
+<span class="fc" id="L2296">        String xlinkActuateStr = reader.getAttributeValue(&quot;http://www.w3.org/1999/xlink&quot;, &quot;actuate&quot;);</span>
+<span class="fc" id="L2297">        String xlinkHref = reader.getAttributeValue(&quot;http://www.w3.org/1999/xlink&quot;, &quot;href&quot;);</span>
+<span class="fc" id="L2298">        String xlinkRole = reader.getAttributeValue(&quot;http://www.w3.org/1999/xlink&quot;, &quot;role&quot;);</span>
+<span class="fc" id="L2299">        String xlinkShowStr = reader.getAttributeValue(&quot;http://www.w3.org/1999/xlink&quot;, &quot;show&quot;);</span>
+<span class="fc" id="L2300">        String xlinkTitle = reader.getAttributeValue(&quot;http://www.w3.org/1999/xlink&quot;, &quot;title&quot;);</span>
+<span class="fc" id="L2301">        String xlinkType = reader.getAttributeValue(&quot;http://www.w3.org/1999/xlink&quot;, &quot;type&quot;);</span>
+<span class="fc" id="L2302">        String xmlBase = reader.getAttributeValue(&quot;http://www.w3.org/XML/1998/namespace&quot;, &quot;base&quot;);</span>
+<span class="fc" id="L2303">        String xmlLang = reader.getAttributeValue(&quot;http://www.w3.org/XML/1998/namespace&quot;, &quot;lang&quot;);</span>
+
+<span class="fc" id="L2305">        ChemStruct.ChemStructBuilder builder = ChemStruct.builder()</span>
+<span class="fc" id="L2306">                .contentType(contentType)</span>
+<span class="fc" id="L2307">                .id(id)</span>
+<span class="fc" id="L2308">                .specificUse(specificUse)</span>
+<span class="fc" id="L2309">                .xlinkActuate(XlinkActuate.fromValue(xlinkActuateStr))</span>
+<span class="fc" id="L2310">                .xlinkHref(xlinkHref)</span>
+<span class="fc" id="L2311">                .xlinkRole(xlinkRole)</span>
+<span class="fc" id="L2312">                .xlinkShow(XlinkShow.fromValue(xlinkShowStr))</span>
+<span class="fc" id="L2313">                .xlinkTitle(xlinkTitle)</span>
+<span class="fc" id="L2314">                .xlinkType(xlinkType)</span>
+<span class="fc" id="L2315">                .xmlBase(xmlBase)</span>
+<span class="fc" id="L2316">                .xmlLang(xmlLang);</span>
+
+<span class="fc" id="L2318">        List&lt;AltText&gt; altTexts = new ArrayList&lt;&gt;();</span>
+<span class="fc" id="L2319">        List&lt;LongDesc&gt; longDescs = new ArrayList&lt;&gt;();</span>
+<span class="fc" id="L2320">        List&lt;Graphic&gt; graphics = new ArrayList&lt;&gt;();</span>
+<span class="fc" id="L2321">        List&lt;Media&gt; medias = new ArrayList&lt;&gt;();</span>
+<span class="fc" id="L2322">        List&lt;Array&gt; arrays = new ArrayList&lt;&gt;();</span>
+<span class="fc" id="L2323">        List&lt;Code&gt; codes = new ArrayList&lt;&gt;();</span>
+<span class="fc" id="L2324">        List&lt;TextualForm&gt; textualForms = new ArrayList&lt;&gt;();</span>
+<span class="fc" id="L2325">        StringBuilder value = new StringBuilder();</span>
+
+        while (true) {
+<span class="fc" id="L2328">            int event = reader.next();</span>
+
+<span class="fc bfc" id="L2330" title="All 2 branches covered.">            if (event == XMLStreamConstants.START_ELEMENT) {</span>
+<span class="fc" id="L2331">                String localName = reader.getLocalName();</span>
+
+<span class="fc bfc" id="L2333" title="All 11 branches covered.">                switch (localName) {</span>
+                    case &quot;label&quot;:
+<span class="fc" id="L2335">                        builder.label(parseLabel(reader));</span>
+<span class="fc" id="L2336">                        break;</span>
+                    case &quot;alt-text&quot;:
+<span class="fc" id="L2338">                        altTexts.add(PmcXmlParser.parseAltText(reader));</span>
+<span class="fc" id="L2339">                        break;</span>
+                    case &quot;long-desc&quot;:
+<span class="fc" id="L2341">                        longDescs.add(PmcXmlParser.parseLongDesc(reader));</span>
+<span class="fc" id="L2342">                        break;</span>
+                    case &quot;graphic&quot;:
+<span class="fc" id="L2344">                        graphics.add(PmcXmlParser.parseGraphic(reader));</span>
+<span class="fc" id="L2345">                        break;</span>
+                    case &quot;media&quot;:
+<span class="fc" id="L2347">                        medias.add(PmcXmlParser.parseMedia(reader));</span>
+<span class="fc" id="L2348">                        break;</span>
+                    case &quot;array&quot;:
+<span class="fc" id="L2350">                        arrays.add(parseArray(reader));</span>
+<span class="fc" id="L2351">                        break;</span>
+                    case &quot;code&quot;:
+<span class="fc" id="L2353">                        codes.add(parseCode(reader));</span>
+<span class="fc" id="L2354">                        break;</span>
+                    case &quot;attrib&quot;:
+<span class="fc" id="L2356">                        builder.attrib(parseAttrib(reader));</span>
+<span class="fc" id="L2357">                        break;</span>
+                    case &quot;permissions&quot;:
+<span class="fc" id="L2359">                        builder.permissions(parsePermissions(reader));</span>
+<span class="fc" id="L2360">                        break;</span>
+                    case &quot;textual-form&quot;:
+<span class="fc" id="L2362">                        textualForms.add(parseTextualForm(reader));</span>
+<span class="fc" id="L2363">                        break;</span>
+                    default:
+<span class="fc" id="L2365">                        skipElement(reader);</span>
+                        break;
+                }
+<span class="pc bpc" id="L2368" title="1 of 4 branches missed.">            } else if (event == XMLStreamConstants.CHARACTERS || event == XMLStreamConstants.CDATA) {</span>
+<span class="fc" id="L2369">                value.append(reader.getText());</span>
+<span class="fc bfc" id="L2370" title="All 2 branches covered.">            } else if (event == XMLStreamConstants.END_ELEMENT) {</span>
+<span class="pc bpc" id="L2371" title="1 of 2 branches missed.">                if (reader.getLocalName().equals(&quot;chem-struct&quot;)) {</span>
+<span class="fc" id="L2372">                    break;</span>
+                }
+            }
+<span class="fc" id="L2375">        }</span>
+
+<span class="fc" id="L2377">        return builder</span>
+<span class="fc bfc" id="L2378" title="All 2 branches covered.">                .value(value.length() &gt; 0 ? value.toString().trim() : null)</span>
+<span class="fc bfc" id="L2379" title="All 2 branches covered.">                .altTexts(altTexts.isEmpty() ? null : altTexts)</span>
+<span class="fc bfc" id="L2380" title="All 2 branches covered.">                .longDescs(longDescs.isEmpty() ? null : longDescs)</span>
+<span class="fc bfc" id="L2381" title="All 2 branches covered.">                .graphics(graphics.isEmpty() ? null : graphics)</span>
+<span class="fc bfc" id="L2382" title="All 2 branches covered.">                .medias(medias.isEmpty() ? null : medias)</span>
+<span class="fc bfc" id="L2383" title="All 2 branches covered.">                .arrays(arrays.isEmpty() ? null : arrays)</span>
+<span class="fc bfc" id="L2384" title="All 2 branches covered.">                .codes(codes.isEmpty() ? null : codes)</span>
+<span class="fc bfc" id="L2385" title="All 2 branches covered.">                .textualForms(textualForms.isEmpty() ? null : textualForms)</span>
+<span class="fc" id="L2386">                .build();</span>
+    }
+
+    /**
+     * AffAlternatives 파싱 / Parse AffAlternatives
+     *
+     * KR: 다양한 언어 또는 형식의 소속 정보를 파싱합니다.
+     * EN: Parses affiliation information in various languages or formats.
+     *
+     * DTD: &lt;!ELEMENT aff-alternatives (aff+)&gt;
+     */
+    public static AffAlternatives parseAffAlternatives(XMLStreamReader reader) throws XMLStreamException {
+<span class="fc" id="L2398">        List&lt;Aff&gt; affiliations = new ArrayList&lt;&gt;();</span>
+
+        while (true) {
+<span class="fc" id="L2401">            int event = reader.next();</span>
+
+<span class="fc bfc" id="L2403" title="All 2 branches covered.">            if (event == XMLStreamConstants.START_ELEMENT) {</span>
+<span class="fc" id="L2404">                String localName = reader.getLocalName();</span>
+
+<span class="fc bfc" id="L2406" title="All 2 branches covered.">                if (&quot;aff&quot;.equals(localName)) {</span>
+<span class="fc" id="L2407">                    affiliations.add(parseAff(reader));</span>
+                } else {
+<span class="fc" id="L2409">                    skipElement(reader);</span>
+                }
+<span class="fc bfc" id="L2411" title="All 2 branches covered.">            } else if (event == XMLStreamConstants.END_ELEMENT) {</span>
+<span class="pc bpc" id="L2412" title="1 of 2 branches missed.">                if (reader.getLocalName().equals(&quot;aff-alternatives&quot;)) {</span>
+<span class="fc" id="L2413">                    break;</span>
+                }
+            }
+<span class="fc" id="L2416">        }</span>
+
+<span class="fc" id="L2418">        return AffAlternatives.builder()</span>
+<span class="fc bfc" id="L2419" title="All 2 branches covered.">                .affiliations(affiliations.isEmpty() ? null : affiliations)</span>
+<span class="fc" id="L2420">                .build();</span>
+    }
+
+    /**
+     * PubDateNotAvailable 파싱 / Parse PubDateNotAvailable
+     *
+     * KR: 출판일을 사용할 수 없음을 나타내는 요소를 파싱합니다.
+     * EN: Parses element indicating that publication date is not available.
+     *
+     * DTD: &lt;!ELEMENT pub-date-not-available MIXED&gt;
+     * DTD: &lt;!ATTLIST pub-date-not-available
+     *          id ID #IMPLIED
+     *          xml:lang NMTOKEN #IMPLIED
+     *      &gt;
+     */
+    public static PubDateNotAvailable parsePubDateNotAvailable(XMLStreamReader reader) throws XMLStreamException {
+<span class="fc" id="L2436">        String id = reader.getAttributeValue(null, &quot;id&quot;);</span>
+<span class="fc" id="L2437">        String xmlLang = reader.getAttributeValue(&quot;http://www.w3.org/XML/1998/namespace&quot;, &quot;lang&quot;);</span>
+
+<span class="fc" id="L2439">        String value = parseTextContent(reader, &quot;pub-date-not-available&quot;);</span>
+
+<span class="fc" id="L2441">        return PubDateNotAvailable.builder()</span>
+<span class="fc" id="L2442">                .id(id)</span>
+<span class="fc" id="L2443">                .xmlLang(xmlLang)</span>
+<span class="fc" id="L2444">                .value(value)</span>
+<span class="fc" id="L2445">                .build();</span>
+    }
+
+    /**
+     * PubHistory 파싱 / Parse PubHistory
+     *
+     * KR: 논문의 상세 출판 이력을 파싱합니다 (JATS 1.3+).
+     * EN: Parses detailed publication history of article (JATS 1.3+).
+     *
+     * DTD: &lt;!ELEMENT pub-history (date | event)*&gt;
+     * DTD: &lt;!ATTLIST pub-history
+     *          id ID #IMPLIED
+     *          specific-use CDATA #IMPLIED
+     *      &gt;
+     */
+    public static PubHistory parsePubHistory(XMLStreamReader reader) throws XMLStreamException {
+<span class="fc" id="L2461">        String id = reader.getAttributeValue(null, &quot;id&quot;);</span>
+<span class="fc" id="L2462">        String specificUse = reader.getAttributeValue(null, &quot;specific-use&quot;);</span>
+
+<span class="fc" id="L2464">        List&lt;PmcDate&gt; dates = new ArrayList&lt;&gt;();</span>
+<span class="fc" id="L2465">        List&lt;Event&gt; events = new ArrayList&lt;&gt;();</span>
+
+        while (true) {
+<span class="fc" id="L2468">            int event = reader.next();</span>
+
+<span class="fc bfc" id="L2470" title="All 2 branches covered.">            if (event == XMLStreamConstants.START_ELEMENT) {</span>
+<span class="fc" id="L2471">                String localName = reader.getLocalName();</span>
+
+<span class="fc bfc" id="L2473" title="All 3 branches covered.">                switch (localName) {</span>
+                    case &quot;date&quot;:
+<span class="fc" id="L2475">                        dates.add(parsePmcDate(reader));</span>
+<span class="fc" id="L2476">                        break;</span>
+                    case &quot;event&quot;:
+<span class="fc" id="L2478">                        events.add(parseEvent(reader));</span>
+<span class="fc" id="L2479">                        break;</span>
+                    default:
+<span class="fc" id="L2481">                        skipElement(reader);</span>
+                        break;
+                }
+<span class="fc bfc" id="L2484" title="All 2 branches covered.">            } else if (event == XMLStreamConstants.END_ELEMENT) {</span>
+<span class="pc bpc" id="L2485" title="1 of 2 branches missed.">                if (reader.getLocalName().equals(&quot;pub-history&quot;)) {</span>
+<span class="fc" id="L2486">                    break;</span>
+                }
+            }
+<span class="fc" id="L2489">        }</span>
+
+<span class="fc" id="L2491">        return PubHistory.builder()</span>
+<span class="fc" id="L2492">                .id(id)</span>
+<span class="fc" id="L2493">                .specificUse(specificUse)</span>
+<span class="fc bfc" id="L2494" title="All 2 branches covered.">                .dates(dates.isEmpty() ? null : dates)</span>
+<span class="fc bfc" id="L2495" title="All 2 branches covered.">                .events(events.isEmpty() ? null : events)</span>
+<span class="fc" id="L2496">                .build();</span>
+    }
+
+    /**
+     * Event 파싱 / Parse Event
+     *
+     * KR: 출판 이력의 이벤트를 파싱합니다.
+     * EN: Parses an event in publication history.
+     *
+     * DTD: &lt;!ELEMENT event (...)&gt;
+     */
+    private static Event parseEvent(XMLStreamReader reader) throws XMLStreamException {
+<span class="fc" id="L2508">        String eventType = reader.getAttributeValue(null, &quot;event-type&quot;);</span>
+<span class="fc" id="L2509">        String id = reader.getAttributeValue(null, &quot;id&quot;);</span>
+<span class="fc" id="L2510">        String specificUse = reader.getAttributeValue(null, &quot;specific-use&quot;);</span>
+<span class="fc" id="L2511">        String xmlLang = reader.getAttributeValue(null, &quot;xml:lang&quot;);</span>
+
+<span class="fc" id="L2513">        String eventDesc = null;</span>
+<span class="fc" id="L2514">        String title = null;</span>
+<span class="fc" id="L2515">        List&lt;PmcDate&gt; dates = new ArrayList&lt;&gt;();</span>
+
+        while (true) {
+<span class="fc" id="L2518">            int event = reader.next();</span>
+
+<span class="fc bfc" id="L2520" title="All 2 branches covered.">            if (event == XMLStreamConstants.START_ELEMENT) {</span>
+<span class="fc" id="L2521">                String localName = reader.getLocalName();</span>
+
+<span class="fc bfc" id="L2523" title="All 4 branches covered.">                switch (localName) {</span>
+                    case &quot;event-desc&quot;:
+<span class="fc" id="L2525">                        eventDesc = parseTextContent(reader, &quot;event-desc&quot;);</span>
+<span class="fc" id="L2526">                        break;</span>
+                    case &quot;title&quot;:
+<span class="fc" id="L2528">                        title = parseTextContent(reader, &quot;title&quot;);</span>
+<span class="fc" id="L2529">                        break;</span>
+                    case &quot;date&quot;:
+<span class="fc" id="L2531">                        dates.add(parsePmcDate(reader));</span>
+<span class="fc" id="L2532">                        break;</span>
+                    default:
+<span class="fc" id="L2534">                        skipElement(reader);</span>
+                        break;
+                }
+<span class="fc bfc" id="L2537" title="All 2 branches covered.">            } else if (event == XMLStreamConstants.END_ELEMENT) {</span>
+<span class="pc bpc" id="L2538" title="1 of 2 branches missed.">                if (reader.getLocalName().equals(&quot;event&quot;)) {</span>
+<span class="fc" id="L2539">                    break;</span>
+                }
+            }
+<span class="fc" id="L2542">        }</span>
+
+<span class="fc" id="L2544">        return Event.builder()</span>
+<span class="fc" id="L2545">                .eventType(eventType)</span>
+<span class="fc" id="L2546">                .id(id)</span>
+<span class="fc" id="L2547">                .specificUse(specificUse)</span>
+<span class="fc" id="L2548">                .xmlLang(xmlLang)</span>
+<span class="fc" id="L2549">                .eventDesc(eventDesc)</span>
+<span class="fc" id="L2550">                .title(title)</span>
+<span class="fc bfc" id="L2551" title="All 2 branches covered.">                .dates(dates.isEmpty() ? null : dates)</span>
+<span class="fc" id="L2552">                .build();</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.9.202303310957</span></div></body></html>

@@ -1,19 +1,161 @@
 package com.brillianttiger.bio.parser.pmc.parser;
 
-import com.brillianttiger.bio.parser.pmc.model.*;
-
+import java.util.ArrayList;
+import java.util.List;
 import javax.xml.stream.XMLStreamConstants;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
-import java.util.ArrayList;
-import java.util.List;
 
-import static com.brillianttiger.bio.parser.pmc.parser.CommonPmcElementParser.*;
-import static com.brillianttiger.bio.parser.pmc.parser.BodyParser.*;
+import com.brillianttiger.bio.parser.pmc.model.AddrLine;
+import com.brillianttiger.bio.parser.pmc.model.Address;
+import com.brillianttiger.bio.parser.pmc.model.Aff;
+import com.brillianttiger.bio.parser.pmc.model.AffAlternatives;
+import com.brillianttiger.bio.parser.pmc.model.AltText;
+import com.brillianttiger.bio.parser.pmc.model.AltTitle;
+import com.brillianttiger.bio.parser.pmc.model.Alternatives;
+import com.brillianttiger.bio.parser.pmc.model.Anonymous;
+import com.brillianttiger.bio.parser.pmc.model.Array;
+import com.brillianttiger.bio.parser.pmc.model.ArticleCategories;
+import com.brillianttiger.bio.parser.pmc.model.ArticleMeta;
+import com.brillianttiger.bio.parser.pmc.model.ArticleTitle;
+import com.brillianttiger.bio.parser.pmc.model.Attrib;
+import com.brillianttiger.bio.parser.pmc.model.AuthorComment;
+import com.brillianttiger.bio.parser.pmc.model.AuthorNotes;
+import com.brillianttiger.bio.parser.pmc.model.AwardGroup;
+import com.brillianttiger.bio.parser.pmc.model.AwardId;
+import com.brillianttiger.bio.parser.pmc.model.Bio;
+import com.brillianttiger.bio.parser.pmc.model.Caption;
+import com.brillianttiger.bio.parser.pmc.model.ChemStruct;
+import com.brillianttiger.bio.parser.pmc.model.ChemStructWrap;
+import com.brillianttiger.bio.parser.pmc.model.Code;
+import com.brillianttiger.bio.parser.pmc.model.Collab;
+import com.brillianttiger.bio.parser.pmc.model.Conference;
+import com.brillianttiger.bio.parser.pmc.model.Contrib;
+import com.brillianttiger.bio.parser.pmc.model.ContribGroup;
+import com.brillianttiger.bio.parser.pmc.model.ContribId;
+import com.brillianttiger.bio.parser.pmc.model.ContribIdType;
+import com.brillianttiger.bio.parser.pmc.model.CopyrightHolder;
+import com.brillianttiger.bio.parser.pmc.model.CopyrightStatement;
+import com.brillianttiger.bio.parser.pmc.model.CopyrightYear;
+import com.brillianttiger.bio.parser.pmc.model.Corresp;
+import com.brillianttiger.bio.parser.pmc.model.Counts;
+import com.brillianttiger.bio.parser.pmc.model.CustomMetaGroup;
+import com.brillianttiger.bio.parser.pmc.model.DefList;
+import com.brillianttiger.bio.parser.pmc.model.Degrees;
+import com.brillianttiger.bio.parser.pmc.model.DispFormula;
+import com.brillianttiger.bio.parser.pmc.model.DispFormulaGroup;
+import com.brillianttiger.bio.parser.pmc.model.DispQuote;
+import com.brillianttiger.bio.parser.pmc.model.Email;
+import com.brillianttiger.bio.parser.pmc.model.Era;
+import com.brillianttiger.bio.parser.pmc.model.Etal;
+import com.brillianttiger.bio.parser.pmc.model.Event;
+import com.brillianttiger.bio.parser.pmc.model.ExtLink;
+import com.brillianttiger.bio.parser.pmc.model.Fn;
+import com.brillianttiger.bio.parser.pmc.model.FnGroup;
+import com.brillianttiger.bio.parser.pmc.model.FundingGroup;
+import com.brillianttiger.bio.parser.pmc.model.FundingSource;
+import com.brillianttiger.bio.parser.pmc.model.Graphic;
+import com.brillianttiger.bio.parser.pmc.model.Institution;
+import com.brillianttiger.bio.parser.pmc.model.InstitutionId;
+import com.brillianttiger.bio.parser.pmc.model.InstitutionIdType;
+import com.brillianttiger.bio.parser.pmc.model.InstitutionWrap;
+import com.brillianttiger.bio.parser.pmc.model.Kwd;
+import com.brillianttiger.bio.parser.pmc.model.KwdGroup;
+import com.brillianttiger.bio.parser.pmc.model.Label;
+import com.brillianttiger.bio.parser.pmc.model.License;
+import com.brillianttiger.bio.parser.pmc.model.LongDesc;
+import com.brillianttiger.bio.parser.pmc.model.Media;
+import com.brillianttiger.bio.parser.pmc.model.Name;
+import com.brillianttiger.bio.parser.pmc.model.NameStyle;
+import com.brillianttiger.bio.parser.pmc.model.ObjectId;
+import com.brillianttiger.bio.parser.pmc.model.OnBehalfOf;
+import com.brillianttiger.bio.parser.pmc.model.Orientation;
+import com.brillianttiger.bio.parser.pmc.model.P;
+import com.brillianttiger.bio.parser.pmc.model.Permissions;
+import com.brillianttiger.bio.parser.pmc.model.PmcAbstract;
+import com.brillianttiger.bio.parser.pmc.model.PmcArticleId;
+import com.brillianttiger.bio.parser.pmc.model.PmcArticleTitle;
+import com.brillianttiger.bio.parser.pmc.model.PmcDate;
+import com.brillianttiger.bio.parser.pmc.model.PmcHistory;
+import com.brillianttiger.bio.parser.pmc.model.PmcIsbn;
+import com.brillianttiger.bio.parser.pmc.model.PmcList;
+import com.brillianttiger.bio.parser.pmc.model.PmcPubDate;
+import com.brillianttiger.bio.parser.pmc.model.Position;
+import com.brillianttiger.bio.parser.pmc.model.Preformat;
+import com.brillianttiger.bio.parser.pmc.model.PubDateNotAvailable;
+import com.brillianttiger.bio.parser.pmc.model.PubHistory;
+import com.brillianttiger.bio.parser.pmc.model.PubIdType;
+import com.brillianttiger.bio.parser.pmc.model.RelatedArticle;
+import com.brillianttiger.bio.parser.pmc.model.RelatedObject;
+import com.brillianttiger.bio.parser.pmc.model.Role;
+import com.brillianttiger.bio.parser.pmc.model.Season;
+import com.brillianttiger.bio.parser.pmc.model.Sec;
+import com.brillianttiger.bio.parser.pmc.model.SelfUri;
+import com.brillianttiger.bio.parser.pmc.model.Speech;
+import com.brillianttiger.bio.parser.pmc.model.Statement;
+import com.brillianttiger.bio.parser.pmc.model.StringDate;
+import com.brillianttiger.bio.parser.pmc.model.StringName;
+import com.brillianttiger.bio.parser.pmc.model.Subtitle;
+import com.brillianttiger.bio.parser.pmc.model.SupplementaryMaterial;
+import com.brillianttiger.bio.parser.pmc.model.SupportGroup;
+import com.brillianttiger.bio.parser.pmc.model.Table;
+import com.brillianttiger.bio.parser.pmc.model.TableWrap;
+import com.brillianttiger.bio.parser.pmc.model.Tbody;
+import com.brillianttiger.bio.parser.pmc.model.TextualForm;
+import com.brillianttiger.bio.parser.pmc.model.Title;
+import com.brillianttiger.bio.parser.pmc.model.TitleGroup;
+import com.brillianttiger.bio.parser.pmc.model.TransAbstract;
+import com.brillianttiger.bio.parser.pmc.model.TransSubtitle;
+import com.brillianttiger.bio.parser.pmc.model.TransTitle;
+import com.brillianttiger.bio.parser.pmc.model.TransTitleGroup;
+import com.brillianttiger.bio.parser.pmc.model.Uri;
+import com.brillianttiger.bio.parser.pmc.model.VerseGroup;
+import com.brillianttiger.bio.parser.pmc.model.XlinkActuate;
+import com.brillianttiger.bio.parser.pmc.model.XlinkShow;
+import com.brillianttiger.bio.parser.pmc.model.Xref;
+
+import static com.brillianttiger.bio.parser.pmc.parser.BodyParser.parseCaption;
+import static com.brillianttiger.bio.parser.pmc.parser.BodyParser.parseCode;
+import static com.brillianttiger.bio.parser.pmc.parser.BodyParser.parseDefList;
+import static com.brillianttiger.bio.parser.pmc.parser.BodyParser.parseDispQuote;
+import static com.brillianttiger.bio.parser.pmc.parser.BodyParser.parseList;
+import static com.brillianttiger.bio.parser.pmc.parser.CommonPmcElementParser.parseCopyrightHolder;
+import static com.brillianttiger.bio.parser.pmc.parser.CommonPmcElementParser.parseCopyrightStatement;
+import static com.brillianttiger.bio.parser.pmc.parser.CommonPmcElementParser.parseCopyrightYear;
+import static com.brillianttiger.bio.parser.pmc.parser.CommonPmcElementParser.parseDay;
+import static com.brillianttiger.bio.parser.pmc.parser.CommonPmcElementParser.parseElocationId;
+import static com.brillianttiger.bio.parser.pmc.parser.CommonPmcElementParser.parseEmail;
+import static com.brillianttiger.bio.parser.pmc.parser.CommonPmcElementParser.parseExtLink;
+import static com.brillianttiger.bio.parser.pmc.parser.CommonPmcElementParser.parseFpage;
+import static com.brillianttiger.bio.parser.pmc.parser.CommonPmcElementParser.parseIssueId;
+import static com.brillianttiger.bio.parser.pmc.parser.CommonPmcElementParser.parseIssuePart;
+import static com.brillianttiger.bio.parser.pmc.parser.CommonPmcElementParser.parseIssueSponsor;
+import static com.brillianttiger.bio.parser.pmc.parser.CommonPmcElementParser.parseIssueTitle;
+import static com.brillianttiger.bio.parser.pmc.parser.CommonPmcElementParser.parseLabel;
+import static com.brillianttiger.bio.parser.pmc.parser.CommonPmcElementParser.parseLicense;
+import static com.brillianttiger.bio.parser.pmc.parser.CommonPmcElementParser.parseLpage;
+import static com.brillianttiger.bio.parser.pmc.parser.CommonPmcElementParser.parseMonth;
+import static com.brillianttiger.bio.parser.pmc.parser.CommonPmcElementParser.parseP;
+import static com.brillianttiger.bio.parser.pmc.parser.CommonPmcElementParser.parsePageRange;
+import static com.brillianttiger.bio.parser.pmc.parser.CommonPmcElementParser.parsePmcArticleId;
+import static com.brillianttiger.bio.parser.pmc.parser.CommonPmcElementParser.parsePmcIsbn;
+import static com.brillianttiger.bio.parser.pmc.parser.CommonPmcElementParser.parsePmcIssue;
+import static com.brillianttiger.bio.parser.pmc.parser.CommonPmcElementParser.parsePmcSuffix;
+import static com.brillianttiger.bio.parser.pmc.parser.CommonPmcElementParser.parseSelfUri;
+import static com.brillianttiger.bio.parser.pmc.parser.CommonPmcElementParser.parseSupplement;
+import static com.brillianttiger.bio.parser.pmc.parser.CommonPmcElementParser.parseTextContent;
+import static com.brillianttiger.bio.parser.pmc.parser.CommonPmcElementParser.parseTitle;
+import static com.brillianttiger.bio.parser.pmc.parser.CommonPmcElementParser.parseUri;
+import static com.brillianttiger.bio.parser.pmc.parser.CommonPmcElementParser.parseVolume;
+import static com.brillianttiger.bio.parser.pmc.parser.CommonPmcElementParser.parseVolumeId;
+import static com.brillianttiger.bio.parser.pmc.parser.CommonPmcElementParser.parseVolumeSeries;
+import static com.brillianttiger.bio.parser.pmc.parser.CommonPmcElementParser.parseXref;
+import static com.brillianttiger.bio.parser.pmc.parser.CommonPmcElementParser.parseYear;
+import static com.brillianttiger.bio.parser.pmc.parser.CommonPmcElementParser.skipElement;
 
 /**
  * ArticleMetaParser / ArticleMeta 파서
- *
+ * <p>
  * KR: PMC XML의 ArticleMeta 및 관련 요소들을 파싱하는 클래스
  * EN: Class for parsing ArticleMeta and related elements in PMC XML
  */
@@ -45,7 +187,7 @@ public class ArticleMetaParser {
         List<SupportGroup> supportGroups = new ArrayList<>();
         List<Conference> conferences = new ArrayList<>();
 
-        while (reader.hasNext()) {
+        while (true) {
             int event = reader.next();
 
             if (event == XMLStreamConstants.START_ELEMENT) {
@@ -174,9 +316,7 @@ public class ArticleMetaParser {
                         break;
                 }
             } else if (event == XMLStreamConstants.END_ELEMENT) {
-                if (reader.getLocalName().equals("article-meta")) {
-                    break;
-                }
+                break;
             }
         }
 
@@ -212,7 +352,7 @@ public class ArticleMetaParser {
         List<TransTitleGroup> transTitleGroups = new ArrayList<>();
         List<AltTitle> altTitles = new ArrayList<>();
 
-        while (reader.hasNext()) {
+        while (true) {
             int event = reader.next();
 
             if (event == XMLStreamConstants.START_ELEMENT) {
@@ -239,9 +379,7 @@ public class ArticleMetaParser {
                         break;
                 }
             } else if (event == XMLStreamConstants.END_ELEMENT) {
-                if (reader.getLocalName().equals("title-group")) {
-                    break;
-                }
+                break;
             }
         }
 
@@ -260,14 +398,13 @@ public class ArticleMetaParser {
     public static ContribGroup parseContribGroup(XMLStreamReader reader) throws XMLStreamException {
         String contentType = reader.getAttributeValue(null, "content-type");
 
-        ContribGroup.ContribGroupBuilder builder = ContribGroup.builder()
-                .contentType(contentType);
+        ContribGroup.ContribGroupBuilder builder = ContribGroup.builder().contentType(contentType);
 
         List<Contrib> contributors = new ArrayList<>();
         List<Xref> xrefs = new ArrayList<>();
         List<Aff> affiliations = new ArrayList<>();
 
-        while (reader.hasNext()) {
+        while (true) {
             int event = reader.next();
 
             if (event == XMLStreamConstants.START_ELEMENT) {
@@ -288,9 +425,7 @@ public class ArticleMetaParser {
                         break;
                 }
             } else if (event == XMLStreamConstants.END_ELEMENT) {
-                if (reader.getLocalName().equals("contrib-group")) {
-                    break;
-                }
+                break;
             }
         }
 
@@ -313,13 +448,7 @@ public class ArticleMetaParser {
         String id = reader.getAttributeValue(null, "id");
         String rid = reader.getAttributeValue(null, "rid");
 
-        Contrib.ContribBuilder builder = Contrib.builder()
-                .contribType(contribType)
-                .corresp(corresp)
-                .deceased(deceased)
-                .equalContrib(equalContrib)
-                .id(id)
-                .rid(rid);
+        Contrib.ContribBuilder builder = Contrib.builder().contribType(contribType).corresp(corresp).deceased(deceased).equalContrib(equalContrib).id(id).rid(rid);
 
         List<ContribId> contribIds = new ArrayList<>();
         List<Degrees> degrees = new ArrayList<>();
@@ -332,7 +461,7 @@ public class ArticleMetaParser {
         List<Uri> uris = new ArrayList<>();
         List<Xref> xrefs = new ArrayList<>();
 
-        while (reader.hasNext()) {
+        while (true) {
             int event = reader.next();
 
             if (event == XMLStreamConstants.START_ELEMENT) {
@@ -398,9 +527,7 @@ public class ArticleMetaParser {
                         break;
                 }
             } else if (event == XMLStreamConstants.END_ELEMENT) {
-                if (reader.getLocalName().equals("contrib")) {
-                    break;
-                }
+                break;
             }
         }
 
@@ -424,10 +551,10 @@ public class ArticleMetaParser {
      */
     /**
      * Aff (소속) 파싱 / Parse Aff (Affiliation)
-     *
+     * <p>
      * KR: 소속 정보 파싱. 텍스트 또는 구조화된 institution-wrap, addr-line 등을 포함.
      * EN: Parse affiliation info. Contains text or structured institution-wrap, addr-line, etc.
-     *
+     * <p>
      * DTD: <!ELEMENT aff (#PCDATA | %address-elements; | %aff-elements;)*>
      */
     public static Aff parseAff(XMLStreamReader reader) throws XMLStreamException {
@@ -440,7 +567,7 @@ public class ArticleMetaParser {
         List<AddrLine> addrLines = new ArrayList<>();
         StringBuilder textContent = new StringBuilder();
 
-        while (reader.hasNext()) {
+        while (true) {
             int event = reader.next();
 
             if (event == XMLStreamConstants.START_ELEMENT) {
@@ -467,26 +594,16 @@ public class ArticleMetaParser {
                     textContent.append(text);
                 }
             } else if (event == XMLStreamConstants.END_ELEMENT) {
-                if (reader.getLocalName().equals("aff")) {
-                    break;
-                }
+                break;
             }
         }
 
-        return Aff.builder()
-                .id(id)
-                .rid(rid)
-                .contentType(contentType)
-                .specificUse(specificUse)
-                .institutionWraps(institutionWraps.isEmpty() ? null : institutionWraps)
-                .addrLines(addrLines.isEmpty() ? null : addrLines)
-                .value(textContent.length() > 0 ? textContent.toString() : null)
-                .build();
+        return Aff.builder().id(id).rid(rid).contentType(contentType).specificUse(specificUse).institutionWraps(institutionWraps.isEmpty() ? null : institutionWraps).addrLines(addrLines.isEmpty() ? null : addrLines).value(textContent.length() > 0 ? textContent.toString() : null).build();
     }
 
     /**
      * AddrLine 파싱 / Parse AddrLine
-     *
+     * <p>
      * KR: 주소 라인 파싱 (하나의 물리적/논리적 주소 라인).
      * EN: Parse address line (one physical/logical line of address).
      */
@@ -497,7 +614,7 @@ public class ArticleMetaParser {
 
     /**
      * InstitutionWrap 파싱 / Parse InstitutionWrap
-     *
+     * <p>
      * KR: 기관 래퍼 파싱 (재귀 구조 지원).
      * EN: Parse institution wrap (supports recursive structure).
      */
@@ -506,7 +623,7 @@ public class ArticleMetaParser {
         List<Institution> institutions = new ArrayList<>();
         List<InstitutionWrap> childWraps = new ArrayList<>();
 
-        while (reader.hasNext()) {
+        while (true) {
             int event = reader.next();
 
             if (event == XMLStreamConstants.START_ELEMENT) {
@@ -527,22 +644,16 @@ public class ArticleMetaParser {
                         break;
                 }
             } else if (event == XMLStreamConstants.END_ELEMENT) {
-                if (reader.getLocalName().equals("institution-wrap")) {
-                    break;
-                }
+                break;
             }
         }
 
-        return InstitutionWrap.builder()
-                .institutionIds(institutionIds.isEmpty() ? null : institutionIds)
-                .institutions(institutions.isEmpty() ? null : institutions)
-                .institutionWraps(childWraps.isEmpty() ? null : childWraps)
-                .build();
+        return InstitutionWrap.builder().institutionIds(institutionIds.isEmpty() ? null : institutionIds).institutions(institutions.isEmpty() ? null : institutions).institutionWraps(childWraps.isEmpty() ? null : childWraps).build();
     }
 
     /**
      * Institution 파싱 / Parse Institution
-     *
+     * <p>
      * KR: 기관명 파싱.
      * EN: Parse institution name.
      */
@@ -553,18 +664,12 @@ public class ArticleMetaParser {
         String xlinkHref = reader.getAttributeValue(null, "xlink:href");
         String value = parseTextContent(reader, "institution");
 
-        return Institution.builder()
-                .contentType(contentType)
-                .id(id)
-                .specificUse(specificUse)
-                .xlinkHref(xlinkHref)
-                .content(value)
-                .build();
+        return Institution.builder().contentType(contentType).id(id).specificUse(specificUse).xlinkHref(xlinkHref).content(value).build();
     }
 
     /**
      * InstitutionId 파싱 / Parse InstitutionId
-     *
+     * <p>
      * KR: 기관 ID 파싱 (ROR, ISNI 등).
      * EN: Parse institution ID (ROR, ISNI, etc.).
      */
@@ -574,12 +679,7 @@ public class ArticleMetaParser {
         String specificUse = reader.getAttributeValue(null, "specific-use");
         String value = parseTextContent(reader, "institution-id");
 
-        return InstitutionId.builder()
-                .contentType(contentType)
-                .institutionIdType(InstitutionIdType.fromValue(institutionIdType))
-                .specificUse(specificUse)
-                .value(value)
-                .build();
+        return InstitutionId.builder().contentType(contentType).institutionIdType(InstitutionIdType.fromValue(institutionIdType)).specificUse(specificUse).value(value).build();
     }
 
     /**
@@ -592,13 +692,9 @@ public class ArticleMetaParser {
         String dateType = reader.getAttributeValue(null, "date-type");
         String iso8601Date = reader.getAttributeValue(null, "iso-8601-date");
 
-        PmcPubDate.PmcPubDateBuilder builder = PmcPubDate.builder()
-                .pubType(pubType)
-                .publicationFormat(publicationFormat)
-                .dateType(dateType)
-                .iso8601Date(iso8601Date);
+        PmcPubDate.PmcPubDateBuilder builder = PmcPubDate.builder().pubType(pubType).publicationFormat(publicationFormat).dateType(dateType).iso8601Date(iso8601Date);
 
-        while (reader.hasNext()) {
+        while (true) {
             int event = reader.next();
 
             if (event == XMLStreamConstants.START_ELEMENT) {
@@ -628,9 +724,7 @@ public class ArticleMetaParser {
                         break;
                 }
             } else if (event == XMLStreamConstants.END_ELEMENT) {
-                if (reader.getLocalName().equals("pub-date")) {
-                    break;
-                }
+                break;
             }
         }
 
@@ -648,19 +742,13 @@ public class ArticleMetaParser {
         String vocabIdentifier = reader.getAttributeValue(null, "vocab-identifier");
         String xmlLang = reader.getAttributeValue(null, "xml:lang");
 
-        KwdGroup.KwdGroupBuilder builder = KwdGroup.builder()
-                .assigningAuthority(assigningAuthority)
-                .kwdGroupType(kwdGroupType)
-                .specificUse(specificUse)
-                .vocab(vocab)
-                .vocabIdentifier(vocabIdentifier)
-                .xmlLang(xmlLang);
+        KwdGroup.KwdGroupBuilder builder = KwdGroup.builder().assigningAuthority(assigningAuthority).kwdGroupType(kwdGroupType).specificUse(specificUse).vocab(vocab).vocabIdentifier(vocabIdentifier).xmlLang(xmlLang);
 
         List<Label> labels = new ArrayList<>();
         List<Title> titles = new ArrayList<>();
         List<Kwd> keywords = new ArrayList<>();
 
-        while (reader.hasNext()) {
+        while (true) {
             int event = reader.next();
 
             if (event == XMLStreamConstants.START_ELEMENT) {
@@ -681,9 +769,7 @@ public class ArticleMetaParser {
                         break;
                 }
             } else if (event == XMLStreamConstants.END_ELEMENT) {
-                if (reader.getLocalName().equals("kwd-group")) {
-                    break;
-                }
+                break;
             }
         }
 
@@ -699,13 +785,12 @@ public class ArticleMetaParser {
     public static PmcAbstract parsePmcAbstract(XMLStreamReader reader) throws XMLStreamException {
         String abstractType = reader.getAttributeValue(null, "abstract-type");
 
-        PmcAbstract.PmcAbstractBuilder builder = PmcAbstract.builder()
-                .abstractType(abstractType);
+        PmcAbstract.PmcAbstractBuilder builder = PmcAbstract.builder().abstractType(abstractType);
 
         List<P> paragraphs = new ArrayList<>();
         List<Sec> sections = new ArrayList<>();
 
-        while (reader.hasNext()) {
+        while (true) {
             int event = reader.next();
 
             if (event == XMLStreamConstants.START_ELEMENT) {
@@ -726,9 +811,7 @@ public class ArticleMetaParser {
                         break;
                 }
             } else if (event == XMLStreamConstants.END_ELEMENT) {
-                if (reader.getLocalName().equals("abstract")) {
-                    break;
-                }
+                break;
             }
         }
 
@@ -741,20 +824,20 @@ public class ArticleMetaParser {
     /**
      * SupplementaryMaterial 파싱 / Parse SupplementaryMaterial
      * DTD: <!ELEMENT supplementary-material (
-     *          (object-id)*,
-     *          label?,
-     *          (caption)*,
-     *          abstract*,
-     *          kwd-group*,
-     *          alt-text*,
-     *          long-desc*,
-     *          (email | ext-link | uri)*,
-     *          (alternatives | disp-formula | disp-formula-group |
-     *           chem-struct-wrap | disp-quote | speech | statement |
-     *           verse-group | table-wrap | p | def-list | list |
-     *           array | code | graphic | media | preformat)*,
-     *          (attrib | permissions)*
-     *      )>
+     * (object-id)*,
+     * label?,
+     * (caption)*,
+     * abstract*,
+     * kwd-group*,
+     * alt-text*,
+     * long-desc*,
+     * (email | ext-link | uri)*,
+     * (alternatives | disp-formula | disp-formula-group |
+     * chem-struct-wrap | disp-quote | speech | statement |
+     * verse-group | table-wrap | p | def-list | list |
+     * array | code | graphic | media | preformat)*,
+     * (attrib | permissions)*
+     * )>
      */
     public static SupplementaryMaterial parseSupplementaryMaterial(XMLStreamReader reader) throws XMLStreamException {
         // Parse attributes
@@ -778,22 +861,7 @@ public class ArticleMetaParser {
         String xmlBase = reader.getAttributeValue("http://www.w3.org/XML/1998/namespace", "base");
         String xmlLang = reader.getAttributeValue("http://www.w3.org/XML/1998/namespace", "lang");
 
-        SupplementaryMaterial.SupplementaryMaterialBuilder builder = SupplementaryMaterial.builder()
-                .contentType(contentType)
-                .id(id)
-                .mimeSubtype(mimeSubtype)
-                .mimetype(mimetype)
-                .orientation(Orientation.fromValue(orientation))
-                .position(Position.fromValue(position))
-                .specificUse(specificUse)
-                .xlinkActuate(XlinkActuate.fromValue(xlinkActuate))
-                .xlinkHref(xlinkHref)
-                .xlinkRole(xlinkRole)
-                .xlinkShow(XlinkShow.fromValue(xlinkShow))
-                .xlinkTitle(xlinkTitle)
-                .xlinkType(xlinkType)
-                .xmlBase(xmlBase)
-                .xmlLang(xmlLang);
+        SupplementaryMaterial.SupplementaryMaterialBuilder builder = SupplementaryMaterial.builder().contentType(contentType).id(id).mimeSubtype(mimeSubtype).mimetype(mimetype).orientation(Orientation.fromValue(orientation)).position(Position.fromValue(position)).specificUse(specificUse).xlinkActuate(XlinkActuate.fromValue(xlinkActuate)).xlinkHref(xlinkHref).xlinkRole(xlinkRole).xlinkShow(XlinkShow.fromValue(xlinkShow)).xlinkTitle(xlinkTitle).xlinkType(xlinkType).xmlBase(xmlBase).xmlLang(xmlLang);
 
         // Parse child elements
         List<ObjectId> objectIds = new ArrayList<>();
@@ -825,7 +893,7 @@ public class ArticleMetaParser {
         List<Attrib> attribs = new ArrayList<>();
         List<Permissions> permissionsList = new ArrayList<>();
 
-        while (reader.hasNext()) {
+        while (true) {
             int event = reader.next();
 
             if (event == XMLStreamConstants.START_ELEMENT) {
@@ -924,42 +992,11 @@ public class ArticleMetaParser {
                         break;
                 }
             } else if (event == XMLStreamConstants.END_ELEMENT) {
-                if (reader.getLocalName().equals("supplementary-material")) {
-                    break;
-                }
+                break;
             }
         }
 
-        return builder
-                .objectIds(objectIds.isEmpty() ? null : objectIds)
-                .captions(captions.isEmpty() ? null : captions)
-                .abstracts(abstracts.isEmpty() ? null : abstracts)
-                .kwdGroups(kwdGroups.isEmpty() ? null : kwdGroups)
-                .altTexts(altTexts.isEmpty() ? null : altTexts)
-                .longDescs(longDescs.isEmpty() ? null : longDescs)
-                .emails(emails.isEmpty() ? null : emails)
-                .extLinks(extLinks.isEmpty() ? null : extLinks)
-                .uris(uris.isEmpty() ? null : uris)
-                .alternatives(alternatives.isEmpty() ? null : alternatives)
-                .dispFormulas(dispFormulas.isEmpty() ? null : dispFormulas)
-                .dispFormulaGroups(dispFormulaGroups.isEmpty() ? null : dispFormulaGroups)
-                .chemStructWraps(chemStructWraps.isEmpty() ? null : chemStructWraps)
-                .speeches(speeches.isEmpty() ? null : speeches)
-                .statements(statements.isEmpty() ? null : statements)
-                .verseGroups(verseGroups.isEmpty() ? null : verseGroups)
-                .tableWraps(tableWraps.isEmpty() ? null : tableWraps)
-                .arrays(arrays.isEmpty() ? null : arrays)
-                .paragraphs(paragraphs.isEmpty() ? null : paragraphs)
-                .defLists(defLists.isEmpty() ? null : defLists)
-                .lists(lists.isEmpty() ? null : lists)
-                .codes(codes.isEmpty() ? null : codes)
-                .graphics(graphics.isEmpty() ? null : graphics)
-                .medias(medias.isEmpty() ? null : medias)
-                .preformats(preformats.isEmpty() ? null : preformats)
-                .dispQuotes(dispQuotes.isEmpty() ? null : dispQuotes)
-                .attribs(attribs.isEmpty() ? null : attribs)
-                .permissions(permissionsList.isEmpty() ? null : permissionsList)
-                .build();
+        return builder.objectIds(objectIds.isEmpty() ? null : objectIds).captions(captions.isEmpty() ? null : captions).abstracts(abstracts.isEmpty() ? null : abstracts).kwdGroups(kwdGroups.isEmpty() ? null : kwdGroups).altTexts(altTexts.isEmpty() ? null : altTexts).longDescs(longDescs.isEmpty() ? null : longDescs).emails(emails.isEmpty() ? null : emails).extLinks(extLinks.isEmpty() ? null : extLinks).uris(uris.isEmpty() ? null : uris).alternatives(alternatives.isEmpty() ? null : alternatives).dispFormulas(dispFormulas.isEmpty() ? null : dispFormulas).dispFormulaGroups(dispFormulaGroups.isEmpty() ? null : dispFormulaGroups).chemStructWraps(chemStructWraps.isEmpty() ? null : chemStructWraps).speeches(speeches.isEmpty() ? null : speeches).statements(statements.isEmpty() ? null : statements).verseGroups(verseGroups.isEmpty() ? null : verseGroups).tableWraps(tableWraps.isEmpty() ? null : tableWraps).arrays(arrays.isEmpty() ? null : arrays).paragraphs(paragraphs.isEmpty() ? null : paragraphs).defLists(defLists.isEmpty() ? null : defLists).lists(lists.isEmpty() ? null : lists).codes(codes.isEmpty() ? null : codes).graphics(graphics.isEmpty() ? null : graphics).medias(medias.isEmpty() ? null : medias).preformats(preformats.isEmpty() ? null : preformats).dispQuotes(dispQuotes.isEmpty() ? null : dispQuotes).attribs(attribs.isEmpty() ? null : attribs).permissions(permissionsList.isEmpty() ? null : permissionsList).build();
     }
 
     // Simple element parsers
@@ -976,10 +1013,7 @@ public class ArticleMetaParser {
     public static ArticleTitle parseArticleTitle(XMLStreamReader reader) throws XMLStreamException {
         String xmlLang = reader.getAttributeValue("http://www.w3.org/XML/1998/namespace", "lang");
         String content = parseTextContent(reader, "article-title");
-        return ArticleTitle.builder()
-                .xmlLang(xmlLang)
-                .content(content)
-                .build();
+        return ArticleTitle.builder().xmlLang(xmlLang).content(content).build();
     }
 
     /**
@@ -1007,12 +1041,11 @@ public class ArticleMetaParser {
     public static TransTitleGroup parseTransTitleGroup(XMLStreamReader reader) throws XMLStreamException {
         String xmlLang = reader.getAttributeValue("http://www.w3.org/XML/1998/namespace", "lang");
 
-        TransTitleGroup.TransTitleGroupBuilder builder = TransTitleGroup.builder()
-                .xmlLang(xmlLang);
+        TransTitleGroup.TransTitleGroupBuilder builder = TransTitleGroup.builder().xmlLang(xmlLang);
 
         List<TransSubtitle> transSubtitles = new ArrayList<>();
 
-        while (reader.hasNext()) {
+        while (true) {
             int event = reader.next();
 
             if (event == XMLStreamConstants.START_ELEMENT) {
@@ -1030,9 +1063,7 @@ public class ArticleMetaParser {
                         break;
                 }
             } else if (event == XMLStreamConstants.END_ELEMENT) {
-                if (reader.getLocalName().equals("trans-title-group")) {
-                    break;
-                }
+                break;
             }
         }
 
@@ -1066,10 +1097,7 @@ public class ArticleMetaParser {
     public static AltTitle parseAltTitle(XMLStreamReader reader) throws XMLStreamException {
         String altTitleType = reader.getAttributeValue(null, "alt-title-type");
         String content = parseTextContent(reader, "alt-title");
-        return AltTitle.builder()
-                .altTitleType(altTitleType)
-                .content(content)
-                .build();
+        return AltTitle.builder().altTitleType(altTitleType).content(content).build();
     }
 
     /**
@@ -1083,16 +1111,11 @@ public class ArticleMetaParser {
         String xmlBase = reader.getAttributeValue("http://www.w3.org/XML/1998/namespace", "base");
         String xmlLang = reader.getAttributeValue("http://www.w3.org/XML/1998/namespace", "lang");
 
-        FnGroup.FnGroupBuilder builder = FnGroup.builder()
-                .contentType(contentType)
-                .id(id)
-                .specificUse(specificUse)
-                .xmlBase(xmlBase)
-                .xmlLang(xmlLang);
+        FnGroup.FnGroupBuilder builder = FnGroup.builder().contentType(contentType).id(id).specificUse(specificUse).xmlBase(xmlBase).xmlLang(xmlLang);
 
         List<Fn> footnotes = new ArrayList<>();
 
-        while (reader.hasNext()) {
+        while (true) {
             int event = reader.next();
 
             if (event == XMLStreamConstants.START_ELEMENT) {
@@ -1113,15 +1136,11 @@ public class ArticleMetaParser {
                         break;
                 }
             } else if (event == XMLStreamConstants.END_ELEMENT) {
-                if (reader.getLocalName().equals("fn-group")) {
-                    break;
-                }
+                break;
             }
         }
 
-        return builder
-                .footnotes(footnotes.isEmpty() ? null : footnotes)
-                .build();
+        return builder.footnotes(footnotes.isEmpty() ? null : footnotes).build();
     }
 
     public static ContribId parseContribId(XMLStreamReader reader) throws XMLStreamException {
@@ -1131,13 +1150,7 @@ public class ArticleMetaParser {
         String specificUse = reader.getAttributeValue(null, "specific-use");
         String value = parseTextContent(reader, "contrib-id");
 
-        return ContribId.builder()
-                .authenticated(authenticated)
-                .contentType(contentType)
-                .contribIdType(ContribIdType.fromValue(contribIdTypeStr))
-                .specificUse(specificUse)
-                .value(value)
-                .build();
+        return ContribId.builder().authenticated(authenticated).contentType(contentType).contribIdType(ContribIdType.fromValue(contribIdTypeStr)).specificUse(specificUse).value(value).build();
     }
 
     public static Name parseName(XMLStreamReader reader) throws XMLStreamException {
@@ -1146,12 +1159,9 @@ public class ArticleMetaParser {
         String nameStyleStr = reader.getAttributeValue(null, "name-style");
         String specificUse = reader.getAttributeValue(null, "specific-use");
 
-        Name.NameBuilder builder = Name.builder()
-                .contentType(contentType)
-                .nameStyle(NameStyle.fromValue(nameStyleStr))
-                .specificUse(specificUse);
+        Name.NameBuilder builder = Name.builder().contentType(contentType).nameStyle(NameStyle.fromValue(nameStyleStr)).specificUse(specificUse);
 
-        while (reader.hasNext()) {
+        while (true) {
             int event = reader.next();
 
             if (event == XMLStreamConstants.START_ELEMENT) {
@@ -1175,9 +1185,7 @@ public class ArticleMetaParser {
                         break;
                 }
             } else if (event == XMLStreamConstants.END_ELEMENT) {
-                if (reader.getLocalName().equals("name")) {
-                    break;
-                }
+                break;
             }
         }
 
@@ -1236,17 +1244,11 @@ public class ArticleMetaParser {
         String xmlBase = reader.getAttributeValue("http://www.w3.org/XML/1998/namespace", "base");
         String xmlLang = reader.getAttributeValue("http://www.w3.org/XML/1998/namespace", "lang");
 
-        Fn.FnBuilder builder = Fn.builder()
-                .fnType(fnType)
-                .id(id)
-                .specificUse(specificUse)
-                .symbol(symbol)
-                .xmlBase(xmlBase)
-                .xmlLang(xmlLang);
+        Fn.FnBuilder builder = Fn.builder().fnType(fnType).id(id).specificUse(specificUse).symbol(symbol).xmlBase(xmlBase).xmlLang(xmlLang);
 
         List<P> paragraphs = new ArrayList<>();
 
-        while (reader.hasNext()) {
+        while (true) {
             int event = reader.next();
 
             if (event == XMLStreamConstants.START_ELEMENT) {
@@ -1264,15 +1266,11 @@ public class ArticleMetaParser {
                         break;
                 }
             } else if (event == XMLStreamConstants.END_ELEMENT) {
-                if (reader.getLocalName().equals("fn")) {
-                    break;
-                }
+                break;
             }
         }
 
-        return builder
-                .paragraphs(paragraphs.isEmpty() ? null : paragraphs)
-                .build();
+        return builder.paragraphs(paragraphs.isEmpty() ? null : paragraphs).build();
     }
 
     public static OnBehalfOf parseOnBehalfOf(XMLStreamReader reader) throws XMLStreamException {
@@ -1289,7 +1287,7 @@ public class ArticleMetaParser {
         List<Corresp> corresps = new ArrayList<>();
         List<Fn> footnotes = new ArrayList<>();
 
-        while (reader.hasNext()) {
+        while (true) {
             int event = reader.next();
 
             if (event == XMLStreamConstants.START_ELEMENT) {
@@ -1307,32 +1305,24 @@ public class ArticleMetaParser {
                         break;
                 }
             } else if (event == XMLStreamConstants.END_ELEMENT) {
-                if (reader.getLocalName().equals("author-notes")) {
-                    break;
-                }
+                break;
             }
         }
 
-        return AuthorNotes.builder()
-                .corresps(corresps.isEmpty() ? null : corresps)
-                .footnotes(footnotes.isEmpty() ? null : footnotes)
-                .build();
+        return AuthorNotes.builder().corresps(corresps.isEmpty() ? null : corresps).footnotes(footnotes.isEmpty() ? null : footnotes).build();
     }
 
     public static Corresp parseCorresp(XMLStreamReader reader) throws XMLStreamException {
         String id = reader.getAttributeValue(null, "id");
         String value = parseTextContent(reader, "corresp");
 
-        return Corresp.builder()
-                .id(id)
-                .value(value)
-                .build();
+        return Corresp.builder().id(id).value(value).build();
     }
 
     public static PmcHistory parsePmcHistory(XMLStreamReader reader) throws XMLStreamException {
         List<PmcDate> dates = new ArrayList<>();
 
-        while (reader.hasNext()) {
+        while (true) {
             int event = reader.next();
 
             if (event == XMLStreamConstants.START_ELEMENT) {
@@ -1344,22 +1334,18 @@ public class ArticleMetaParser {
                     skipElement(reader);
                 }
             } else if (event == XMLStreamConstants.END_ELEMENT) {
-                if (reader.getLocalName().equals("history")) {
-                    break;
-                }
+                break;
             }
         }
 
-        return PmcHistory.builder()
-                .dates(dates.isEmpty() ? null : dates)
-                .build();
+        return PmcHistory.builder().dates(dates.isEmpty() ? null : dates).build();
     }
 
     public static PmcDate parsePmcDate(XMLStreamReader reader) throws XMLStreamException {
         String dateType = reader.getAttributeValue(null, "date-type");
         PmcDate.PmcDateBuilder builder = PmcDate.builder().dateType(dateType);
 
-        while (reader.hasNext()) {
+        while (true) {
             int event = reader.next();
 
             if (event == XMLStreamConstants.START_ELEMENT) {
@@ -1383,9 +1369,7 @@ public class ArticleMetaParser {
                         break;
                 }
             } else if (event == XMLStreamConstants.END_ELEMENT) {
-                if (reader.getLocalName().equals("date")) {
-                    break;
-                }
+                break;
             }
         }
 
@@ -1400,7 +1384,7 @@ public class ArticleMetaParser {
         List<CopyrightHolder> copyrightHolders = new ArrayList<>();
         List<License> licenses = new ArrayList<>();
 
-        while (reader.hasNext()) {
+        while (true) {
             int event = reader.next();
 
             if (event == XMLStreamConstants.START_ELEMENT) {
@@ -1424,9 +1408,7 @@ public class ArticleMetaParser {
                         break;
                 }
             } else if (event == XMLStreamConstants.END_ELEMENT) {
-                if (reader.getLocalName().equals("permissions")) {
-                    break;
-                }
+                break;
             }
         }
 
@@ -1455,10 +1437,7 @@ public class ArticleMetaParser {
         }
         String value = parseTextContent(reader, "trans-abstract");
 
-        return TransAbstract.builder()
-                .xmlLang(xmlLang)
-                .value(value)
-                .build();
+        return TransAbstract.builder().xmlLang(xmlLang).value(value).build();
     }
 
     public static Kwd parseKwd(XMLStreamReader reader) throws XMLStreamException {
@@ -1469,7 +1448,7 @@ public class ArticleMetaParser {
     public static FundingGroup parseFundingGroup(XMLStreamReader reader) throws XMLStreamException {
         List<AwardGroup> awardGroups = new ArrayList<>();
 
-        while (reader.hasNext()) {
+        while (true) {
             int event = reader.next();
 
             if (event == XMLStreamConstants.START_ELEMENT) {
@@ -1481,22 +1460,18 @@ public class ArticleMetaParser {
                     skipElement(reader);
                 }
             } else if (event == XMLStreamConstants.END_ELEMENT) {
-                if (reader.getLocalName().equals("funding-group")) {
-                    break;
-                }
+                break;
             }
         }
 
-        return FundingGroup.builder()
-                .awardGroups(awardGroups.isEmpty() ? null : awardGroups)
-                .build();
+        return FundingGroup.builder().awardGroups(awardGroups.isEmpty() ? null : awardGroups).build();
     }
 
     public static AwardGroup parseAwardGroup(XMLStreamReader reader) throws XMLStreamException {
         List<FundingSource> fundingSources = new ArrayList<>();
         List<AwardId> awardIds = new ArrayList<>();
 
-        while (reader.hasNext()) {
+        while (true) {
             int event = reader.next();
 
             if (event == XMLStreamConstants.START_ELEMENT) {
@@ -1514,16 +1489,11 @@ public class ArticleMetaParser {
                         break;
                 }
             } else if (event == XMLStreamConstants.END_ELEMENT) {
-                if (reader.getLocalName().equals("award-group")) {
-                    break;
-                }
+                break;
             }
         }
 
-        return AwardGroup.builder()
-                .fundingSources(fundingSources.isEmpty() ? null : fundingSources)
-                .awardIds(awardIds.isEmpty() ? null : awardIds)
-                .build();
+        return AwardGroup.builder().fundingSources(fundingSources.isEmpty() ? null : fundingSources).awardIds(awardIds.isEmpty() ? null : awardIds).build();
     }
 
     public static FundingSource parseFundingSource(XMLStreamReader reader) throws XMLStreamException {
@@ -1549,7 +1519,7 @@ public class ArticleMetaParser {
     public static Counts parseCounts(XMLStreamReader reader) throws XMLStreamException {
         Counts.CountsBuilder builder = Counts.builder();
 
-        while (reader.hasNext()) {
+        while (true) {
             int event = reader.next();
 
             if (event == XMLStreamConstants.START_ELEMENT) {
@@ -1603,9 +1573,7 @@ public class ArticleMetaParser {
                         break;
                 }
             } else if (event == XMLStreamConstants.END_ELEMENT) {
-                if (reader.getLocalName().equals("counts")) {
-                    break;
-                }
+                break;
             }
         }
 
@@ -1636,11 +1604,11 @@ public class ArticleMetaParser {
      * ObjectId 파싱 / Parse ObjectId
      * DTD: <!ELEMENT object-id (#PCDATA)>
      * DTD: <!ATTLIST object-id
-     *          assigning-authority CDATA #IMPLIED
-     *          content-type CDATA #IMPLIED
-     *          id ID #IMPLIED
-     *          pub-id-type CDATA #IMPLIED
-     *          specific-use CDATA #IMPLIED>
+     * assigning-authority CDATA #IMPLIED
+     * content-type CDATA #IMPLIED
+     * id ID #IMPLIED
+     * pub-id-type CDATA #IMPLIED
+     * specific-use CDATA #IMPLIED>
      */
     public static ObjectId parseObjectId(XMLStreamReader reader) throws XMLStreamException {
         String assigningAuthority = reader.getAttributeValue(null, "assigning-authority");
@@ -1650,14 +1618,7 @@ public class ArticleMetaParser {
         String specificUse = reader.getAttributeValue(null, "specific-use");
         String value = parseTextContent(reader, "object-id");
 
-        return ObjectId.builder()
-                .assigningAuthority(assigningAuthority)
-                .contentType(contentType)
-                .id(id)
-                .pubIdType(PubIdType.fromValue(pubIdTypeStr))
-                .specificUse(specificUse)
-                .value(value)
-                .build();
+        return ObjectId.builder().assigningAuthority(assigningAuthority).contentType(contentType).id(id).pubIdType(PubIdType.fromValue(pubIdTypeStr)).specificUse(specificUse).value(value).build();
     }
 
     /**
@@ -1680,11 +1641,7 @@ public class ArticleMetaParser {
         String xmlLang = reader.getAttributeValue("http://www.w3.org/XML/1998/namespace", "lang");
         String value = parseTextContent(reader, "speech");
 
-        return Speech.builder()
-                .id(id)
-                .xmlLang(xmlLang)
-                .value(value)
-                .build();
+        return Speech.builder().id(id).xmlLang(xmlLang).value(value).build();
     }
 
     /**
@@ -1697,11 +1654,7 @@ public class ArticleMetaParser {
         String xmlLang = reader.getAttributeValue("http://www.w3.org/XML/1998/namespace", "lang");
         String value = parseTextContent(reader, "statement");
 
-        return Statement.builder()
-                .id(id)
-                .xmlLang(xmlLang)
-                .value(value)
-                .build();
+        return Statement.builder().id(id).xmlLang(xmlLang).value(value).build();
     }
 
     /**
@@ -1714,33 +1667,27 @@ public class ArticleMetaParser {
         String xmlLang = reader.getAttributeValue("http://www.w3.org/XML/1998/namespace", "lang");
         String value = parseTextContent(reader, "verse-group");
 
-        return VerseGroup.builder()
-                .id(id)
-                .xmlLang(xmlLang)
-                .value(value)
-                .build();
+        return VerseGroup.builder().id(id).xmlLang(xmlLang).value(value).build();
     }
 
     /**
      * DispFormula 파싱 / Parse DispFormula
      * DTD: <!ELEMENT disp-formula (
-     *          object-id*,
-     *          label?,
-     *          (tex-math | mml:math)*,
-     *          graphic*,
-     *          attrib?,
-     *          permissions?)>
+     * object-id*,
+     * label?,
+     * (tex-math | mml:math)*,
+     * graphic*,
+     * attrib?,
+     * permissions?)>
      * DTD: <!ATTLIST disp-formula id ID #IMPLIED xml:lang NMTOKEN #IMPLIED>
      */
     public static DispFormula parseDispFormula(XMLStreamReader reader) throws XMLStreamException {
         String id = reader.getAttributeValue(null, "id");
         String xmlLang = reader.getAttributeValue("http://www.w3.org/XML/1998/namespace", "lang");
 
-        DispFormula.DispFormulaBuilder builder = DispFormula.builder()
-                .id(id)
-                .xmlLang(xmlLang);
+        DispFormula.DispFormulaBuilder builder = DispFormula.builder().id(id).xmlLang(xmlLang);
 
-        while (reader.hasNext()) {
+        while (true) {
             int event = reader.next();
 
             if (event == XMLStreamConstants.START_ELEMENT) {
@@ -1762,9 +1709,7 @@ public class ArticleMetaParser {
                         break;
                 }
             } else if (event == XMLStreamConstants.END_ELEMENT) {
-                if (reader.getLocalName().equals("disp-formula")) {
-                    break;
-                }
+                break;
             }
         }
 
@@ -1780,13 +1725,11 @@ public class ArticleMetaParser {
         String id = reader.getAttributeValue(null, "id");
         String xmlLang = reader.getAttributeValue("http://www.w3.org/XML/1998/namespace", "lang");
 
-        DispFormulaGroup.DispFormulaGroupBuilder builder = DispFormulaGroup.builder()
-                .id(id)
-                .xmlLang(xmlLang);
+        DispFormulaGroup.DispFormulaGroupBuilder builder = DispFormulaGroup.builder().id(id).xmlLang(xmlLang);
 
         List<DispFormula> dispFormulas = new ArrayList<>();
 
-        while (reader.hasNext()) {
+        while (true) {
             int event = reader.next();
 
             if (event == XMLStreamConstants.START_ELEMENT) {
@@ -1804,23 +1747,19 @@ public class ArticleMetaParser {
                         break;
                 }
             } else if (event == XMLStreamConstants.END_ELEMENT) {
-                if (reader.getLocalName().equals("disp-formula-group")) {
-                    break;
-                }
+                break;
             }
         }
 
-        return builder
-                .dispFormulas(dispFormulas.isEmpty() ? null : dispFormulas)
-                .build();
+        return builder.dispFormulas(dispFormulas.isEmpty() ? null : dispFormulas).build();
     }
 
     /**
      * Alternatives 파싱 / Parse Alternatives
      * DTD: <!ELEMENT alternatives (
-     *          object-id*,
-     *          (graphic | media | table | code | textual-form | tex-math |
-     *           supplementary-material | preformat | array | inline-graphic | mml:math)+)>
+     * object-id*,
+     * (graphic | media | table | code | textual-form | tex-math |
+     * supplementary-material | preformat | array | inline-graphic | mml:math)+)>
      * DTD: <!ATTLIST alternatives id ID #IMPLIED>
      */
     public static Alternatives parseAlternatives(XMLStreamReader reader) throws XMLStreamException {
@@ -1837,7 +1776,7 @@ public class ArticleMetaParser {
         List<Preformat> preformats = new ArrayList<>();
         List<Array> arrays = new ArrayList<>();
 
-        while (reader.hasNext()) {
+        while (true) {
             int event = reader.next();
 
             if (event == XMLStreamConstants.START_ELEMENT) {
@@ -1877,35 +1816,24 @@ public class ArticleMetaParser {
                         break;
                 }
             } else if (event == XMLStreamConstants.END_ELEMENT) {
-                if (reader.getLocalName().equals("alternatives")) {
-                    break;
-                }
+                break;
             }
         }
 
-        return builder
-                .objectIds(objectIds.isEmpty() ? null : objectIds)
-                .graphics(graphics.isEmpty() ? null : graphics)
-                .medias(medias.isEmpty() ? null : medias)
-                .tables(tables.isEmpty() ? null : tables)
-                .codes(codes.isEmpty() ? null : codes)
-                .supplementaryMaterials(supplementaryMaterials.isEmpty() ? null : supplementaryMaterials)
-                .preformats(preformats.isEmpty() ? null : preformats)
-                .arrays(arrays.isEmpty() ? null : arrays)
-                .build();
+        return builder.objectIds(objectIds.isEmpty() ? null : objectIds).graphics(graphics.isEmpty() ? null : graphics).medias(medias.isEmpty() ? null : medias).tables(tables.isEmpty() ? null : tables).codes(codes.isEmpty() ? null : codes).supplementaryMaterials(supplementaryMaterials.isEmpty() ? null : supplementaryMaterials).preformats(preformats.isEmpty() ? null : preformats).arrays(arrays.isEmpty() ? null : arrays).build();
     }
 
     /**
      * Preformat 파싱 / Parse Preformat
      * DTD: <!ELEMENT preformat (#PCDATA | %all-phrase;)*>
      * DTD: <!ATTLIST preformat
-     *          id ID #IMPLIED
-     *          orientation (portrait | landscape) #IMPLIED
-     *          position (anchor | background | float | margin) "float"
-     *          preformat-type CDATA #IMPLIED
-     *          specific-use CDATA #IMPLIED
-     *          xml:lang NMTOKEN #IMPLIED
-     *          xml:space (preserve) #FIXED "preserve">
+     * id ID #IMPLIED
+     * orientation (portrait | landscape) #IMPLIED
+     * position (anchor | background | float | margin) "float"
+     * preformat-type CDATA #IMPLIED
+     * specific-use CDATA #IMPLIED
+     * xml:lang NMTOKEN #IMPLIED
+     * xml:space (preserve) #FIXED "preserve">
      */
     public static Preformat parsePreformat(XMLStreamReader reader) throws XMLStreamException {
         String id = reader.getAttributeValue(null, "id");
@@ -1916,20 +1844,13 @@ public class ArticleMetaParser {
         String xmlLang = reader.getAttributeValue("http://www.w3.org/XML/1998/namespace", "lang");
         String xmlSpace = reader.getAttributeValue("http://www.w3.org/XML/1998/namespace", "space");
 
-        Preformat.PreformatBuilder builder = Preformat.builder()
-                .id(id)
-                .orientation(Orientation.fromValue(orientation))
-                .position(Position.fromValue(position))
-                .preformatType(preformatType)
-                .specificUse(specificUse)
-                .xmlLang(xmlLang)
-                .xmlSpace(xmlSpace);
+        Preformat.PreformatBuilder builder = Preformat.builder().id(id).orientation(Orientation.fromValue(orientation)).position(Position.fromValue(position)).preformatType(preformatType).specificUse(specificUse).xmlLang(xmlLang).xmlSpace(xmlSpace);
 
         List<Attrib> attribs = new ArrayList<>();
         List<Permissions> permissionsList = new ArrayList<>();
 
         StringBuilder content = new StringBuilder();
-        while (reader.hasNext()) {
+        while (true) {
             int event = reader.next();
 
             if (event == XMLStreamConstants.START_ELEMENT) {
@@ -1949,38 +1870,32 @@ public class ArticleMetaParser {
             } else if (event == XMLStreamConstants.CHARACTERS) {
                 content.append(reader.getText());
             } else if (event == XMLStreamConstants.END_ELEMENT) {
-                if (reader.getLocalName().equals("preformat")) {
-                    break;
-                }
+                break;
             }
         }
 
-        return builder
-                .content(content.length() > 0 ? content.toString() : null)
-                .attribs(attribs.isEmpty() ? null : attribs)
-                .permissions(permissionsList.isEmpty() ? null : permissionsList)
-                .build();
+        return builder.content(!content.isEmpty() ? content.toString() : null).attribs(attribs.isEmpty() ? null : attribs).permissions(permissionsList.isEmpty() ? null : permissionsList).build();
     }
 
     /**
      * Array 파싱 / Parse Array
      * DTD: <!ELEMENT array (
-     *          object-id*,
-     *          label?,
-     *          caption?,
-     *          alt-text*,
-     *          long-desc*,
-     *          (email | ext-link | uri)*,
-     *          alternatives?,
-     *          (graphic | media)*,
-     *          tbody+,
-     *          (attrib | permissions)*)>
+     * object-id*,
+     * label?,
+     * caption?,
+     * alt-text*,
+     * long-desc*,
+     * (email | ext-link | uri)*,
+     * alternatives?,
+     * (graphic | media)*,
+     * tbody+,
+     * (attrib | permissions)*)>
      * DTD: <!ATTLIST array
-     *          content-type CDATA #IMPLIED
-     *          id ID #IMPLIED
-     *          orientation (portrait | landscape) #IMPLIED
-     *          specific-use CDATA #IMPLIED
-     *          xml:lang NMTOKEN #IMPLIED>
+     * content-type CDATA #IMPLIED
+     * id ID #IMPLIED
+     * orientation (portrait | landscape) #IMPLIED
+     * specific-use CDATA #IMPLIED
+     * xml:lang NMTOKEN #IMPLIED>
      */
     public static Array parseArray(XMLStreamReader reader) throws XMLStreamException {
         String contentType = reader.getAttributeValue(null, "content-type");
@@ -1989,12 +1904,7 @@ public class ArticleMetaParser {
         String specificUse = reader.getAttributeValue(null, "specific-use");
         String xmlLang = reader.getAttributeValue("http://www.w3.org/XML/1998/namespace", "lang");
 
-        Array.ArrayBuilder builder = Array.builder()
-                .contentType(contentType)
-                .id(id)
-                .orientation(Orientation.fromValue(orientation))
-                .specificUse(specificUse)
-                .xmlLang(xmlLang);
+        Array.ArrayBuilder builder = Array.builder().contentType(contentType).id(id).orientation(Orientation.fromValue(orientation)).specificUse(specificUse).xmlLang(xmlLang);
 
         List<AltText> altTexts = new ArrayList<>();
         List<LongDesc> longDescs = new ArrayList<>();
@@ -2008,7 +1918,7 @@ public class ArticleMetaParser {
         List<Attrib> attribs = new ArrayList<>();
         List<Permissions> permissionsList = new ArrayList<>();
 
-        while (reader.hasNext()) {
+        while (true) {
             int event = reader.next();
 
             if (event == XMLStreamConstants.START_ELEMENT) {
@@ -2056,50 +1966,36 @@ public class ArticleMetaParser {
                         break;
                 }
             } else if (event == XMLStreamConstants.END_ELEMENT) {
-                if (reader.getLocalName().equals("array")) {
-                    break;
-                }
+                break;
             }
         }
 
-        return builder
-                .altTexts(altTexts.isEmpty() ? null : altTexts)
-                .longDescs(longDescs.isEmpty() ? null : longDescs)
-                .emails(emails.isEmpty() ? null : emails)
-                .extLinks(extLinks.isEmpty() ? null : extLinks)
-                .uris(uris.isEmpty() ? null : uris)
-                .alternatives(alternatives.isEmpty() ? null : alternatives)
-                .graphics(graphics.isEmpty() ? null : graphics)
-                .medias(medias.isEmpty() ? null : medias)
-                .tbodies(tbodies.isEmpty() ? null : tbodies)
-                .attribs(attribs.isEmpty() ? null : attribs)
-                .permissions(permissionsList.isEmpty() ? null : permissionsList)
-                .build();
+        return builder.altTexts(altTexts.isEmpty() ? null : altTexts).longDescs(longDescs.isEmpty() ? null : longDescs).emails(emails.isEmpty() ? null : emails).extLinks(extLinks.isEmpty() ? null : extLinks).uris(uris.isEmpty() ? null : uris).alternatives(alternatives.isEmpty() ? null : alternatives).graphics(graphics.isEmpty() ? null : graphics).medias(medias.isEmpty() ? null : medias).tbodies(tbodies.isEmpty() ? null : tbodies).attribs(attribs.isEmpty() ? null : attribs).permissions(permissionsList.isEmpty() ? null : permissionsList).build();
     }
 
     /**
      * ChemStructWrap 파싱 / Parse ChemStructWrap
      * DTD: <!ELEMENT chem-struct-wrap (
-     *          object-id*,
-     *          label?,
-     *          caption?,
-     *          abstract*,
-     *          kwd-group*,
-     *          alt-text*,
-     *          long-desc*,
-     *          (email | ext-link | uri)*,
-     *          alternatives?,
-     *          chem-struct+,
-     *          (code | graphic | media | preformat | textual-form)*,
-     *          (attrib | permissions)*)>
+     * object-id*,
+     * label?,
+     * caption?,
+     * abstract*,
+     * kwd-group*,
+     * alt-text*,
+     * long-desc*,
+     * (email | ext-link | uri)*,
+     * alternatives?,
+     * chem-struct+,
+     * (code | graphic | media | preformat | textual-form)*,
+     * (attrib | permissions)*)>
      * DTD: <!ATTLIST chem-struct-wrap
-     *          content-type CDATA #IMPLIED
-     *          id ID #IMPLIED
-     *          orientation (portrait | landscape) #IMPLIED
-     *          position (anchor | background | float | margin) "float"
-     *          specific-use CDATA #IMPLIED
-     *          xml:base CDATA #IMPLIED
-     *          xml:lang NMTOKEN #IMPLIED>
+     * content-type CDATA #IMPLIED
+     * id ID #IMPLIED
+     * orientation (portrait | landscape) #IMPLIED
+     * position (anchor | background | float | margin) "float"
+     * specific-use CDATA #IMPLIED
+     * xml:base CDATA #IMPLIED
+     * xml:lang NMTOKEN #IMPLIED>
      */
     public static ChemStructWrap parseChemStructWrap(XMLStreamReader reader) throws XMLStreamException {
         String contentType = reader.getAttributeValue(null, "content-type");
@@ -2110,14 +2006,7 @@ public class ArticleMetaParser {
         String xmlBase = reader.getAttributeValue("http://www.w3.org/XML/1998/namespace", "base");
         String xmlLang = reader.getAttributeValue("http://www.w3.org/XML/1998/namespace", "lang");
 
-        ChemStructWrap.ChemStructWrapBuilder builder = ChemStructWrap.builder()
-                .contentType(contentType)
-                .id(id)
-                .orientation(Orientation.fromValue(orientation))
-                .position(Position.fromValue(position))
-                .specificUse(specificUse)
-                .xmlBase(xmlBase)
-                .xmlLang(xmlLang);
+        ChemStructWrap.ChemStructWrapBuilder builder = ChemStructWrap.builder().contentType(contentType).id(id).orientation(Orientation.fromValue(orientation)).position(Position.fromValue(position)).specificUse(specificUse).xmlBase(xmlBase).xmlLang(xmlLang);
 
         List<ObjectId> objectIds = new ArrayList<>();
         List<Caption> captions = new ArrayList<>();
@@ -2138,7 +2027,7 @@ public class ArticleMetaParser {
         List<Attrib> attribs = new ArrayList<>();
         List<Permissions> permissionsList = new ArrayList<>();
 
-        while (reader.hasNext()) {
+        while (true) {
             int event = reader.next();
 
             if (event == XMLStreamConstants.START_ELEMENT) {
@@ -2207,45 +2096,24 @@ public class ArticleMetaParser {
                         break;
                 }
             } else if (event == XMLStreamConstants.END_ELEMENT) {
-                if (reader.getLocalName().equals("chem-struct-wrap")) {
-                    break;
-                }
+                break;
             }
         }
 
-        return builder
-                .objectIds(objectIds.isEmpty() ? null : objectIds)
-                .captions(captions.isEmpty() ? null : captions)
-                .abstracts(abstracts.isEmpty() ? null : abstracts)
-                .kwdGroups(kwdGroups.isEmpty() ? null : kwdGroups)
-                .altTexts(altTexts.isEmpty() ? null : altTexts)
-                .longDescs(longDescs.isEmpty() ? null : longDescs)
-                .emails(emails.isEmpty() ? null : emails)
-                .extLinks(extLinks.isEmpty() ? null : extLinks)
-                .uris(uris.isEmpty() ? null : uris)
-                .alternatives(alternatives.isEmpty() ? null : alternatives)
-                .codes(codes.isEmpty() ? null : codes)
-                .graphics(graphics.isEmpty() ? null : graphics)
-                .medias(medias.isEmpty() ? null : medias)
-                .preformats(preformats.isEmpty() ? null : preformats)
-                .attribs(attribs.isEmpty() ? null : attribs)
-                .permissions(permissionsList.isEmpty() ? null : permissionsList)
-                .chemStructs(chemStructs.isEmpty() ? null : chemStructs)
-                .textualForms(textualForms.isEmpty() ? null : textualForms)
-                .build();
+        return builder.objectIds(objectIds.isEmpty() ? null : objectIds).captions(captions.isEmpty() ? null : captions).abstracts(abstracts.isEmpty() ? null : abstracts).kwdGroups(kwdGroups.isEmpty() ? null : kwdGroups).altTexts(altTexts.isEmpty() ? null : altTexts).longDescs(longDescs.isEmpty() ? null : longDescs).emails(emails.isEmpty() ? null : emails).extLinks(extLinks.isEmpty() ? null : extLinks).uris(uris.isEmpty() ? null : uris).alternatives(alternatives.isEmpty() ? null : alternatives).codes(codes.isEmpty() ? null : codes).graphics(graphics.isEmpty() ? null : graphics).medias(medias.isEmpty() ? null : medias).preformats(preformats.isEmpty() ? null : preformats).attribs(attribs.isEmpty() ? null : attribs).permissions(permissionsList.isEmpty() ? null : permissionsList).chemStructs(chemStructs.isEmpty() ? null : chemStructs).textualForms(textualForms.isEmpty() ? null : textualForms).build();
     }
 
     /**
      * TextualForm 파싱 / Parse TextualForm
-     *
+     * <p>
      * KR: 대안 표현의 텍스트 형식을 파싱합니다.
      * EN: Parses textual form of alternative representation.
-     *
+     * <p>
      * DTD: <!ELEMENT textual-form (#PCDATA | %all-phrase;)*>
      * DTD: <!ATTLIST textual-form
-     *          id ID #IMPLIED
-     *          specific-use CDATA #IMPLIED
-     *          xml:lang NMTOKEN #IMPLIED>
+     * id ID #IMPLIED
+     * specific-use CDATA #IMPLIED
+     * xml:lang NMTOKEN #IMPLIED>
      */
     public static TextualForm parseTextualForm(XMLStreamReader reader) throws XMLStreamException {
         String id = reader.getAttributeValue(null, "id");
@@ -2254,39 +2122,34 @@ public class ArticleMetaParser {
 
         String content = parseTextContent(reader, "textual-form");
 
-        return TextualForm.builder()
-                .id(id)
-                .specificUse(specificUse)
-                .xmlLang(xmlLang)
-                .content(content)
-                .build();
+        return TextualForm.builder().id(id).specificUse(specificUse).xmlLang(xmlLang).content(content).build();
     }
 
     /**
      * ChemStruct 파싱 / Parse ChemStruct
-     *
+     * <p>
      * KR: 화학 구조 요소를 파싱합니다.
      * EN: Parses chemical structure element.
-     *
+     * <p>
      * DTD: <!ELEMENT chem-struct (#PCDATA | %access.class; | %address-link.class; |
-     *          %break.class; | %emphasis.class; | %inline-display-noalt.class; |
-     *          %inline-math.class; | %list.class; | %simple-link.class; |
-     *          %simple-text.class; | %subsup.class; | alt-text | array |
-     *          attrib | code | graphic | label | long-desc | media |
-     *          permissions | preformat | textual-form)*>
-     *
+     * %break.class; | %emphasis.class; | %inline-display-noalt.class; |
+     * %inline-math.class; | %list.class; | %simple-link.class; |
+     * %simple-text.class; | %subsup.class; | alt-text | array |
+     * attrib | code | graphic | label | long-desc | media |
+     * permissions | preformat | textual-form)*>
+     * <p>
      * DTD: <!ATTLIST chem-struct
-     *          content-type CDATA #IMPLIED
-     *          id ID #IMPLIED
-     *          specific-use CDATA #IMPLIED
-     *          xlink:actuate (onLoad | onRequest | other | none) #IMPLIED
-     *          xlink:href CDATA #IMPLIED
-     *          xlink:role CDATA #IMPLIED
-     *          xlink:show (embed | new | none | other | replace) #IMPLIED
-     *          xlink:title CDATA #IMPLIED
-     *          xlink:type (simple) #IMPLIED
-     *          xml:base CDATA #IMPLIED
-     *          xml:lang NMTOKEN #IMPLIED>
+     * content-type CDATA #IMPLIED
+     * id ID #IMPLIED
+     * specific-use CDATA #IMPLIED
+     * xlink:actuate (onLoad | onRequest | other | none) #IMPLIED
+     * xlink:href CDATA #IMPLIED
+     * xlink:role CDATA #IMPLIED
+     * xlink:show (embed | new | none | other | replace) #IMPLIED
+     * xlink:title CDATA #IMPLIED
+     * xlink:type (simple) #IMPLIED
+     * xml:base CDATA #IMPLIED
+     * xml:lang NMTOKEN #IMPLIED>
      */
     public static ChemStruct parseChemStruct(XMLStreamReader reader) throws XMLStreamException {
         // Attributes
@@ -2302,18 +2165,7 @@ public class ArticleMetaParser {
         String xmlBase = reader.getAttributeValue("http://www.w3.org/XML/1998/namespace", "base");
         String xmlLang = reader.getAttributeValue("http://www.w3.org/XML/1998/namespace", "lang");
 
-        ChemStruct.ChemStructBuilder builder = ChemStruct.builder()
-                .contentType(contentType)
-                .id(id)
-                .specificUse(specificUse)
-                .xlinkActuate(XlinkActuate.fromValue(xlinkActuateStr))
-                .xlinkHref(xlinkHref)
-                .xlinkRole(xlinkRole)
-                .xlinkShow(XlinkShow.fromValue(xlinkShowStr))
-                .xlinkTitle(xlinkTitle)
-                .xlinkType(xlinkType)
-                .xmlBase(xmlBase)
-                .xmlLang(xmlLang);
+        ChemStruct.ChemStructBuilder builder = ChemStruct.builder().contentType(contentType).id(id).specificUse(specificUse).xlinkActuate(XlinkActuate.fromValue(xlinkActuateStr)).xlinkHref(xlinkHref).xlinkRole(xlinkRole).xlinkShow(XlinkShow.fromValue(xlinkShowStr)).xlinkTitle(xlinkTitle).xlinkType(xlinkType).xmlBase(xmlBase).xmlLang(xmlLang);
 
         List<AltText> altTexts = new ArrayList<>();
         List<LongDesc> longDescs = new ArrayList<>();
@@ -2324,7 +2176,7 @@ public class ArticleMetaParser {
         List<TextualForm> textualForms = new ArrayList<>();
         StringBuilder value = new StringBuilder();
 
-        while (reader.hasNext()) {
+        while (true) {
             int event = reader.next();
 
             if (event == XMLStreamConstants.START_ELEMENT) {
@@ -2365,39 +2217,29 @@ public class ArticleMetaParser {
                         skipElement(reader);
                         break;
                 }
-            } else if (event == XMLStreamConstants.CHARACTERS || event == XMLStreamConstants.CDATA) {
+            } else if (event == XMLStreamConstants.CHARACTERS) {
+                // Note: CDATA sections are typically converted to CHARACTERS events by most StAX implementations
                 value.append(reader.getText());
             } else if (event == XMLStreamConstants.END_ELEMENT) {
-                if (reader.getLocalName().equals("chem-struct")) {
-                    break;
-                }
+                break;
             }
         }
 
-        return builder
-                .value(value.length() > 0 ? value.toString().trim() : null)
-                .altTexts(altTexts.isEmpty() ? null : altTexts)
-                .longDescs(longDescs.isEmpty() ? null : longDescs)
-                .graphics(graphics.isEmpty() ? null : graphics)
-                .medias(medias.isEmpty() ? null : medias)
-                .arrays(arrays.isEmpty() ? null : arrays)
-                .codes(codes.isEmpty() ? null : codes)
-                .textualForms(textualForms.isEmpty() ? null : textualForms)
-                .build();
+        return builder.value(!value.isEmpty() ? value.toString().trim() : null).altTexts(altTexts.isEmpty() ? null : altTexts).longDescs(longDescs.isEmpty() ? null : longDescs).graphics(graphics.isEmpty() ? null : graphics).medias(medias.isEmpty() ? null : medias).arrays(arrays.isEmpty() ? null : arrays).codes(codes.isEmpty() ? null : codes).textualForms(textualForms.isEmpty() ? null : textualForms).build();
     }
 
     /**
      * AffAlternatives 파싱 / Parse AffAlternatives
-     *
+     * <p>
      * KR: 다양한 언어 또는 형식의 소속 정보를 파싱합니다.
      * EN: Parses affiliation information in various languages or formats.
-     *
+     * <p>
      * DTD: <!ELEMENT aff-alternatives (aff+)>
      */
     public static AffAlternatives parseAffAlternatives(XMLStreamReader reader) throws XMLStreamException {
         List<Aff> affiliations = new ArrayList<>();
 
-        while (reader.hasNext()) {
+        while (true) {
             int event = reader.next();
 
             if (event == XMLStreamConstants.START_ELEMENT) {
@@ -2409,28 +2251,24 @@ public class ArticleMetaParser {
                     skipElement(reader);
                 }
             } else if (event == XMLStreamConstants.END_ELEMENT) {
-                if (reader.getLocalName().equals("aff-alternatives")) {
-                    break;
-                }
+                break;
             }
         }
 
-        return AffAlternatives.builder()
-                .affiliations(affiliations.isEmpty() ? null : affiliations)
-                .build();
+        return AffAlternatives.builder().affiliations(affiliations.isEmpty() ? null : affiliations).build();
     }
 
     /**
      * PubDateNotAvailable 파싱 / Parse PubDateNotAvailable
-     *
+     * <p>
      * KR: 출판일을 사용할 수 없음을 나타내는 요소를 파싱합니다.
      * EN: Parses element indicating that publication date is not available.
-     *
+     * <p>
      * DTD: <!ELEMENT pub-date-not-available MIXED>
      * DTD: <!ATTLIST pub-date-not-available
-     *          id ID #IMPLIED
-     *          xml:lang NMTOKEN #IMPLIED
-     *      >
+     * id ID #IMPLIED
+     * xml:lang NMTOKEN #IMPLIED
+     * >
      */
     public static PubDateNotAvailable parsePubDateNotAvailable(XMLStreamReader reader) throws XMLStreamException {
         String id = reader.getAttributeValue(null, "id");
@@ -2438,24 +2276,20 @@ public class ArticleMetaParser {
 
         String value = parseTextContent(reader, "pub-date-not-available");
 
-        return PubDateNotAvailable.builder()
-                .id(id)
-                .xmlLang(xmlLang)
-                .value(value)
-                .build();
+        return PubDateNotAvailable.builder().id(id).xmlLang(xmlLang).value(value).build();
     }
 
     /**
      * PubHistory 파싱 / Parse PubHistory
-     *
+     * <p>
      * KR: 논문의 상세 출판 이력을 파싱합니다 (JATS 1.3+).
      * EN: Parses detailed publication history of article (JATS 1.3+).
-     *
+     * <p>
      * DTD: <!ELEMENT pub-history (date | event)*>
      * DTD: <!ATTLIST pub-history
-     *          id ID #IMPLIED
-     *          specific-use CDATA #IMPLIED
-     *      >
+     * id ID #IMPLIED
+     * specific-use CDATA #IMPLIED
+     * >
      */
     public static PubHistory parsePubHistory(XMLStreamReader reader) throws XMLStreamException {
         String id = reader.getAttributeValue(null, "id");
@@ -2464,7 +2298,7 @@ public class ArticleMetaParser {
         List<PmcDate> dates = new ArrayList<>();
         List<Event> events = new ArrayList<>();
 
-        while (reader.hasNext()) {
+        while (true) {
             int event = reader.next();
 
             if (event == XMLStreamConstants.START_ELEMENT) {
@@ -2482,26 +2316,19 @@ public class ArticleMetaParser {
                         break;
                 }
             } else if (event == XMLStreamConstants.END_ELEMENT) {
-                if (reader.getLocalName().equals("pub-history")) {
-                    break;
-                }
+                break;
             }
         }
 
-        return PubHistory.builder()
-                .id(id)
-                .specificUse(specificUse)
-                .dates(dates.isEmpty() ? null : dates)
-                .events(events.isEmpty() ? null : events)
-                .build();
+        return PubHistory.builder().id(id).specificUse(specificUse).dates(dates.isEmpty() ? null : dates).events(events.isEmpty() ? null : events).build();
     }
 
     /**
      * Event 파싱 / Parse Event
-     *
+     * <p>
      * KR: 출판 이력의 이벤트를 파싱합니다.
      * EN: Parses an event in publication history.
-     *
+     * <p>
      * DTD: <!ELEMENT event (...)>
      */
     private static Event parseEvent(XMLStreamReader reader) throws XMLStreamException {
@@ -2514,7 +2341,7 @@ public class ArticleMetaParser {
         String title = null;
         List<PmcDate> dates = new ArrayList<>();
 
-        while (reader.hasNext()) {
+        while (true) {
             int event = reader.next();
 
             if (event == XMLStreamConstants.START_ELEMENT) {
@@ -2535,20 +2362,10 @@ public class ArticleMetaParser {
                         break;
                 }
             } else if (event == XMLStreamConstants.END_ELEMENT) {
-                if (reader.getLocalName().equals("event")) {
-                    break;
-                }
+                break;
             }
         }
 
-        return Event.builder()
-                .eventType(eventType)
-                .id(id)
-                .specificUse(specificUse)
-                .xmlLang(xmlLang)
-                .eventDesc(eventDesc)
-                .title(title)
-                .dates(dates.isEmpty() ? null : dates)
-                .build();
+        return Event.builder().eventType(eventType).id(id).specificUse(specificUse).xmlLang(xmlLang).eventDesc(eventDesc).title(title).dates(dates.isEmpty() ? null : dates).build();
     }
 }

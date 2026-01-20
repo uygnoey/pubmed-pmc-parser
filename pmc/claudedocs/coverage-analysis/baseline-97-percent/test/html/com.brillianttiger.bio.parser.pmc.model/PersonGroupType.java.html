@@ -1,0 +1,172 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="ko"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>PersonGroupType.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">pmc</a> &gt; <a href="index.source.html" class="el_package">com.brillianttiger.bio.parser.pmc.model</a> &gt; <span class="el_source">PersonGroupType.java</span></div><h1>PersonGroupType.java</h1><pre class="source lang-java linenums">package com.brillianttiger.bio.parser.pmc.model;
+
+import lombok.Getter;
+
+/**
+ * PersonGroupType / 인물 그룹 유형
+ *
+ * KR: 인물 그룹의 역할/유형을 나타내는 열거형. JATS 1.4 DTD 완전 준수.
+ *     저자, 편집자, 번역자 등 다양한 역할을 포함.
+ * EN: Enumeration representing person group role/type. Fully compliant with JATS 1.4 DTD.
+ *     Includes various roles such as author, editor, translator, etc.
+ *
+ * DTD: &lt;!ATTLIST person-group
+ *          person-group-type (allauthors | assignee | author | compiler |
+ *                             curator | director | editor | guest-editor |
+ *                             inventor | transed | translator) #IMPLIED&gt;
+ *
+ * Reference: https://jats.nlm.nih.gov/archiving/tag-library/1.4/attribute/person-group-type.html
+ *
+ * Example:
+ * &lt;person-group person-group-type=&quot;author&quot;&gt;
+ *   &lt;name&gt;&lt;surname&gt;Smith&lt;/surname&gt;&lt;given-names&gt;John&lt;/given-names&gt;&lt;/name&gt;
+ * &lt;/person-group&gt;
+ */
+<span class="fc" id="L25">@Getter</span>
+public enum PersonGroupType {
+
+    /**
+     * 저자
+     *
+     * KR: 저자
+     * EN: Author
+     */
+<span class="fc" id="L34">    AUTHOR(&quot;author&quot;),</span>
+
+    /**
+     * 편집자
+     *
+     * KR: 편집자
+     * EN: Editor
+     */
+<span class="fc" id="L42">    EDITOR(&quot;editor&quot;),</span>
+
+    /**
+     * 객원 편집자
+     *
+     * KR: 객원 편집자
+     * EN: Guest editor
+     */
+<span class="fc" id="L50">    GUEST_EDITOR(&quot;guest-editor&quot;),</span>
+
+    /**
+     * 번역자
+     *
+     * KR: 번역자
+     * EN: Translator
+     */
+<span class="fc" id="L58">    TRANSLATOR(&quot;translator&quot;),</span>
+
+    /**
+     * 번역 편집자
+     *
+     * KR: 번역 편집자
+     * EN: Translator editor
+     */
+<span class="fc" id="L66">    TRANSED(&quot;transed&quot;),</span>
+
+    /**
+     * 컴파일러
+     *
+     * KR: 편찬자/컴파일러
+     * EN: Compiler
+     */
+<span class="fc" id="L74">    COMPILER(&quot;compiler&quot;),</span>
+
+    /**
+     * 발명자
+     *
+     * KR: 발명자 (특허용)
+     * EN: Inventor (for patents)
+     */
+<span class="fc" id="L82">    INVENTOR(&quot;inventor&quot;),</span>
+
+    /**
+     * 양수인
+     *
+     * KR: 양수인 (특허용)
+     * EN: Assignee (for patents)
+     */
+<span class="fc" id="L90">    ASSIGNEE(&quot;assignee&quot;),</span>
+
+    /**
+     * 디렉터
+     *
+     * KR: 디렉터
+     * EN: Director
+     */
+<span class="fc" id="L98">    DIRECTOR(&quot;director&quot;),</span>
+
+    /**
+     * 큐레이터
+     *
+     * KR: 큐레이터
+     * EN: Curator
+     */
+<span class="fc" id="L106">    CURATOR(&quot;curator&quot;),</span>
+
+    /**
+     * 전체 저자
+     *
+     * KR: 전체 저자 목록
+     * EN: All authors
+     */
+<span class="fc" id="L114">    ALLAUTHORS(&quot;allauthors&quot;),</span>
+
+    /**
+     * 기여자
+     *
+     * KR: 기여자
+     * EN: Contributor
+     */
+<span class="fc" id="L122">    CONTRIBUTOR(&quot;contributor&quot;),</span>
+
+    /**
+     * 연구자
+     *
+     * KR: 연구자
+     * EN: Researcher
+     */
+<span class="fc" id="L130">    RESEARCHER(&quot;researcher&quot;),</span>
+
+    /**
+     * 기타
+     *
+     * KR: 기타 또는 알 수 없는 유형
+     * EN: Other or unknown type
+     */
+<span class="fc" id="L138">    OTHER(&quot;other&quot;);</span>
+
+    private final String value;
+
+<span class="fc" id="L142">    PersonGroupType(String value) {</span>
+<span class="fc" id="L143">        this.value = value;</span>
+<span class="fc" id="L144">    }</span>
+
+    /**
+     * 문자열 값으로부터 PersonGroupType을 찾아 반환 / Find and return PersonGroupType from string value
+     *
+     * @param value 문자열 값 / String value
+     * @return 매칭되는 PersonGroupType, 없으면 OTHER / Matching PersonGroupType, or OTHER if not found
+     */
+    public static PersonGroupType fromValue(String value) {
+<span class="fc bfc" id="L153" title="All 4 branches covered.">        if (value == null || value.trim().isEmpty()) {</span>
+<span class="fc" id="L154">            return OTHER;</span>
+        }
+
+<span class="fc" id="L157">        String normalized = value.trim().toLowerCase();</span>
+<span class="fc bfc" id="L158" title="All 2 branches covered.">        for (PersonGroupType type : values()) {</span>
+<span class="fc bfc" id="L159" title="All 2 branches covered.">            if (type.value.equals(normalized)) {</span>
+<span class="fc" id="L160">                return type;</span>
+            }
+        }
+
+<span class="fc" id="L164">        return OTHER;</span>
+    }
+
+    @Override
+    public String toString() {
+<span class="fc" id="L169">        return value;</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.9.202303310957</span></div></body></html>

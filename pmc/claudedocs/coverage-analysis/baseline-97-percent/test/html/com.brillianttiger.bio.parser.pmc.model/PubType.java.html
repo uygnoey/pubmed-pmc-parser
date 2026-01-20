@@ -1,0 +1,135 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="ko"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>PubType.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">pmc</a> &gt; <a href="index.source.html" class="el_package">com.brillianttiger.bio.parser.pmc.model</a> &gt; <span class="el_source">PubType.java</span></div><h1>PubType.java</h1><pre class="source lang-java linenums">package com.brillianttiger.bio.parser.pmc.model;
+
+/**
+ * PubType / 출판 유형
+ *
+ * KR: JATS pub-type 속성 값을 나타내는 열거형.
+ *     인쇄본/전자본 출판 시점을 구분.
+ * EN: Enumeration representing JATS pub-type attribute values.
+ *     Distinguishes print/electronic publication timing.
+ *
+ * DTD: &lt;!ATTLIST issn pub-type (ppub | epub | ppub-epub | epub-ppub) #IMPLIED&gt;
+ * DTD: &lt;!ATTLIST pub-date pub-type (ppub | epub | epub-ppub | ppub-epub | collection | epreprint) #IMPLIED&gt;
+ *
+ * Reference: https://jats.nlm.nih.gov/archiving/tag-library/1.4/attribute/pub-type.html
+ *
+ * Values:
+ * - ppub: Print publication
+ * - epub: Electronic publication
+ * - ppub-epub: Print published before electronic
+ * - epub-ppub: Electronic published before print
+ * - collection: Collection publication
+ * - epreprint: Electronic preprint
+ */
+<span class="fc" id="L24">public enum PubType {</span>
+
+    /**
+     * 인쇄본 출판 / Print publication
+     *
+     * KR: 인쇄본으로 출판된 버전
+     * EN: Version published in print
+     *
+     * Example: ISSN for print edition
+     */
+<span class="fc" id="L34">    PPUB(&quot;ppub&quot;),</span>
+
+    /**
+     * 전자본 출판 / Electronic publication
+     *
+     * KR: 전자 형식으로 출판된 버전
+     * EN: Version published electronically
+     *
+     * Example: eISSN for electronic edition
+     */
+<span class="fc" id="L44">    EPUB(&quot;epub&quot;),</span>
+
+    /**
+     * 인쇄본 먼저 출판 / Print published before electronic
+     *
+     * KR: 인쇄본이 전자본보다 먼저 출판됨
+     * EN: Print version published before electronic version
+     */
+<span class="fc" id="L52">    PPUB_EPUB(&quot;ppub-epub&quot;),</span>
+
+    /**
+     * 전자본 먼저 출판 / Electronic published before print
+     *
+     * KR: 전자본이 인쇄본보다 먼저 출판됨
+     * EN: Electronic version published before print version
+     */
+<span class="fc" id="L60">    EPUB_PPUB(&quot;epub-ppub&quot;),</span>
+
+    /**
+     * 컬렉션 출판 / Collection publication
+     *
+     * KR: 컬렉션 형태로 출판됨
+     * EN: Published as a collection
+     */
+<span class="fc" id="L68">    COLLECTION(&quot;collection&quot;),</span>
+
+    /**
+     * 전자 사전 출판 / Electronic preprint
+     *
+     * KR: 전자 형식으로 사전 출판됨 (preprint)
+     * EN: Published as an electronic preprint
+     */
+<span class="fc" id="L76">    EPREPRINT(&quot;epreprint&quot;),</span>
+
+    /**
+     * 기타 / Other
+     *
+     * KR: 위에 나열되지 않은 기타 출판 유형
+     * EN: Other publication types not listed above
+     */
+<span class="fc" id="L84">    OTHER(&quot;other&quot;);</span>
+
+    private final String value;
+
+<span class="fc" id="L88">    PubType(String value) {</span>
+<span class="fc" id="L89">        this.value = value;</span>
+<span class="fc" id="L90">    }</span>
+
+    /**
+     * DTD 속성 값 / DTD attribute value
+     *
+     * KR: XML pub-type 속성값 반환
+     * EN: Returns XML pub-type attribute value
+     *
+     * @return pub-type 값 (예: &quot;ppub&quot;)
+     */
+    public String getValue() {
+<span class="fc" id="L101">        return value;</span>
+    }
+
+    /**
+     * 문자열에서 PubType 변환 / Convert from string to PubType
+     *
+     * KR: XML에서 파싱한 문자열을 PubType enum으로 변환.
+     *     매칭되는 값이 없으면 OTHER 반환.
+     * EN: Converts parsed string from XML to PubType enum.
+     *     Returns OTHER if no matching value found.
+     *
+     * @param value pub-type 속성 값 / pub-type attribute value
+     * @return 해당하는 PubType, 없으면 OTHER / Corresponding PubType, or OTHER if not found
+     */
+    public static PubType fromValue(String value) {
+<span class="fc bfc" id="L116" title="All 4 branches covered.">        if (value == null || value.trim().isEmpty()) {</span>
+<span class="fc" id="L117">            return OTHER;</span>
+        }
+
+<span class="fc" id="L120">        String normalized = value.trim().toLowerCase();</span>
+<span class="fc bfc" id="L121" title="All 2 branches covered.">        for (PubType type : values()) {</span>
+<span class="fc bfc" id="L122" title="All 2 branches covered.">            if (type.value.equals(normalized)) {</span>
+<span class="fc" id="L123">                return type;</span>
+            }
+        }
+
+<span class="fc" id="L127">        return OTHER;</span>
+    }
+
+    @Override
+    public String toString() {
+<span class="fc" id="L132">        return value;</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.9.202303310957</span></div></body></html>

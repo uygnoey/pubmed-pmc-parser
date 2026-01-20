@@ -1,0 +1,152 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="ko"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>PubIdType.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">pmc</a> &gt; <a href="index.source.html" class="el_package">com.brillianttiger.bio.parser.pmc.model</a> &gt; <span class="el_source">PubIdType.java</span></div><h1>PubIdType.java</h1><pre class="source lang-java linenums">package com.brillianttiger.bio.parser.pmc.model;
+
+import lombok.Getter;
+
+/**
+ * PubIdType / 출판 ID 유형
+ *
+ * KR: 논문 ID의 유형을 나타내는 열거형.
+ *     DOI, PMID, PMC ID 등 다양한 식별자 유형을 포함.
+ * EN: Enumeration representing publication ID type.
+ *     Includes various identifier types such as DOI, PMID, PMC ID, etc.
+ *
+ * DTD: &lt;!ATTLIST article-id
+ *          pub-id-type CDATA #IMPLIED
+ *      &gt;
+ *
+ * Reference: https://jats.nlm.nih.gov/archiving/tag-library/1.4/attribute/pub-id-type.html
+ *
+ * Common Values:
+ * - doi: Digital Object Identifier
+ * - pmid: PubMed ID
+ * - pmcid: PubMed Central ID
+ * - pmc-uid: PMC Unique ID
+ * - publisher-id: Publisher's ID
+ * - manuscript: Manuscript ID
+ * - ark: Archival Resource Key
+ * - art-access-id: Article Access ID
+ */
+<span class="fc" id="L29">@Getter</span>
+public enum PubIdType {
+    /**
+     * DOI (Digital Object Identifier)
+     *
+     * KR: 디지털 객체 식별자
+     * EN: Digital Object Identifier
+     *
+     * Example: 10.1371/journal.pone.0123456
+     */
+<span class="fc" id="L39">    DOI(&quot;doi&quot;),</span>
+
+    /**
+     * PMID (PubMed ID)
+     *
+     * KR: PubMed 고유 ID
+     * EN: PubMed unique identifier
+     *
+     * Example: 12345678
+     */
+<span class="fc" id="L49">    PMID(&quot;pmid&quot;),</span>
+
+    /**
+     * PMCID (PubMed Central ID)
+     *
+     * KR: PubMed Central 고유 ID
+     * EN: PubMed Central unique identifier
+     *
+     * Example: PMC1234567
+     */
+<span class="fc" id="L59">    PMCID(&quot;pmcid&quot;),</span>
+
+    /**
+     * PMC-UID (PMC Unique ID)
+     *
+     * KR: PMC 고유 식별자
+     * EN: PMC unique identifier
+     */
+<span class="fc" id="L67">    PMC_UID(&quot;pmc-uid&quot;),</span>
+
+    /**
+     * Publisher ID
+     *
+     * KR: 출판사 고유 ID
+     * EN: Publisher's unique identifier
+     */
+<span class="fc" id="L75">    PUBLISHER_ID(&quot;publisher-id&quot;),</span>
+
+    /**
+     * Manuscript ID
+     *
+     * KR: 원고 ID
+     * EN: Manuscript identifier
+     */
+<span class="fc" id="L83">    MANUSCRIPT(&quot;manuscript&quot;),</span>
+
+    /**
+     * ARK (Archival Resource Key)
+     *
+     * KR: 아카이브 리소스 키
+     * EN: Archival Resource Key
+     */
+<span class="fc" id="L91">    ARK(&quot;ark&quot;),</span>
+
+    /**
+     * Article Access ID
+     *
+     * KR: 논문 접근 ID
+     * EN: Article access identifier
+     */
+<span class="fc" id="L99">    ART_ACCESS_ID(&quot;art-access-id&quot;),</span>
+
+    /**
+     * arXiv ID
+     *
+     * KR: arXiv 프리프린트 ID
+     * EN: arXiv preprint identifier
+     */
+<span class="fc" id="L107">    ARXIV(&quot;arxiv&quot;),</span>
+
+    /**
+     * PII (Publisher Item Identifier)
+     *
+     * KR: 출판사 항목 식별자
+     * EN: Publisher Item Identifier
+     */
+<span class="fc" id="L115">    PII(&quot;pii&quot;),</span>
+
+    /**
+     * Other / Unknown
+     *
+     * KR: 기타 또는 알 수 없는 유형
+     * EN: Other or unknown type
+     */
+<span class="fc" id="L123">    OTHER(&quot;other&quot;);</span>
+
+    private final String value;
+
+<span class="fc" id="L127">    PubIdType(String value) {</span>
+<span class="fc" id="L128">        this.value = value;</span>
+<span class="fc" id="L129">    }</span>
+
+    /**
+     * 문자열 값으로부터 PubIdType을 찾아 반환 / Find and return PubIdType from string value
+     *
+     * @param value 문자열 값 / String value
+     * @return 매칭되는 PubIdType, 없으면 OTHER / Matching PubIdType, or OTHER if not found
+     */
+    public static PubIdType fromValue(String value) {
+<span class="fc bfc" id="L138" title="All 4 branches covered.">        if (value == null || value.trim().isEmpty()) {</span>
+<span class="fc" id="L139">            return OTHER;</span>
+        }
+
+<span class="fc" id="L142">        String normalized = value.trim().toLowerCase();</span>
+<span class="fc bfc" id="L143" title="All 2 branches covered.">        for (PubIdType type : values()) {</span>
+<span class="fc bfc" id="L144" title="All 2 branches covered.">            if (type.value.equals(normalized)) {</span>
+<span class="fc" id="L145">                return type;</span>
+            }
+        }
+
+<span class="fc" id="L149">        return OTHER;</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.9.202303310957</span></div></body></html>

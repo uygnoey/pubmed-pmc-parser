@@ -18,6 +18,21 @@ import static org.assertj.core.api.Assertions.assertThat;
 class BodyParserMissingCoverageTest {
 
     /**
+     * 테스트 0: BodyParser 생성자 / Test 0: BodyParser constructor
+     *
+     * KR: BodyParser 인스턴스 생성을 통해 생성자 커버리지 확보
+     * EN: Cover constructor through BodyParser instance creation
+     */
+    @Test
+    void testBodyParserConstructor() {
+        // Given & When
+        BodyParser parser = new BodyParser();
+
+        // Then
+        assertThat(parser).isNotNull();
+    }
+
+    /**
      * 테스트 1: BoxedText 파싱 / Test 1: Parse BoxedText
      */
     @Test
@@ -526,5 +541,683 @@ class BodyParserMissingCoverageTest {
         assertThat(sec.getCodeBlocks()).isNotEmpty();
         // Note: disp-formula is currently not parsed by parseSec()
         assertThat(sec.getSections()).isNotEmpty();
+    }
+
+    /**
+     * 테스트 10: List with unknown elements (default case) / Test 10: List with unknown elements
+     * Line 226, 237 커버 (parseList default case)
+     */
+    @Test
+    void testParseList_WithUnknownElement(@TempDir Path tempDir) throws Exception {
+        String xml = """
+            <article dtd-version="1.4">
+              <body>
+                <list list-type="bullet">
+                  <label>List Label</label>
+                  <unknown-element>This should be skipped</unknown-element>
+                  <list-item><p>Item 1</p></list-item>
+                </list>
+              </body>
+            </article>
+            """;
+
+        Path xmlFile = tempDir.resolve("list_unknown.xml");
+        Files.writeString(xmlFile, xml);
+
+        PmcXmlParser parser = new PmcXmlParser();
+        JatsArticle article = parser.parseFile(xmlFile);
+
+        assertThat(article.getBody().getLists()).hasSize(1);
+        PmcList list = article.getBody().getLists().get(0);
+        assertThat(list.getItems()).hasSize(1);
+    }
+
+    /**
+     * 테스트 11: List with empty items (Line 246 true branch)
+     */
+    @Test
+    void testParseList_EmptyItems(@TempDir Path tempDir) throws Exception {
+        String xml = """
+            <article dtd-version="1.4">
+              <body>
+                <list list-type="simple">
+                  <label>Empty List</label>
+                  <title>No Items</title>
+                </list>
+              </body>
+            </article>
+            """;
+
+        Path xmlFile = tempDir.resolve("list_empty.xml");
+        Files.writeString(xmlFile, xml);
+
+        PmcXmlParser parser = new PmcXmlParser();
+        JatsArticle article = parser.parseFile(xmlFile);
+
+        assertThat(article.getBody().getLists()).hasSize(1);
+        PmcList list = article.getBody().getLists().get(0);
+        assertThat(list.getItems()).isNull();  // isEmpty() == true
+        assertThat(list.getLabel()).isNotNull();
+        assertThat(list.getTitle()).isNotNull();
+    }
+
+    /**
+     * 테스트 12: ListItem with title (Line 283 커버)
+     */
+    @Test
+    void testParseListItem_WithTitle(@TempDir Path tempDir) throws Exception {
+        String xml = """
+            <article dtd-version="1.4">
+              <body>
+                <list list-type="simple">
+                  <list-item id="li1">
+                    <label>Item 1</label>
+                    <title>Item Title</title>
+                    <p>Item paragraph</p>
+                  </list-item>
+                </list>
+              </body>
+            </article>
+            """;
+
+        Path xmlFile = tempDir.resolve("list_item_title.xml");
+        Files.writeString(xmlFile, xml);
+
+        PmcXmlParser parser = new PmcXmlParser();
+        JatsArticle article = parser.parseFile(xmlFile);
+
+        assertThat(article.getBody().getLists()).hasSize(1);
+        ListItem item = article.getBody().getLists().get(0).getItems().get(0);
+        assertThat(item.getTitle()).isNotNull();
+        assertThat(item.getTitle().getValue()).contains("Item Title");
+    }
+
+    /**
+     * 테스트 13: ListItem with unknown element (Line 306 default case)
+     */
+    @Test
+    void testParseListItem_WithUnknownElement(@TempDir Path tempDir) throws Exception {
+        String xml = """
+            <article dtd-version="1.4">
+              <body>
+                <list list-type="simple">
+                  <list-item>
+                    <unknown-element>Skip this</unknown-element>
+                    <p>Valid paragraph</p>
+                  </list-item>
+                </list>
+              </body>
+            </article>
+            """;
+
+        Path xmlFile = tempDir.resolve("list_item_unknown.xml");
+        Files.writeString(xmlFile, xml);
+
+        PmcXmlParser parser = new PmcXmlParser();
+        JatsArticle article = parser.parseFile(xmlFile);
+
+        assertThat(article.getBody().getLists()).hasSize(1);
+        ListItem item = article.getBody().getLists().get(0).getItems().get(0);
+        assertThat(item.getParagraphs()).hasSize(1);
+    }
+
+    /**
+     * 테스트 14: ListItem with empty paragraphs (Line 315 true branch)
+     */
+    @Test
+    void testParseListItem_EmptyParagraphs(@TempDir Path tempDir) throws Exception {
+        String xml = """
+            <article dtd-version="1.4">
+              <body>
+                <list list-type="simple">
+                  <list-item id="li1">
+                    <label>Item without paragraph</label>
+                  </list-item>
+                </list>
+              </body>
+            </article>
+            """;
+
+        Path xmlFile = tempDir.resolve("list_item_empty_para.xml");
+        Files.writeString(xmlFile, xml);
+
+        PmcXmlParser parser = new PmcXmlParser();
+        JatsArticle article = parser.parseFile(xmlFile);
+
+        assertThat(article.getBody().getLists()).hasSize(1);
+        ListItem item = article.getBody().getLists().get(0).getItems().get(0);
+        assertThat(item.getParagraphs()).isNull();  // isEmpty() == true
+        assertThat(item.getLabel()).isNotNull();
+    }
+
+    /**
+     * 테스트 15: DefList with nested def-list (Line 374 커버)
+     */
+    @Test
+    void testParseDefList_WithNestedDefList(@TempDir Path tempDir) throws Exception {
+        String xml = """
+            <article dtd-version="1.4">
+              <body>
+                <def-list id="dl1">
+                  <label>Outer List</label>
+                  <title>Definitions</title>
+                  <def-item>
+                    <term>Outer Term</term>
+                    <def><p>Outer definition</p></def>
+                  </def-item>
+                  <def-list id="dl2">
+                    <def-item>
+                      <term>Inner Term</term>
+                      <def><p>Inner definition</p></def>
+                    </def-item>
+                  </def-list>
+                </def-list>
+              </body>
+            </article>
+            """;
+
+        Path xmlFile = tempDir.resolve("deflist_nested.xml");
+        Files.writeString(xmlFile, xml);
+
+        PmcXmlParser parser = new PmcXmlParser();
+        JatsArticle article = parser.parseFile(xmlFile);
+
+        assertThat(article.getBody().getDefLists()).hasSize(1);
+        DefList defList = article.getBody().getDefLists().get(0);
+        assertThat(defList.getNestedDefLists()).isNotNull().hasSize(1);
+        assertThat(defList.getNestedDefLists().get(0).getId()).isEqualTo("dl2");
+    }
+
+    /**
+     * 테스트 16: DefList with empty items and nestedDefLists (Lines 386, 387 true branches)
+     */
+    @Test
+    void testParseDefList_Empty(@TempDir Path tempDir) throws Exception {
+        String xml = """
+            <article dtd-version="1.4">
+              <body>
+                <def-list id="dl-empty">
+                  <label>Empty DefList</label>
+                  <title>No Items</title>
+                </def-list>
+              </body>
+            </article>
+            """;
+
+        Path xmlFile = tempDir.resolve("deflist_empty.xml");
+        Files.writeString(xmlFile, xml);
+
+        PmcXmlParser parser = new PmcXmlParser();
+        JatsArticle article = parser.parseFile(xmlFile);
+
+        assertThat(article.getBody().getDefLists()).hasSize(1);
+        DefList defList = article.getBody().getDefLists().get(0);
+        assertThat(defList.getItems()).isNull();  // Line 386: isEmpty() == true
+        assertThat(defList.getNestedDefLists()).isNull();  // Line 387: isEmpty() == true
+    }
+
+    /**
+     * 테스트 17: DefItem with unknown element (Line 427 default case)
+     */
+    @Test
+    void testParseDefItem_WithUnknownElement(@TempDir Path tempDir) throws Exception {
+        String xml = """
+            <article dtd-version="1.4">
+              <body>
+                <def-list>
+                  <def-item>
+                    <unknown-element>Skip</unknown-element>
+                    <term>Valid Term</term>
+                    <def><p>Valid definition</p></def>
+                  </def-item>
+                </def-list>
+              </body>
+            </article>
+            """;
+
+        Path xmlFile = tempDir.resolve("defitem_unknown.xml");
+        Files.writeString(xmlFile, xml);
+
+        PmcXmlParser parser = new PmcXmlParser();
+        JatsArticle article = parser.parseFile(xmlFile);
+
+        assertThat(article.getBody().getDefLists()).hasSize(1);
+        DefItem item = article.getBody().getDefLists().get(0).getItems().get(0);
+        assertThat(item.getTerms()).hasSize(1);
+        assertThat(item.getDefinitions()).hasSize(1);
+    }
+
+    /**
+     * 테스트 18: DefItem with empty terms (Line 436 true branch)
+     */
+    @Test
+    void testParseDefItem_EmptyTerms(@TempDir Path tempDir) throws Exception {
+        String xml = """
+            <article dtd-version="1.4">
+              <body>
+                <def-list>
+                  <def-item id="di-no-terms">
+                    <label>Item without terms</label>
+                  </def-item>
+                </def-list>
+              </body>
+            </article>
+            """;
+
+        Path xmlFile = tempDir.resolve("defitem_empty_terms.xml");
+        Files.writeString(xmlFile, xml);
+
+        PmcXmlParser parser = new PmcXmlParser();
+        JatsArticle article = parser.parseFile(xmlFile);
+
+        assertThat(article.getBody().getDefLists()).hasSize(1);
+        DefItem item = article.getBody().getDefLists().get(0).getItems().get(0);
+        assertThat(item.getTerms()).isNull();  // Line 436: isEmpty() == true
+    }
+
+    /**
+     * 테스트 19: Def with boxed-text, disp-quote, code (Lines 526, 529, 532 커버)
+     */
+    @Test
+    void testParseDef_WithAllElements(@TempDir Path tempDir) throws Exception {
+        String xml = """
+            <article dtd-version="1.4">
+              <body>
+                <def-list>
+                  <def-item>
+                    <term>Complex Term</term>
+                    <def id="complex-def">
+                      <label>Def Label</label>
+                      <title>Definition Title</title>
+                      <p>First paragraph</p>
+                      <boxed-text><p>Boxed content in def</p></boxed-text>
+                      <disp-quote><p>Quote in def</p></disp-quote>
+                      <code>Code in def</code>
+                    </def>
+                  </def-item>
+                </def-list>
+              </body>
+            </article>
+            """;
+
+        Path xmlFile = tempDir.resolve("def_all_elements.xml");
+        Files.writeString(xmlFile, xml);
+
+        PmcXmlParser parser = new PmcXmlParser();
+        JatsArticle article = parser.parseFile(xmlFile);
+
+        assertThat(article.getBody().getDefLists()).hasSize(1);
+        Def def = article.getBody().getDefLists().get(0).getItems().get(0).getDefinitions().get(0);
+        assertThat(def.getId()).isEqualTo("complex-def");
+        assertThat(def.getBoxedTexts()).hasSize(1);  // Line 526
+        assertThat(def.getDispQuotes()).hasSize(1);  // Line 529
+        assertThat(def.getCodeBlocks()).hasSize(1);  // Line 532
+    }
+
+    /**
+     * 테스트 20: Def with unknown element (Line 536 default case)
+     */
+    @Test
+    void testParseDef_WithUnknownElement(@TempDir Path tempDir) throws Exception {
+        String xml = """
+            <article dtd-version="1.4">
+              <body>
+                <def-list>
+                  <def-item>
+                    <term>Term</term>
+                    <def>
+                      <unknown-element>Skip</unknown-element>
+                      <p>Valid paragraph</p>
+                    </def>
+                  </def-item>
+                </def-list>
+              </body>
+            </article>
+            """;
+
+        Path xmlFile = tempDir.resolve("def_unknown.xml");
+        Files.writeString(xmlFile, xml);
+
+        PmcXmlParser parser = new PmcXmlParser();
+        JatsArticle article = parser.parseFile(xmlFile);
+
+        assertThat(article.getBody().getDefLists()).hasSize(1);
+        Def def = article.getBody().getDefLists().get(0).getItems().get(0).getDefinitions().get(0);
+        assertThat(def.getParagraphs()).hasSize(1);
+    }
+
+    /**
+     * 테스트 21: Def with all empty collections (Lines 545, 548, 549, 550 true branches)
+     */
+    @Test
+    void testParseDef_AllEmpty(@TempDir Path tempDir) throws Exception {
+        String xml = """
+            <article dtd-version="1.4">
+              <body>
+                <def-list>
+                  <def-item>
+                    <term>Empty Def Term</term>
+                    <def id="empty-def">
+                      <label>Only label</label>
+                      <title>Only title</title>
+                    </def>
+                  </def-item>
+                </def-list>
+              </body>
+            </article>
+            """;
+
+        Path xmlFile = tempDir.resolve("def_all_empty.xml");
+        Files.writeString(xmlFile, xml);
+
+        PmcXmlParser parser = new PmcXmlParser();
+        JatsArticle article = parser.parseFile(xmlFile);
+
+        assertThat(article.getBody().getDefLists()).hasSize(1);
+        Def def = article.getBody().getDefLists().get(0).getItems().get(0).getDefinitions().get(0);
+        assertThat(def.getParagraphs()).isNull();  // Line 545: isEmpty() == true
+        assertThat(def.getBoxedTexts()).isNull();  // Line 548: isEmpty() == true
+        assertThat(def.getDispQuotes()).isNull();  // Line 549: isEmpty() == true
+        assertThat(def.getCodeBlocks()).isNull();  // Line 550: isEmpty() == true
+    }
+
+    /**
+     * 테스트 22: DispQuote with title (Line 594 커버)
+     */
+    @Test
+    void testParseDispQuote_WithTitle(@TempDir Path tempDir) throws Exception {
+        String xml = """
+            <article dtd-version="1.4">
+              <body>
+                <disp-quote id="q1">
+                  <label>Quote 1</label>
+                  <title>Quote Title</title>
+                  <p>Quote content</p>
+                </disp-quote>
+              </body>
+            </article>
+            """;
+
+        Path xmlFile = tempDir.resolve("dispquote_title.xml");
+        Files.writeString(xmlFile, xml);
+
+        PmcXmlParser parser = new PmcXmlParser();
+        JatsArticle article = parser.parseFile(xmlFile);
+
+        assertThat(article.getBody().getDispQuotes()).hasSize(1);
+        DispQuote quote = article.getBody().getDispQuotes().get(0);
+        assertThat(quote.getTitle()).isNotNull();
+        assertThat(quote.getTitle().getValue()).contains("Quote Title");
+    }
+
+    /**
+     * 테스트 23: DispQuote with nested disp-quote (Line 607 커버)
+     */
+    @Test
+    void testParseDispQuote_Nested(@TempDir Path tempDir) throws Exception {
+        String xml = """
+            <article dtd-version="1.4">
+              <body>
+                <disp-quote id="outer-quote">
+                  <p>Outer quote</p>
+                  <disp-quote id="inner-quote">
+                    <p>Nested quote</p>
+                  </disp-quote>
+                </disp-quote>
+              </body>
+            </article>
+            """;
+
+        Path xmlFile = tempDir.resolve("dispquote_nested.xml");
+        Files.writeString(xmlFile, xml);
+
+        PmcXmlParser parser = new PmcXmlParser();
+        JatsArticle article = parser.parseFile(xmlFile);
+
+        assertThat(article.getBody().getDispQuotes()).hasSize(1);
+        DispQuote outerQuote = article.getBody().getDispQuotes().get(0);
+        assertThat(outerQuote.getNestedQuotes()).hasSize(1);  // Line 607
+        assertThat(outerQuote.getNestedQuotes().get(0).getId()).isEqualTo("inner-quote");
+    }
+
+    /**
+     * 테스트 24: DispQuote with code and permissions (Lines 610, 616 커버)
+     */
+    @Test
+    void testParseDispQuote_WithCodeAndPermissions(@TempDir Path tempDir) throws Exception {
+        String xml = """
+            <article dtd-version="1.4">
+              <body>
+                <disp-quote id="q-code">
+                  <p>Quote with code</p>
+                  <code>Sample code</code>
+                  <permissions>
+                    <copyright-statement>Copyright 2024</copyright-statement>
+                    <license>
+                      <license-p>CC BY 4.0</license-p>
+                    </license>
+                  </permissions>
+                </disp-quote>
+              </body>
+            </article>
+            """;
+
+        Path xmlFile = tempDir.resolve("dispquote_code_permissions.xml");
+        Files.writeString(xmlFile, xml);
+
+        PmcXmlParser parser = new PmcXmlParser();
+        JatsArticle article = parser.parseFile(xmlFile);
+
+        assertThat(article.getBody().getDispQuotes()).hasSize(1);
+        DispQuote quote = article.getBody().getDispQuotes().get(0);
+        assertThat(quote.getCodeBlocks()).hasSize(1);  // Line 610
+        assertThat(quote.getPermissions()).isNotNull();  // Line 616
+    }
+
+    /**
+     * 테스트 25: DispQuote with unknown element (Line 619 default case)
+     */
+    @Test
+    void testParseDispQuote_WithUnknownElement(@TempDir Path tempDir) throws Exception {
+        String xml = """
+            <article dtd-version="1.4">
+              <body>
+                <disp-quote id="q-unknown">
+                  <unknown-element>Skip this</unknown-element>
+                  <p>Valid paragraph</p>
+                </disp-quote>
+              </body>
+            </article>
+            """;
+
+        Path xmlFile = tempDir.resolve("dispquote_unknown.xml");
+        Files.writeString(xmlFile, xml);
+
+        PmcXmlParser parser = new PmcXmlParser();
+        JatsArticle article = parser.parseFile(xmlFile);
+
+        assertThat(article.getBody().getDispQuotes()).hasSize(1);
+        DispQuote quote = article.getBody().getDispQuotes().get(0);
+        assertThat(quote.getParagraphs()).hasSize(1);
+    }
+
+    /**
+     * 테스트 26: DispQuote all empty (Lines 628, 631, 632 true branches)
+     */
+    @Test
+    void testParseDispQuote_AllEmpty(@TempDir Path tempDir) throws Exception {
+        String xml = """
+            <article dtd-version="1.4">
+              <body>
+                <disp-quote id="q-empty">
+                  <label>Empty Quote</label>
+                </disp-quote>
+              </body>
+            </article>
+            """;
+
+        Path xmlFile = tempDir.resolve("dispquote_empty.xml");
+        Files.writeString(xmlFile, xml);
+
+        PmcXmlParser parser = new PmcXmlParser();
+        JatsArticle article = parser.parseFile(xmlFile);
+
+        assertThat(article.getBody().getDispQuotes()).hasSize(1);
+        DispQuote quote = article.getBody().getDispQuotes().get(0);
+        assertThat(quote.getParagraphs()).isNull();  // Line 628: isEmpty() == true
+        assertThat(quote.getNestedQuotes()).isNull();  // Line 631: isEmpty() == true
+        assertThat(quote.getCodeBlocks()).isNull();  // Line 632: isEmpty() == true
+    }
+
+    /**
+     * 테스트 27: BoxedText with sec-meta (Line 677 커버)
+     */
+    @Test
+    void testParseBoxedText_WithSecMeta(@TempDir Path tempDir) throws Exception {
+        String xml = """
+            <article dtd-version="1.4">
+              <body>
+                <boxed-text id="box-secmeta">
+                  <sec-meta>
+                    <kwd-group><kwd>test</kwd></kwd-group>
+                  </sec-meta>
+                  <label>Box with sec-meta</label>
+                  <p>Box content</p>
+                </boxed-text>
+              </body>
+            </article>
+            """;
+
+        Path xmlFile = tempDir.resolve("boxed_secmeta.xml");
+        Files.writeString(xmlFile, xml);
+
+        PmcXmlParser parser = new PmcXmlParser();
+        JatsArticle article = parser.parseFile(xmlFile);
+
+        assertThat(article.getBody().getBoxedTexts()).hasSize(1);
+        BoxedText box = article.getBody().getBoxedTexts().get(0);
+        assertThat(box.getSecMeta()).isNotNull();  // Line 677
+    }
+
+    /**
+     * 테스트 28: BoxedText with attrib and permissions (Lines 704, 707 커버)
+     */
+    @Test
+    void testParseBoxedText_WithAttribAndPermissions(@TempDir Path tempDir) throws Exception {
+        String xml = """
+            <article dtd-version="1.4">
+              <body>
+                <boxed-text id="box-attrib">
+                  <p>Boxed content</p>
+                  <attrib>Source: Author, 2024</attrib>
+                  <permissions>
+                    <copyright-statement>All rights reserved</copyright-statement>
+                    <license>
+                      <license-p>License text</license-p>
+                    </license>
+                  </permissions>
+                </boxed-text>
+              </body>
+            </article>
+            """;
+
+        Path xmlFile = tempDir.resolve("boxed_attrib_permissions.xml");
+        Files.writeString(xmlFile, xml);
+
+        PmcXmlParser parser = new PmcXmlParser();
+        JatsArticle article = parser.parseFile(xmlFile);
+
+        assertThat(article.getBody().getBoxedTexts()).hasSize(1);
+        BoxedText box = article.getBody().getBoxedTexts().get(0);
+        assertThat(box.getAttrib()).isNotNull();  // Line 704
+        assertThat(box.getAttrib()).contains("Author");
+        assertThat(box.getPermissions()).isNotNull();  // Line 707
+    }
+
+    /**
+     * 테스트 29: BoxedText with unknown element (Line 711 default case)
+     */
+    @Test
+    void testParseBoxedText_WithUnknownElement(@TempDir Path tempDir) throws Exception {
+        String xml = """
+            <article dtd-version="1.4">
+              <body>
+                <boxed-text id="box-unknown">
+                  <unknown-element>Skip</unknown-element>
+                  <p>Valid paragraph</p>
+                </boxed-text>
+              </body>
+            </article>
+            """;
+
+        Path xmlFile = tempDir.resolve("boxed_unknown.xml");
+        Files.writeString(xmlFile, xml);
+
+        PmcXmlParser parser = new PmcXmlParser();
+        JatsArticle article = parser.parseFile(xmlFile);
+
+        assertThat(article.getBody().getBoxedTexts()).hasSize(1);
+        BoxedText box = article.getBody().getBoxedTexts().get(0);
+        assertThat(box.getParagraphs()).hasSize(1);
+    }
+
+    /**
+     * 테스트 30: BoxedText with empty paragraphs (Line 720 true branch)
+     */
+    @Test
+    void testParseBoxedText_EmptyParagraphs(@TempDir Path tempDir) throws Exception {
+        String xml = """
+            <article dtd-version="1.4">
+              <body>
+                <boxed-text id="box-no-para">
+                  <label>Box without paragraphs</label>
+                  <caption><title>Caption only</title></caption>
+                </boxed-text>
+              </body>
+            </article>
+            """;
+
+        Path xmlFile = tempDir.resolve("boxed_empty_para.xml");
+        Files.writeString(xmlFile, xml);
+
+        PmcXmlParser parser = new PmcXmlParser();
+        JatsArticle article = parser.parseFile(xmlFile);
+
+        assertThat(article.getBody().getBoxedTexts()).hasSize(1);
+        BoxedText box = article.getBody().getBoxedTexts().get(0);
+        assertThat(box.getParagraphs()).isNull();  // Line 720: isEmpty() == true
+        assertThat(box.getLabel()).isNotNull();
+        assertThat(box.getCaption()).isNotNull();
+    }
+
+    /**
+     * 테스트 31: Caption with empty paragraphs (Line 824 확인 - 이미 커버되어 있을 수 있음)
+     */
+    @Test
+    void testParseCaption_EmptyParagraphs(@TempDir Path tempDir) throws Exception {
+        String xml = """
+            <article dtd-version="1.4">
+              <body>
+                <boxed-text>
+                  <caption id="cap-no-para">
+                    <title>Caption Title Only</title>
+                  </caption>
+                  <p>Box content</p>
+                </boxed-text>
+              </body>
+            </article>
+            """;
+
+        Path xmlFile = tempDir.resolve("caption_empty_para.xml");
+        Files.writeString(xmlFile, xml);
+
+        PmcXmlParser parser = new PmcXmlParser();
+        JatsArticle article = parser.parseFile(xmlFile);
+
+        assertThat(article.getBody().getBoxedTexts()).hasSize(1);
+        Caption caption = article.getBody().getBoxedTexts().get(0).getCaption();
+        assertThat(caption).isNotNull();
+        assertThat(caption.getTitle()).isNotNull();
+        assertThat(caption.getParagraphs()).isNullOrEmpty();  // Line 824: could be null or empty
     }
 }

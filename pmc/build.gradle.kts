@@ -29,6 +29,8 @@ dependencies {
     // Testing
     testImplementation("org.junit.jupiter:junit-jupiter:5.10.1")
     testImplementation("org.assertj:assertj-core:3.24.2")
+    testImplementation("org.mockito:mockito-core:5.8.0")
+    testImplementation("org.mockito:mockito-junit-jupiter:5.8.0")
     testRuntimeOnly("org.junit.platform:junit-platform-launcher")
 
     // TAR.GZ 압축 파일 처리 (PMC는 tar.gz 아카이브 사용)

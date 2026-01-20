@@ -1487,6 +1487,236 @@ class PmcXmlParserTest {
         assertEquals("con", contributionFn.getFnType());
     }
 
+    // ==================== ValidationResult Tests ====================
+
+    /**
+     * ValidationResult - 유효한 결과 테스트 / ValidationResult - Valid Result Test
+     *
+     * KR: ValidationResult가 에러 없이 유효한 경우를 테스트
+     * EN: Test ValidationResult with no errors (valid case)
+     */
+    @Test
+    void testValidationResultValid() throws Exception {
+        // Given
+        Path simplePath = Paths.get("src/test/resources/pmc/simple_article.xml");
+        JatsArticle article = parser.parseFile(simplePath);
+        List<com.brillianttiger.bio.parser.pmc.validation.ValidationError> errors = java.util.Collections.emptyList();
+
+        // When
+        PmcXmlParser.ValidationResult result = new PmcXmlParser.ValidationResult(article, errors);
+
+        // Then
+        assertNotNull(result, "ValidationResult가 null이 아니어야 함 / ValidationResult should not be null");
+        assertNotNull(result.getArticle(), "Article이 null이 아니어야 함 / Article should not be null");
+        assertEquals(article, result.getArticle(), "Article이 일치해야 함 / Article should match");
+        assertNotNull(result.getErrors(), "Errors가 null이 아니어야 함 / Errors should not be null");
+        assertTrue(result.getErrors().isEmpty(), "Errors가 비어있어야 함 / Errors should be empty");
+        assertTrue(result.isValid(), "유효한 결과여야 함 / Should be valid");
+    }
+
+    /**
+     * ValidationResult - 에러가 있는 결과 테스트 / ValidationResult - Invalid Result Test
+     *
+     * KR: ValidationResult가 에러를 포함하는 경우를 테스트
+     * EN: Test ValidationResult with errors (invalid case)
+     */
+    @Test
+    void testValidationResultInvalid() throws Exception {
+        // Given
+        Path simplePath = Paths.get("src/test/resources/pmc/simple_article.xml");
+        JatsArticle article = parser.parseFile(simplePath);
+
+        List<com.brillianttiger.bio.parser.pmc.validation.ValidationError> errors = new java.util.ArrayList<>();
+        errors.add(com.brillianttiger.bio.parser.pmc.validation.ValidationError.error(
+            "TEST_ERROR",
+            "Test error message",
+            "test-location",
+            "test-details"
+        ));
+
+        // When
+        PmcXmlParser.ValidationResult result = new PmcXmlParser.ValidationResult(article, errors);
+
+        // Then
+        assertNotNull(result, "ValidationResult가 null이 아니어야 함 / ValidationResult should not be null");
+        assertNotNull(result.getArticle(), "Article이 null이 아니어야 함 / Article should not be null");
+        assertEquals(article, result.getArticle(), "Article이 일치해야 함 / Article should match");
+        assertNotNull(result.getErrors(), "Errors가 null이 아니어야 함 / Errors should not be null");
+        assertFalse(result.getErrors().isEmpty(), "Errors가 비어있지 않아야 함 / Errors should not be empty");
+        assertEquals(1, result.getErrors().size(), "에러 1개 / Should have 1 error");
+        assertFalse(result.isValid(), "유효하지 않은 결과여야 함 / Should be invalid");
+    }
+
+    /**
+     * ValidationResult - null article 테스트 / ValidationResult - Null Article Test
+     *
+     * KR: ValidationResult가 null article을 허용하는지 테스트
+     * EN: Test ValidationResult allows null article
+     */
+    @Test
+    void testValidationResultNullArticle() {
+        // Given
+        List<com.brillianttiger.bio.parser.pmc.validation.ValidationError> errors = java.util.Collections.emptyList();
+
+        // When
+        PmcXmlParser.ValidationResult result = new PmcXmlParser.ValidationResult(null, errors);
+
+        // Then
+        assertNotNull(result, "ValidationResult가 null이 아니어야 함 / ValidationResult should not be null");
+        assertNull(result.getArticle(), "Article이 null이어야 함 / Article should be null");
+        assertNotNull(result.getErrors(), "Errors가 null이 아니어야 함 / Errors should not be null");
+        assertTrue(result.isValid(), "에러가 없으면 유효해야 함 / Should be valid if no errors");
+    }
+
+    /**
+     * ValidationResult - 다중 에러 테스트 / ValidationResult - Multiple Errors Test
+     *
+     * KR: ValidationResult가 다중 에러를 올바르게 처리하는지 테스트
+     * EN: Test ValidationResult handles multiple errors correctly
+     */
+    @Test
+    void testValidationResultMultipleErrors() throws Exception {
+        // Given
+        Path simplePath = Paths.get("src/test/resources/pmc/simple_article.xml");
+        JatsArticle article = parser.parseFile(simplePath);
+
+        List<com.brillianttiger.bio.parser.pmc.validation.ValidationError> errors = new java.util.ArrayList<>();
+        errors.add(com.brillianttiger.bio.parser.pmc.validation.ValidationError.error(
+            "ERROR_1",
+            "Error 1",
+            "/article/front",
+            "Missing required element"
+        ));
+        errors.add(com.brillianttiger.bio.parser.pmc.validation.ValidationError.warning(
+            "WARNING_1",
+            "Warning 1",
+            "/article/back",
+            "Recommended element missing"
+        ));
+        errors.add(com.brillianttiger.bio.parser.pmc.validation.ValidationError.error(
+            "ERROR_2",
+            "Error 2",
+            "/article/body",
+            "Invalid content"
+        ));
+
+        // When
+        PmcXmlParser.ValidationResult result = new PmcXmlParser.ValidationResult(article, errors);
+
+        // Then
+        assertNotNull(result, "ValidationResult가 null이 아니어야 함 / ValidationResult should not be null");
+        assertEquals(3, result.getErrors().size(), "에러 3개 / Should have 3 errors");
+        assertFalse(result.isValid(), "에러가 있으면 유효하지 않아야 함 / Should be invalid if errors exist");
+    }
+
+    /**
+     * ValidationResult - hasErrors 테스트 / ValidationResult - hasErrors Test
+     *
+     * KR: ValidationResult의 hasErrors() 메서드가 ERROR 타입 에러를 올바르게 감지하는지 테스트
+     * EN: Test ValidationResult.hasErrors() correctly detects ERROR severity errors
+     */
+    @Test
+    void testValidationResultHasErrors() throws Exception {
+        // Given: ERROR 타입 에러만 있는 경우
+        Path simplePath = Paths.get("src/test/resources/pmc/simple_article.xml");
+        JatsArticle article = parser.parseFile(simplePath);
+
+        List<com.brillianttiger.bio.parser.pmc.validation.ValidationError> errors = new java.util.ArrayList<>();
+        errors.add(com.brillianttiger.bio.parser.pmc.validation.ValidationError.error(
+            "ERROR_1",
+            "Error message",
+            "/article/front"
+        ));
+
+        PmcXmlParser.ValidationResult result = new PmcXmlParser.ValidationResult(article, errors);
+
+        // Then
+        assertTrue(result.hasErrors(), "ERROR 타입 에러가 있어야 함 / Should have ERROR type errors");
+        assertFalse(result.hasWarnings(), "WARNING 타입 에러가 없어야 함 / Should not have WARNING type errors");
+
+        // Given: WARNING 타입만 있는 경우
+        errors.clear();
+        errors.add(com.brillianttiger.bio.parser.pmc.validation.ValidationError.warning(
+            "WARNING_1",
+            "Warning message",
+            "/article/back"
+        ));
+
+        result = new PmcXmlParser.ValidationResult(article, errors);
+
+        // Then
+        assertFalse(result.hasErrors(), "ERROR 타입 에러가 없어야 함 / Should not have ERROR type errors");
+        assertTrue(result.hasWarnings(), "WARNING 타입 에러가 있어야 함 / Should have WARNING type errors");
+
+        // Given: ERROR와 WARNING 모두 있는 경우
+        errors.add(com.brillianttiger.bio.parser.pmc.validation.ValidationError.error(
+            "ERROR_2",
+            "Another error",
+            "/article/body"
+        ));
+
+        result = new PmcXmlParser.ValidationResult(article, errors);
+
+        // Then
+        assertTrue(result.hasErrors(), "ERROR 타입 에러가 있어야 함 / Should have ERROR type errors");
+        assertTrue(result.hasWarnings(), "WARNING 타입 에러가 있어야 함 / Should have WARNING type errors");
+    }
+
+    /**
+     * ValidationResult - getSummary 테스트 / ValidationResult - getSummary Test
+     *
+     * KR: ValidationResult의 getSummary() 메서드가 올바른 에러 요약을 반환하는지 테스트
+     * EN: Test ValidationResult.getSummary() returns correct error summary
+     */
+    @Test
+    void testValidationResultGetSummary() throws Exception {
+        // Given
+        Path simplePath = Paths.get("src/test/resources/pmc/simple_article.xml");
+        JatsArticle article = parser.parseFile(simplePath);
+
+        List<com.brillianttiger.bio.parser.pmc.validation.ValidationError> errors = new java.util.ArrayList<>();
+        errors.add(com.brillianttiger.bio.parser.pmc.validation.ValidationError.error(
+            "ERROR_1",
+            "Error message",
+            "/article/front"
+        ));
+
+        PmcXmlParser.ValidationResult result = new PmcXmlParser.ValidationResult(article, errors);
+
+        // When
+        String summary = result.getSummary();
+
+        // Then
+        assertNotNull(summary, "요약이 null이 아니어야 함 / Summary should not be null");
+        assertFalse(summary.isEmpty(), "요약이 비어있지 않아야 함 / Summary should not be empty");
+    }
+
+    /**
+     * ValidationResult - printErrors 테스트 / ValidationResult - printErrors Test
+     *
+     * KR: ValidationResult의 printErrors() 메서드가 예외 없이 실행되는지 테스트
+     * EN: Test ValidationResult.printErrors() executes without exception
+     */
+    @Test
+    void testValidationResultPrintErrors() throws Exception {
+        // Given
+        Path simplePath = Paths.get("src/test/resources/pmc/simple_article.xml");
+        JatsArticle article = parser.parseFile(simplePath);
+
+        List<com.brillianttiger.bio.parser.pmc.validation.ValidationError> errors = new java.util.ArrayList<>();
+        errors.add(com.brillianttiger.bio.parser.pmc.validation.ValidationError.error(
+            "ERROR_1",
+            "Error message",
+            "/article/front"
+        ));
+
+        PmcXmlParser.ValidationResult result = new PmcXmlParser.ValidationResult(article, errors);
+
+        // When & Then - 예외 없이 실행되어야 함
+        assertDoesNotThrow(() -> result.printErrors(),
+                "printErrors()가 예외 없이 실행되어야 함 / printErrors() should execute without exception");
+    }
+
     // ==================== Helper Methods ====================
 
     /**

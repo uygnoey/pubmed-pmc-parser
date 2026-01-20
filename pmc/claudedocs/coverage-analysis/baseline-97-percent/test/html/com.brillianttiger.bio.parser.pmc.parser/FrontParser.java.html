@@ -1,0 +1,340 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="ko"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>FrontParser.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">pmc</a> &gt; <a href="index.source.html" class="el_package">com.brillianttiger.bio.parser.pmc.parser</a> &gt; <span class="el_source">FrontParser.java</span></div><h1>FrontParser.java</h1><pre class="source lang-java linenums">package com.brillianttiger.bio.parser.pmc.parser;
+
+import com.brillianttiger.bio.parser.pmc.model.*;
+
+import javax.xml.stream.XMLStreamConstants;
+import javax.xml.stream.XMLStreamException;
+import javax.xml.stream.XMLStreamReader;
+import java.util.ArrayList;
+import java.util.List;
+
+import static com.brillianttiger.bio.parser.pmc.parser.CommonPmcElementParser.*;
+
+/**
+ * FrontParser / Front 파서
+ *
+ * KR: PMC XML의 Front (전면부) 및 관련 요소들을 파싱하는 클래스
+ * EN: Class for parsing Front (front matter) and related elements in PMC XML
+ */
+<span class="fc" id="L19">public class FrontParser {</span>
+
+    /**
+     * Front 파싱 / Parse Front
+     * DTD: &lt;!ELEMENT front (journal-meta?, article-meta, (def-list | list | ack | bio | fn-group | glossary | notes)*)&gt;
+     */
+    public static Front parseFront(XMLStreamReader reader) throws XMLStreamException {
+<span class="fc" id="L26">        Front.FrontBuilder builder = Front.builder();</span>
+
+<span class="fc" id="L28">        List&lt;Notes&gt; notesList = new ArrayList&lt;&gt;();</span>
+
+        // Note: hasNext() 체크는 불필요합니다. 정상 XML에서는 항상 END_ELEMENT를 만나고,
+        // malformed XML에서는 next()가 XMLStreamException을 던집니다.
+        while (true) {
+<span class="fc" id="L33">            int event = reader.next();</span>
+
+<span class="fc bfc" id="L35" title="All 2 branches covered.">            if (event == XMLStreamConstants.START_ELEMENT) {</span>
+<span class="fc" id="L36">                String localName = reader.getLocalName();</span>
+
+<span class="fc bfc" id="L38" title="All 4 branches covered.">                switch (localName) {</span>
+                    case &quot;journal-meta&quot;:
+<span class="fc" id="L40">                        builder.journalMeta(parseJournalMeta(reader));</span>
+<span class="fc" id="L41">                        break;</span>
+                    case &quot;article-meta&quot;:
+<span class="fc" id="L43">                        builder.articleMeta(ArticleMetaParser.parseArticleMeta(reader));</span>
+<span class="fc" id="L44">                        break;</span>
+                    case &quot;notes&quot;:
+<span class="fc" id="L46">                        notesList.add(parseNotes(reader));</span>
+<span class="fc" id="L47">                        break;</span>
+                    default:
+<span class="fc" id="L49">                        skipElement(reader);</span>
+                        break;
+                }
+<span class="fc bfc" id="L52" title="All 2 branches covered.">            } else if (event == XMLStreamConstants.END_ELEMENT) {</span>
+                // Note: 이 시점에서 END_ELEMENT는 항상 &quot;front&quot;입니다.
+                // 자식 요소들은 각각의 파서가 완전히 소비하므로 부모 파서는 자식의 END_ELEMENT를 만나지 않습니다.
+<span class="fc" id="L55">                break;</span>
+            }
+<span class="fc" id="L57">        }</span>
+
+<span class="fc bfc" id="L59" title="All 2 branches covered.">        builder.notesList(notesList.isEmpty() ? null : notesList);</span>
+<span class="fc" id="L60">        return builder.build();</span>
+    }
+
+    /**
+     * JournalMeta 파싱 / Parse JournalMeta
+     * DTD: &lt;!ELEMENT journal-meta (journal-id+, journal-title-group?, issn*, isbn*, publisher?, notes?)&gt;
+     */
+    public static JournalMeta parseJournalMeta(XMLStreamReader reader) throws XMLStreamException {
+<span class="fc" id="L68">        JournalMeta.JournalMetaBuilder builder = JournalMeta.builder();</span>
+
+<span class="fc" id="L70">        List&lt;JournalId&gt; journalIds = new ArrayList&lt;&gt;();</span>
+<span class="fc" id="L71">        List&lt;JournalTitleGroup&gt; journalTitleGroups = new ArrayList&lt;&gt;();</span>
+<span class="fc" id="L72">        List&lt;Issn&gt; issns = new ArrayList&lt;&gt;();</span>
+<span class="fc" id="L73">        List&lt;PmcIsbn&gt; isbns = new ArrayList&lt;&gt;();</span>
+<span class="fc" id="L74">        List&lt;Notes&gt; notesList = new ArrayList&lt;&gt;();</span>
+
+        // Note: hasNext() 체크는 불필요합니다. 정상 XML에서는 항상 END_ELEMENT를 만나고,
+        // malformed XML에서는 next()가 XMLStreamException을 던집니다.
+        while (true) {
+<span class="fc" id="L79">            int event = reader.next();</span>
+
+<span class="fc bfc" id="L81" title="All 2 branches covered.">            if (event == XMLStreamConstants.START_ELEMENT) {</span>
+<span class="fc" id="L82">                String localName = reader.getLocalName();</span>
+
+<span class="fc bfc" id="L84" title="All 7 branches covered.">                switch (localName) {</span>
+                    case &quot;journal-id&quot;:
+<span class="fc" id="L86">                        journalIds.add(parseJournalId(reader));</span>
+<span class="fc" id="L87">                        break;</span>
+                    case &quot;journal-title-group&quot;:
+<span class="fc" id="L89">                        journalTitleGroups.add(parseJournalTitleGroup(reader));</span>
+<span class="fc" id="L90">                        break;</span>
+                    case &quot;issn&quot;:
+<span class="fc" id="L92">                        issns.add(parseIssn(reader));</span>
+<span class="fc" id="L93">                        break;</span>
+                    case &quot;isbn&quot;:
+<span class="fc" id="L95">                        isbns.add(parsePmcIsbn(reader));</span>
+<span class="fc" id="L96">                        break;</span>
+                    case &quot;publisher&quot;:
+<span class="fc" id="L98">                        builder.publisher(parsePublisher(reader));</span>
+<span class="fc" id="L99">                        break;</span>
+                    case &quot;notes&quot;:
+<span class="fc" id="L101">                        notesList.add(parseNotes(reader));</span>
+<span class="fc" id="L102">                        break;</span>
+                    default:
+<span class="fc" id="L104">                        skipElement(reader);</span>
+                        break;
+                }
+<span class="fc bfc" id="L107" title="All 2 branches covered.">            } else if (event == XMLStreamConstants.END_ELEMENT) {</span>
+                // Note: 이 시점에서 END_ELEMENT는 항상 &quot;journal-meta&quot;입니다.
+<span class="fc" id="L109">                break;</span>
+            }
+<span class="fc" id="L111">        }</span>
+
+<span class="fc bfc" id="L113" title="All 2 branches covered.">        builder.journalIds(journalIds.isEmpty() ? null : journalIds);</span>
+<span class="fc bfc" id="L114" title="All 2 branches covered.">        builder.journalTitleGroups(journalTitleGroups.isEmpty() ? null : journalTitleGroups);</span>
+<span class="fc bfc" id="L115" title="All 2 branches covered.">        builder.issns(issns.isEmpty() ? null : issns);</span>
+<span class="fc bfc" id="L116" title="All 2 branches covered.">        builder.isbns(isbns.isEmpty() ? null : isbns);</span>
+<span class="fc bfc" id="L117" title="All 2 branches covered.">        builder.notesList(notesList.isEmpty() ? null : notesList);</span>
+
+<span class="fc" id="L119">        return builder.build();</span>
+    }
+
+    /**
+     * JournalId 파싱 / Parse JournalId
+     * DTD: &lt;!ELEMENT journal-id (#PCDATA)&gt;
+     * DTD: &lt;!ATTLIST journal-id journal-id-type CDATA #IMPLIED&gt;
+     */
+    public static JournalId parseJournalId(XMLStreamReader reader) throws XMLStreamException {
+<span class="fc" id="L128">        String journalIdTypeStr = reader.getAttributeValue(null, &quot;journal-id-type&quot;);</span>
+<span class="fc" id="L129">        String specificUse = reader.getAttributeValue(null, &quot;specific-use&quot;);</span>
+<span class="fc" id="L130">        String xmlLang = reader.getAttributeValue(null, &quot;xml:lang&quot;);</span>
+<span class="fc" id="L131">        String value = parseTextContent(reader, &quot;journal-id&quot;);</span>
+
+<span class="fc" id="L133">        return JournalId.builder()</span>
+<span class="fc" id="L134">                .journalIdType(JournalIdType.fromValue(journalIdTypeStr))</span>
+<span class="fc" id="L135">                .specificUse(specificUse)</span>
+<span class="fc" id="L136">                .xmlLang(xmlLang)</span>
+<span class="fc" id="L137">                .value(value)</span>
+<span class="fc" id="L138">                .build();</span>
+    }
+
+    /**
+     * JournalTitleGroup 파싱 / Parse JournalTitleGroup
+     * DTD: &lt;!ELEMENT journal-title-group (journal-title*, journal-subtitle*, trans-title-group*, abbrev-journal-title*)&gt;
+     */
+    public static JournalTitleGroup parseJournalTitleGroup(XMLStreamReader reader) throws XMLStreamException {
+<span class="fc" id="L146">        JournalTitleGroup.JournalTitleGroupBuilder builder = JournalTitleGroup.builder();</span>
+
+<span class="fc" id="L148">        List&lt;JournalTitle&gt; journalTitles = new ArrayList&lt;&gt;();</span>
+<span class="fc" id="L149">        List&lt;JournalSubtitle&gt; journalSubtitles = new ArrayList&lt;&gt;();</span>
+<span class="fc" id="L150">        List&lt;TransTitleGroup&gt; transTitleGroups = new ArrayList&lt;&gt;();</span>
+<span class="fc" id="L151">        List&lt;AbbrevJournalTitle&gt; abbrevJournalTitles = new ArrayList&lt;&gt;();</span>
+
+        // Note: hasNext() 체크는 불필요합니다. 정상 XML에서는 항상 END_ELEMENT를 만나고,
+        // malformed XML에서는 next()가 XMLStreamException을 던집니다.
+        while (true) {
+<span class="fc" id="L156">            int event = reader.next();</span>
+
+<span class="fc bfc" id="L158" title="All 2 branches covered.">            if (event == XMLStreamConstants.START_ELEMENT) {</span>
+<span class="fc" id="L159">                String localName = reader.getLocalName();</span>
+
+<span class="fc bfc" id="L161" title="All 5 branches covered.">                switch (localName) {</span>
+                    case &quot;journal-title&quot;:
+<span class="fc" id="L163">                        journalTitles.add(parseJournalTitle(reader));</span>
+<span class="fc" id="L164">                        break;</span>
+                    case &quot;journal-subtitle&quot;:
+<span class="fc" id="L166">                        journalSubtitles.add(parseJournalSubtitle(reader));</span>
+<span class="fc" id="L167">                        break;</span>
+                    case &quot;trans-title-group&quot;:
+<span class="fc" id="L169">                        transTitleGroups.add(parseTransTitleGroup(reader));</span>
+<span class="fc" id="L170">                        break;</span>
+                    case &quot;abbrev-journal-title&quot;:
+<span class="fc" id="L172">                        abbrevJournalTitles.add(parseAbbrevJournalTitle(reader));</span>
+<span class="fc" id="L173">                        break;</span>
+                    default:
+<span class="fc" id="L175">                        skipElement(reader);</span>
+                        break;
+                }
+<span class="fc bfc" id="L178" title="All 2 branches covered.">            } else if (event == XMLStreamConstants.END_ELEMENT) {</span>
+                // Note: 이 시점에서 END_ELEMENT는 항상 &quot;journal-title-group&quot;입니다.
+<span class="fc" id="L180">                break;</span>
+            }
+<span class="fc" id="L182">        }</span>
+
+<span class="fc bfc" id="L184" title="All 2 branches covered.">        builder.journalTitles(journalTitles.isEmpty() ? null : journalTitles);</span>
+<span class="fc bfc" id="L185" title="All 2 branches covered.">        builder.journalSubtitles(journalSubtitles.isEmpty() ? null : journalSubtitles);</span>
+<span class="fc bfc" id="L186" title="All 2 branches covered.">        builder.transTitleGroups(transTitleGroups.isEmpty() ? null : transTitleGroups);</span>
+<span class="fc bfc" id="L187" title="All 2 branches covered.">        builder.abbrevJournalTitles(abbrevJournalTitles.isEmpty() ? null : abbrevJournalTitles);</span>
+
+<span class="fc" id="L189">        return builder.build();</span>
+    }
+
+    /**
+     * Issn 파싱 / Parse Issn
+     * DTD: &lt;!ELEMENT issn (#PCDATA)&gt;
+     * DTD: &lt;!ATTLIST issn
+     *          content-type CDATA #IMPLIED
+     *          publication-format (print | electronic | print-electronic | online) #IMPLIED
+     *          pub-type (ppub | epub | ppub-epub | epub-ppub | collection | epreprint) #IMPLIED&gt;
+     */
+    public static Issn parseIssn(XMLStreamReader reader) throws XMLStreamException {
+<span class="fc" id="L201">        String contentType = reader.getAttributeValue(null, &quot;content-type&quot;);</span>
+<span class="fc" id="L202">        String publicationFormatStr = reader.getAttributeValue(null, &quot;publication-format&quot;);</span>
+<span class="fc" id="L203">        String pubTypeStr = reader.getAttributeValue(null, &quot;pub-type&quot;);</span>
+<span class="fc" id="L204">        String value = parseTextContent(reader, &quot;issn&quot;);</span>
+
+<span class="fc" id="L206">        return Issn.builder()</span>
+<span class="fc" id="L207">                .contentType(contentType)</span>
+<span class="fc" id="L208">                .publicationFormat(PublicationFormat.fromValue(publicationFormatStr))</span>
+<span class="fc" id="L209">                .pubType(PubType.fromValue(pubTypeStr))</span>
+<span class="fc" id="L210">                .value(value)</span>
+<span class="fc" id="L211">                .build();</span>
+    }
+
+    /**
+     * PmcIssn 파싱 / Parse PmcIssn (backward compatibility)
+     * DTD: &lt;!ATTLIST issn pub-type (ppub | epub) #IMPLIED content-type CDATA #IMPLIED&gt;
+     */
+    public static PmcIssn parsePmcIssn(XMLStreamReader reader) throws XMLStreamException {
+<span class="fc" id="L219">        String pubType = reader.getAttributeValue(null, &quot;pub-type&quot;);</span>
+<span class="fc" id="L220">        String contentType = reader.getAttributeValue(null, &quot;content-type&quot;);</span>
+<span class="fc" id="L221">        String value = parseTextContent(reader, &quot;issn&quot;);</span>
+
+<span class="fc" id="L223">        return PmcIssn.builder()</span>
+<span class="fc" id="L224">                .pubType(pubType)</span>
+<span class="fc" id="L225">                .contentType(contentType)</span>
+<span class="fc" id="L226">                .value(value)</span>
+<span class="fc" id="L227">                .build();</span>
+    }
+
+    /**
+     * Publisher 파싱 / Parse Publisher
+     * DTD: &lt;!ELEMENT publisher (publisher-name+, publisher-loc*)&gt;
+     */
+    public static Publisher parsePublisher(XMLStreamReader reader) throws XMLStreamException {
+<span class="fc" id="L235">        Publisher.PublisherBuilder builder = Publisher.builder();</span>
+
+<span class="fc" id="L237">        List&lt;PublisherName&gt; publisherNames = new ArrayList&lt;&gt;();</span>
+<span class="fc" id="L238">        List&lt;PublisherLoc&gt; publisherLocs = new ArrayList&lt;&gt;();</span>
+
+        // Note: hasNext() 체크는 불필요합니다. 정상 XML에서는 항상 END_ELEMENT를 만나고,
+        // malformed XML에서는 next()가 XMLStreamException을 던집니다.
+        while (true) {
+<span class="fc" id="L243">            int event = reader.next();</span>
+
+<span class="fc bfc" id="L245" title="All 2 branches covered.">            if (event == XMLStreamConstants.START_ELEMENT) {</span>
+<span class="fc" id="L246">                String localName = reader.getLocalName();</span>
+
+<span class="fc bfc" id="L248" title="All 3 branches covered.">                switch (localName) {</span>
+                    case &quot;publisher-name&quot;:
+<span class="fc" id="L250">                        publisherNames.add(parsePublisherName(reader));</span>
+<span class="fc" id="L251">                        break;</span>
+                    case &quot;publisher-loc&quot;:
+<span class="fc" id="L253">                        publisherLocs.add(parsePublisherLoc(reader));</span>
+<span class="fc" id="L254">                        break;</span>
+                    default:
+<span class="fc" id="L256">                        skipElement(reader);</span>
+                        break;
+                }
+<span class="fc bfc" id="L259" title="All 2 branches covered.">            } else if (event == XMLStreamConstants.END_ELEMENT) {</span>
+                // Note: 이 시점에서 END_ELEMENT는 항상 &quot;publisher&quot;입니다.
+<span class="fc" id="L261">                break;</span>
+            }
+<span class="fc" id="L263">        }</span>
+
+<span class="fc bfc" id="L265" title="All 2 branches covered.">        builder.publisherNames(publisherNames.isEmpty() ? null : publisherNames);</span>
+<span class="fc bfc" id="L266" title="All 2 branches covered.">        builder.publisherLocs(publisherLocs.isEmpty() ? null : publisherLocs);</span>
+
+<span class="fc" id="L268">        return builder.build();</span>
+    }
+
+    /**
+     * PmcPublisher 파싱 / Parse PmcPublisher (backward compatibility)
+     * DTD: &lt;!ELEMENT publisher (publisher-name, publisher-loc?)&gt;
+     */
+    public static PmcPublisher parsePmcPublisher(XMLStreamReader reader) throws XMLStreamException {
+<span class="fc" id="L276">        PmcPublisher.PmcPublisherBuilder builder = PmcPublisher.builder();</span>
+
+        // Note: hasNext() 체크는 불필요합니다. 정상 XML에서는 항상 END_ELEMENT를 만나고,
+        // malformed XML에서는 next()가 XMLStreamException을 던집니다.
+        while (true) {
+<span class="fc" id="L281">            int event = reader.next();</span>
+
+<span class="fc bfc" id="L283" title="All 2 branches covered.">            if (event == XMLStreamConstants.START_ELEMENT) {</span>
+<span class="fc" id="L284">                String localName = reader.getLocalName();</span>
+
+<span class="fc bfc" id="L286" title="All 3 branches covered.">                switch (localName) {</span>
+                    case &quot;publisher-name&quot;:
+<span class="fc" id="L288">                        builder.publisherName(parsePublisherName(reader));</span>
+<span class="fc" id="L289">                        break;</span>
+                    case &quot;publisher-loc&quot;:
+<span class="fc" id="L291">                        builder.publisherLoc(parsePublisherLoc(reader));</span>
+<span class="fc" id="L292">                        break;</span>
+                    default:
+<span class="fc" id="L294">                        skipElement(reader);</span>
+                        break;
+                }
+<span class="fc bfc" id="L297" title="All 2 branches covered.">            } else if (event == XMLStreamConstants.END_ELEMENT) {</span>
+                // Note: 이 시점에서 END_ELEMENT는 항상 &quot;publisher&quot;입니다.
+<span class="fc" id="L299">                break;</span>
+            }
+<span class="fc" id="L301">        }</span>
+
+<span class="fc" id="L303">        return builder.build();</span>
+    }
+
+    /**
+     * Notes 파싱 / Parse Notes
+     */
+    public static Notes parseNotes(XMLStreamReader reader) throws XMLStreamException {
+<span class="fc" id="L310">        String value = parseTextContent(reader, &quot;notes&quot;);</span>
+<span class="fc" id="L311">        return Notes.builder().value(value).build();</span>
+    }
+
+    // Simple element parsers
+    public static JournalTitle parseJournalTitle(XMLStreamReader reader) throws XMLStreamException {
+<span class="fc" id="L316">        String value = parseTextContent(reader, &quot;journal-title&quot;);</span>
+<span class="fc" id="L317">        return JournalTitle.builder().value(value).build();</span>
+    }
+
+    public static JournalSubtitle parseJournalSubtitle(XMLStreamReader reader) throws XMLStreamException {
+<span class="fc" id="L321">        String value = parseTextContent(reader, &quot;journal-subtitle&quot;);</span>
+<span class="fc" id="L322">        return JournalSubtitle.builder().value(value).build();</span>
+    }
+
+    /**
+     * TransTitleGroup 파싱 / Parse TransTitleGroup
+     * DTD: &lt;!ELEMENT trans-title-group (trans-title, trans-subtitle*)&gt;
+     * DTD: &lt;!ATTLIST trans-title-group xml:lang NMTOKEN #IMPLIED&gt;
+     */
+    public static TransTitleGroup parseTransTitleGroup(XMLStreamReader reader) throws XMLStreamException {
+        // Delegate to ArticleMetaParser for proper JATS 1.4 parsing
+<span class="fc" id="L332">        return ArticleMetaParser.parseTransTitleGroup(reader);</span>
+    }
+
+    public static AbbrevJournalTitle parseAbbrevJournalTitle(XMLStreamReader reader) throws XMLStreamException {
+<span class="fc" id="L336">        String value = parseTextContent(reader, &quot;abbrev-journal-title&quot;);</span>
+<span class="fc" id="L337">        return AbbrevJournalTitle.builder().value(value).build();</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.9.202303310957</span></div></body></html>

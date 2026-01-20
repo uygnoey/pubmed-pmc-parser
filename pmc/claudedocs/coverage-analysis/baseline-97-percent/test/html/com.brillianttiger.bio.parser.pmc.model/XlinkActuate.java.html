@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="ko"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>XlinkActuate.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">pmc</a> &gt; <a href="index.source.html" class="el_package">com.brillianttiger.bio.parser.pmc.model</a> &gt; <span class="el_source">XlinkActuate.java</span></div><h1>XlinkActuate.java</h1><pre class="source lang-java linenums">package com.brillianttiger.bio.parser.pmc.model;
+
+/**
+ * XlinkActuate / XLink 실행 시점
+ *
+ * KR: XLink actuate 속성 값을 나타내는 열거형.
+ *     링크 리소스를 언제 활성화할지 지정.
+ * EN: Enumeration representing XLink actuate attribute values.
+ *     Specifies when the linked resource should be activated.
+ *
+ * DTD: xlink:actuate (onLoad | onRequest | other | none) #IMPLIED
+ *
+ * Reference: https://jats.nlm.nih.gov/archiving/tag-library/1.4/attribute/xlink-actuate.html
+ */
+<span class="fc" id="L15">public enum XlinkActuate {</span>
+
+    /**
+     * 로드 시 실행 / On load
+     * KR: 문서 로드 시 자동으로 링크 리소스 활성화
+     * EN: Automatically activate the link when document loads
+     */
+<span class="fc" id="L22">    ON_LOAD(&quot;onLoad&quot;),</span>
+
+    /**
+     * 요청 시 실행 / On request
+     * KR: 사용자 요청(클릭 등) 시 링크 리소스 활성화
+     * EN: Activate the link when user requests (e.g., click)
+     */
+<span class="fc" id="L29">    ON_REQUEST(&quot;onRequest&quot;),</span>
+
+    /**
+     * 기타 / Other
+     * KR: 다른 방식으로 활성화
+     * EN: Some other activation method
+     */
+<span class="fc" id="L36">    OTHER(&quot;other&quot;),</span>
+
+    /**
+     * 없음 / None
+     * KR: 자동 활성화 없음
+     * EN: No automatic activation
+     */
+<span class="fc" id="L43">    NONE(&quot;none&quot;);</span>
+
+    private final String value;
+
+<span class="fc" id="L47">    XlinkActuate(String value) {</span>
+<span class="fc" id="L48">        this.value = value;</span>
+<span class="fc" id="L49">    }</span>
+
+    /**
+     * DTD 속성 값 / DTD attribute value
+     *
+     * @return xlink:actuate 값 (예: &quot;onRequest&quot;)
+     */
+    public String getValue() {
+<span class="fc" id="L57">        return value;</span>
+    }
+
+    /**
+     * 문자열에서 XlinkActuate 변환 / Convert from string to XlinkActuate
+     *
+     * KR: XML에서 파싱한 문자열을 XlinkActuate enum으로 변환.
+     *     매칭되는 값이 없으면 null 반환.
+     * EN: Converts parsed string from XML to XlinkActuate enum.
+     *     Returns null if no matching value found.
+     *
+     * @param value xlink:actuate 속성 값 / xlink:actuate attribute value
+     * @return 해당하는 XlinkActuate, 없으면 null / Corresponding XlinkActuate, or null if not found
+     */
+    public static XlinkActuate fromValue(String value) {
+<span class="fc bfc" id="L72" title="All 4 branches covered.">        if (value == null || value.trim().isEmpty()) {</span>
+<span class="fc" id="L73">            return null;</span>
+        }
+
+<span class="fc" id="L76">        String normalized = value.trim();</span>
+<span class="fc bfc" id="L77" title="All 2 branches covered.">        for (XlinkActuate actuate : values()) {</span>
+<span class="fc bfc" id="L78" title="All 2 branches covered.">            if (actuate.value.equalsIgnoreCase(normalized)) {</span>
+<span class="fc" id="L79">                return actuate;</span>
+            }
+        }
+
+<span class="fc" id="L83">        return null;</span>
+    }
+
+    @Override
+    public String toString() {
+<span class="fc" id="L88">        return value;</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.9.202303310957</span></div></body></html>

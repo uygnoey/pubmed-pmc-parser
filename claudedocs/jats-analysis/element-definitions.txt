@@ -1,0 +1,20 @@
+<!ELEMENT  article      %article-full-model;                         >
+<!ATTLIST  article
+--
+<!ELEMENT  front        %front-model;                                >
+<!ATTLIST  front
+--
+<!ELEMENT  body         %body-model;                                 >
+<!ATTLIST  body
+--
+<!ELEMENT  back         %back-model;                                 >
+<!ATTLIST  back
+--
+<!ELEMENT  sub-article  %sub-article-model;                          >
+<!ATTLIST  sub-article
+--
+<!ELEMENT  front-stub   %front-stub-model;                           >
+<!ATTLIST  front-stub
+--
+<!ELEMENT  response     %article-short-model;                        >
+<!ATTLIST  response

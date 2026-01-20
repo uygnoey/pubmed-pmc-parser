@@ -1,0 +1,47 @@
+<!ATTLIST  article
+             %article-atts;                                          >
+
+
+<!-- ============================================================= -->
+<!--                    FRONT MATTER ELEMENTS                      -->
+--
+<!ATTLIST  front
+             %front-atts;                                            >
+
+
+<!-- ============================================================= -->
+<!--                    BODY ELEMENTS                              -->
+--
+<!ATTLIST  body
+             %body-atts;                                             >
+
+
+<!-- ============================================================= -->
+<!--                    BACK MATTER ELEMENTS                       -->
+--
+<!ATTLIST  back
+             %back-atts;                                             >
+
+
+<!-- ============================================================= -->
+<!--                    SUB-ARTICLE                                -->
+--
+<!ATTLIST  sub-article
+             %sub-article-atts;                                      >
+
+
+<!--                    FRONT MODEL STUB                           -->
+<!--                    Content model for the <front-stub> element,
+--
+<!ATTLIST  front-stub
+             %front-stub-atts;                                       >
+
+
+<!-- ============================================================= -->
+<!--                    RESPONSE ELEMENTS                          -->
+--
+<!ATTLIST  response
+             %response-atts;                                         >
+
+
+<!-- ================== End Journal Archiving and Interchange DTD  -->

@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="ko"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>TableRules.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">pmc</a> &gt; <a href="index.source.html" class="el_package">com.brillianttiger.bio.parser.pmc.model</a> &gt; <span class="el_source">TableRules.java</span></div><h1>TableRules.java</h1><pre class="source lang-java linenums">package com.brillianttiger.bio.parser.pmc.model;
+
+/**
+ * TableRules / 테이블 규칙선
+ *
+ * KR: XHTML table rules 속성 값을 나타내는 열거형.
+ *     테이블 내부 규칙선(셀 간 구분선)의 표시 방식을 지정.
+ * EN: Enumeration representing XHTML table rules attribute values.
+ *     Specifies how internal rules (cell dividers) are displayed.
+ *
+ * DTD: rules (none | groups | rows | cols | all) #IMPLIED
+ *
+ * Reference: https://jats.nlm.nih.gov/archiving/tag-library/1.4/attribute/rules.html
+ */
+<span class="fc" id="L15">public enum TableRules {</span>
+
+    /**
+     * 규칙선 없음 / No rules
+     * KR: 내부 규칙선 없음
+     * EN: No internal rules
+     */
+<span class="fc" id="L22">    NONE(&quot;none&quot;),</span>
+
+    /**
+     * 그룹 간 규칙선 / Rules between groups
+     * KR: thead, tbody, tfoot 그룹 간 규칙선만 표시
+     * EN: Rules between thead, tbody, tfoot groups only
+     */
+<span class="fc" id="L29">    GROUPS(&quot;groups&quot;),</span>
+
+    /**
+     * 행 간 규칙선 / Rules between rows
+     * KR: 행 간 수평 규칙선만 표시
+     * EN: Horizontal rules between rows only
+     */
+<span class="fc" id="L36">    ROWS(&quot;rows&quot;),</span>
+
+    /**
+     * 열 간 규칙선 / Rules between columns
+     * KR: 열 간 수직 규칙선만 표시
+     * EN: Vertical rules between columns only
+     */
+<span class="fc" id="L43">    COLS(&quot;cols&quot;),</span>
+
+    /**
+     * 모든 규칙선 / All rules
+     * KR: 모든 행과 열 간 규칙선 표시
+     * EN: Rules between all rows and columns
+     */
+<span class="fc" id="L50">    ALL(&quot;all&quot;);</span>
+
+    private final String value;
+
+<span class="fc" id="L54">    TableRules(String value) {</span>
+<span class="fc" id="L55">        this.value = value;</span>
+<span class="fc" id="L56">    }</span>
+
+    /**
+     * DTD 속성 값 / DTD attribute value
+     *
+     * @return rules 값 (예: &quot;all&quot;)
+     */
+    public String getValue() {
+<span class="fc" id="L64">        return value;</span>
+    }
+
+    /**
+     * 문자열에서 TableRules 변환 / Convert from string to TableRules
+     *
+     * KR: XML에서 파싱한 문자열을 TableRules enum으로 변환.
+     *     매칭되는 값이 없으면 null 반환 (선택적 속성).
+     * EN: Converts parsed string from XML to TableRules enum.
+     *     Returns null if no matching value found (optional attribute).
+     *
+     * @param value rules 속성 값 / rules attribute value
+     * @return 해당하는 TableRules, 없으면 null / Corresponding TableRules, or null if not found
+     */
+    public static TableRules fromValue(String value) {
+<span class="fc bfc" id="L79" title="All 4 branches covered.">        if (value == null || value.trim().isEmpty()) {</span>
+<span class="fc" id="L80">            return null;</span>
+        }
+
+<span class="fc" id="L83">        String normalized = value.trim().toLowerCase();</span>
+<span class="fc bfc" id="L84" title="All 2 branches covered.">        for (TableRules rules : values()) {</span>
+<span class="fc bfc" id="L85" title="All 2 branches covered.">            if (rules.value.equals(normalized)) {</span>
+<span class="fc" id="L86">                return rules;</span>
+            }
+        }
+
+<span class="fc" id="L90">        return null;</span>
+    }
+
+    @Override
+    public String toString() {
+<span class="fc" id="L95">        return value;</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.9.202303310957</span></div></body></html>

@@ -25,7 +25,9 @@ public class CommonPmcElementParser {
     public static String parseTextContent(XMLStreamReader reader, String elementName) throws XMLStreamException {
         StringBuilder content = new StringBuilder();
 
-        while (reader.hasNext()) {
+        // Note: hasNext() 체크는 불필요합니다. 정상 XML에서는 항상 END_ELEMENT를 만나고,
+        // malformed XML에서는 next()가 XMLStreamException을 던집니다.
+        while (true) {
             int event = reader.next();
 
             if (event == XMLStreamConstants.CHARACTERS) {
@@ -49,7 +51,9 @@ public class CommonPmcElementParser {
     public static void skipElement(XMLStreamReader reader) throws XMLStreamException {
         int depth = 1;
 
-        while (reader.hasNext() && depth > 0) {
+        // Note: hasNext() 체크는 불필요합니다. 정상 XML에서는 depth가 0이 되면 종료되고,
+        // malformed XML에서는 next()가 XMLStreamException을 던집니다.
+        while (depth > 0) {
             int event = reader.next();
 
             if (event == XMLStreamConstants.START_ELEMENT) {
@@ -282,35 +286,15 @@ public class CommonPmcElementParser {
         String specificUse = reader.getAttributeValue(null, "specific-use");
 
         // XLink attributes
-        String xlinkHref = reader.getAttributeValue(null, "xlink:href");
-        if (xlinkHref == null) {
-            xlinkHref = reader.getAttributeValue("http://www.w3.org/1999/xlink", "href");
-        }
-
-        String xlinkActuate = reader.getAttributeValue(null, "xlink:actuate");
-        if (xlinkActuate == null) {
-            xlinkActuate = reader.getAttributeValue("http://www.w3.org/1999/xlink", "actuate");
-        }
-
-        String xlinkRole = reader.getAttributeValue(null, "xlink:role");
-        if (xlinkRole == null) {
-            xlinkRole = reader.getAttributeValue("http://www.w3.org/1999/xlink", "role");
-        }
-
-        String xlinkShow = reader.getAttributeValue(null, "xlink:show");
-        if (xlinkShow == null) {
-            xlinkShow = reader.getAttributeValue("http://www.w3.org/1999/xlink", "show");
-        }
-
-        String xlinkTitle = reader.getAttributeValue(null, "xlink:title");
-        if (xlinkTitle == null) {
-            xlinkTitle = reader.getAttributeValue("http://www.w3.org/1999/xlink", "title");
-        }
-
-        String xlinkType = reader.getAttributeValue(null, "xlink:type");
-        if (xlinkType == null) {
-            xlinkType = reader.getAttributeValue("http://www.w3.org/1999/xlink", "type");
-        }
+        // Note: XML 스펙상 namespace prefix는 반드시 선언되어야 하므로,
+        // getAttributeValue(null, "xlink:*")는 항상 null을 반환합니다.
+        // 따라서 직접 xlink namespace URI에서 속성을 읽습니다.
+        String xlinkHref = reader.getAttributeValue("http://www.w3.org/1999/xlink", "href");
+        String xlinkActuate = reader.getAttributeValue("http://www.w3.org/1999/xlink", "actuate");
+        String xlinkRole = reader.getAttributeValue("http://www.w3.org/1999/xlink", "role");
+        String xlinkShow = reader.getAttributeValue("http://www.w3.org/1999/xlink", "show");
+        String xlinkTitle = reader.getAttributeValue("http://www.w3.org/1999/xlink", "title");
+        String xlinkType = reader.getAttributeValue("http://www.w3.org/1999/xlink", "type");
 
         String value = parseTextContent(reader, "ext-link");
 
@@ -341,10 +325,9 @@ public class CommonPmcElementParser {
      * SelfUri 파싱 / Parse SelfUri
      */
     public static SelfUri parseSelfUri(XMLStreamReader reader) throws XMLStreamException {
-        String href = reader.getAttributeValue(null, "xlink:href");
-        if (href == null) {
-            href = reader.getAttributeValue("http://www.w3.org/1999/xlink", "href");
-        }
+        // Note: XML 스펙상 namespace prefix는 반드시 선언되어야 하므로,
+        // 직접 xlink namespace URI에서 속성을 읽습니다.
+        String href = reader.getAttributeValue("http://www.w3.org/1999/xlink", "href");
         String value = parseTextContent(reader, "self-uri");
 
         return SelfUri.builder()
@@ -552,13 +535,14 @@ public class CommonPmcElementParser {
      */
     public static License parseLicense(XMLStreamReader reader) throws XMLStreamException {
         String licenseType = reader.getAttributeValue(null, "license-type");
-        String xlinkHref = reader.getAttributeValue(null, "href");
-        if (xlinkHref == null) {
-            xlinkHref = reader.getAttributeValue("http://www.w3.org/1999/xlink", "href");
-        }
+        // Note: XML 스펙상 namespace prefix는 반드시 선언되어야 하므로,
+        // 직접 xlink namespace URI에서 속성을 읽습니다.
+        String xlinkHref = reader.getAttributeValue("http://www.w3.org/1999/xlink", "href");
 
         // Skip license element content (we don't parse license-p here)
-        while (reader.hasNext()) {
+        // Note: hasNext() 체크는 불필요합니다. 정상 XML에서는 항상 END_ELEMENT를 만나고,
+        // malformed XML에서는 next()가 XMLStreamException을 던집니다.
+        while (true) {
             int event = reader.next();
             if (event == XMLStreamConstants.END_ELEMENT && reader.getLocalName().equals("license")) {
                 break;

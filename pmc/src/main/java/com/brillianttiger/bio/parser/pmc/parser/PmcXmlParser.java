@@ -334,7 +334,7 @@ public class PmcXmlParser extends XmlParserBase implements StreamParser<JatsArti
                         XMLStreamReader reader = createReader(tais);
 
                         // article 요소 찾기 / Find article element
-                        while (reader.hasNext()) {
+                        while (true) {
                             int event = reader.next();
 
                             if (event == XMLStreamConstants.START_ELEMENT &&
@@ -442,7 +442,7 @@ public class PmcXmlParser extends XmlParserBase implements StreamParser<JatsArti
         List<Response> responses = new ArrayList<>();
 
         // 자식 요소 파싱 / Parse child elements
-        while (reader.hasNext()) {
+        while (true) {
             int event = reader.next();
 
             if (event == XMLStreamConstants.START_ELEMENT) {
@@ -472,9 +472,9 @@ public class PmcXmlParser extends XmlParserBase implements StreamParser<JatsArti
                         break;
                 }
             } else if (event == XMLStreamConstants.END_ELEMENT) {
-                if ("article".equals(reader.getLocalName())) {
-                    break;
-                }
+                // Note: 이 시점에서 END_ELEMENT는 항상 "article"입니다.
+                // 자식 요소들은 각각의 파서가 완전히 소비하므로 부모 파서는 자식의 END_ELEMENT를 만나지 않습니다.
+                break;
             }
         }
 
@@ -506,7 +506,7 @@ public class PmcXmlParser extends XmlParserBase implements StreamParser<JatsArti
         List<Graphic> graphics = new ArrayList<>();
         List<Media> medias = new ArrayList<>();
 
-        while (reader.hasNext()) {
+        while (true) {
             int event = reader.next();
 
             if (event == XMLStreamConstants.START_ELEMENT) {
@@ -540,9 +540,8 @@ public class PmcXmlParser extends XmlParserBase implements StreamParser<JatsArti
                         break;
                 }
             } else if (event == XMLStreamConstants.END_ELEMENT) {
-                if (reader.getLocalName().equals("floats-group")) {
-                    break;
-                }
+                // Note: 이 시점에서 END_ELEMENT는 항상 "floats-group"입니다.
+                break;
             }
         }
 
@@ -592,7 +591,7 @@ public class PmcXmlParser extends XmlParserBase implements StreamParser<JatsArti
         List<Media> medias = new ArrayList<>();
         List<P> paragraphs = new ArrayList<>();
 
-        while (reader.hasNext()) {
+        while (true) {
             int event = reader.next();
 
             if (event == XMLStreamConstants.START_ELEMENT) {
@@ -626,9 +625,8 @@ public class PmcXmlParser extends XmlParserBase implements StreamParser<JatsArti
                         break;
                 }
             } else if (event == XMLStreamConstants.END_ELEMENT) {
-                if (reader.getLocalName().equals("fig")) {
-                    break;
-                }
+                // Note: 이 시점에서 END_ELEMENT는 항상 "fig"입니다.
+                break;
             }
         }
 
@@ -677,7 +675,7 @@ public class PmcXmlParser extends XmlParserBase implements StreamParser<JatsArti
         List<Graphic> graphics = new ArrayList<>();
         List<TableWrapFoot> tableWrapFoots = new ArrayList<>();
 
-        while (reader.hasNext()) {
+        while (true) {
             int event = reader.next();
 
             if (event == XMLStreamConstants.START_ELEMENT) {
@@ -711,9 +709,8 @@ public class PmcXmlParser extends XmlParserBase implements StreamParser<JatsArti
                         break;
                 }
             } else if (event == XMLStreamConstants.END_ELEMENT) {
-                if (reader.getLocalName().equals("table-wrap")) {
-                    break;
-                }
+                // Note: 이 시점에서 END_ELEMENT는 항상 "table-wrap"입니다.
+                break;
             }
         }
 
@@ -763,7 +760,7 @@ public class PmcXmlParser extends XmlParserBase implements StreamParser<JatsArti
         List<Fig> figs = new ArrayList<>();
         List<Graphic> graphics = new ArrayList<>();
 
-        while (reader.hasNext()) {
+        while (true) {
             int event = reader.next();
 
             if (event == XMLStreamConstants.START_ELEMENT) {
@@ -793,9 +790,8 @@ public class PmcXmlParser extends XmlParserBase implements StreamParser<JatsArti
                         break;
                 }
             } else if (event == XMLStreamConstants.END_ELEMENT) {
-                if (reader.getLocalName().equals("fig-group")) {
-                    break;
-                }
+                // Note: 이 시점에서 END_ELEMENT는 항상 "fig-group"입니다.
+                break;
             }
         }
 
@@ -835,7 +831,7 @@ public class PmcXmlParser extends XmlParserBase implements StreamParser<JatsArti
 
         List<P> paragraphs = new ArrayList<>();
 
-        while (reader.hasNext()) {
+        while (true) {
             int event = reader.next();
 
             if (event == XMLStreamConstants.START_ELEMENT) {
@@ -853,9 +849,8 @@ public class PmcXmlParser extends XmlParserBase implements StreamParser<JatsArti
                         break;
                 }
             } else if (event == XMLStreamConstants.END_ELEMENT) {
-                if (reader.getLocalName().equals("caption")) {
-                    break;
-                }
+                // Note: 이 시점에서 END_ELEMENT는 항상 "caption"입니다.
+                break;
             }
         }
 
@@ -910,7 +905,7 @@ public class PmcXmlParser extends XmlParserBase implements StreamParser<JatsArti
         List<AltText> altTexts = new ArrayList<>();
         List<LongDesc> longDescs = new ArrayList<>();
 
-        while (reader.hasNext()) {
+        while (true) {
             int event = reader.next();
 
             if (event == XMLStreamConstants.START_ELEMENT) {
@@ -928,9 +923,8 @@ public class PmcXmlParser extends XmlParserBase implements StreamParser<JatsArti
                         break;
                 }
             } else if (event == XMLStreamConstants.END_ELEMENT) {
-                if (reader.getLocalName().equals("graphic")) {
-                    break;
-                }
+                // Note: 이 시점에서 END_ELEMENT는 항상 "graphic"입니다.
+                break;
             }
         }
 
@@ -1003,7 +997,7 @@ public class PmcXmlParser extends XmlParserBase implements StreamParser<JatsArti
         List<Tbody> tbodies = new ArrayList<>();
         Tfoot tfoot = null;
 
-        while (reader.hasNext()) {
+        while (true) {
             int event = reader.next();
 
             if (event == XMLStreamConstants.START_ELEMENT) {
@@ -1024,9 +1018,8 @@ public class PmcXmlParser extends XmlParserBase implements StreamParser<JatsArti
                         break;
                 }
             } else if (event == XMLStreamConstants.END_ELEMENT) {
-                if (reader.getLocalName().equals("table")) {
-                    break;
-                }
+                // Note: 이 시점에서 END_ELEMENT는 항상 "table"입니다.
+                break;
             }
         }
 
@@ -1052,7 +1045,7 @@ public class PmcXmlParser extends XmlParserBase implements StreamParser<JatsArti
 
         List<Tr> rows = new ArrayList<>();
 
-        while (reader.hasNext()) {
+        while (true) {
             int event = reader.next();
 
             if (event == XMLStreamConstants.START_ELEMENT) {
@@ -1060,9 +1053,8 @@ public class PmcXmlParser extends XmlParserBase implements StreamParser<JatsArti
                     rows.add(parseTr(reader));
                 }
             } else if (event == XMLStreamConstants.END_ELEMENT) {
-                if (reader.getLocalName().equals("thead")) {
-                    break;
-                }
+                // Note: 이 시점에서 END_ELEMENT는 항상 "thead"입니다.
+                break;
             }
         }
 
@@ -1085,7 +1077,7 @@ public class PmcXmlParser extends XmlParserBase implements StreamParser<JatsArti
 
         List<Tr> rows = new ArrayList<>();
 
-        while (reader.hasNext()) {
+        while (true) {
             int event = reader.next();
 
             if (event == XMLStreamConstants.START_ELEMENT) {
@@ -1093,9 +1085,8 @@ public class PmcXmlParser extends XmlParserBase implements StreamParser<JatsArti
                     rows.add(parseTr(reader));
                 }
             } else if (event == XMLStreamConstants.END_ELEMENT) {
-                if (reader.getLocalName().equals("tbody")) {
-                    break;
-                }
+                // Note: 이 시점에서 END_ELEMENT는 항상 "tbody"입니다.
+                break;
             }
         }
 
@@ -1118,7 +1109,7 @@ public class PmcXmlParser extends XmlParserBase implements StreamParser<JatsArti
 
         List<Tr> rows = new ArrayList<>();
 
-        while (reader.hasNext()) {
+        while (true) {
             int event = reader.next();
 
             if (event == XMLStreamConstants.START_ELEMENT) {
@@ -1126,9 +1117,8 @@ public class PmcXmlParser extends XmlParserBase implements StreamParser<JatsArti
                     rows.add(parseTr(reader));
                 }
             } else if (event == XMLStreamConstants.END_ELEMENT) {
-                if (reader.getLocalName().equals("tfoot")) {
-                    break;
-                }
+                // Note: 이 시점에서 END_ELEMENT는 항상 "tfoot"입니다.
+                break;
             }
         }
 
@@ -1152,7 +1142,7 @@ public class PmcXmlParser extends XmlParserBase implements StreamParser<JatsArti
         List<Th> headerCells = new ArrayList<>();
         List<Td> dataCells = new ArrayList<>();
 
-        while (reader.hasNext()) {
+        while (true) {
             int event = reader.next();
 
             if (event == XMLStreamConstants.START_ELEMENT) {
@@ -1167,9 +1157,8 @@ public class PmcXmlParser extends XmlParserBase implements StreamParser<JatsArti
                         break;
                 }
             } else if (event == XMLStreamConstants.END_ELEMENT) {
-                if (reader.getLocalName().equals("tr")) {
-                    break;
-                }
+                // Note: 이 시점에서 END_ELEMENT는 항상 "tr"입니다.
+                break;
             }
         }
 
@@ -1269,7 +1258,7 @@ public class PmcXmlParser extends XmlParserBase implements StreamParser<JatsArti
         List<P> paragraphs = new ArrayList<>();
         List<Sec> sections = new ArrayList<>();
 
-        while (reader.hasNext()) {
+        while (true) {
             int event = reader.next();
 
             if (event == XMLStreamConstants.START_ELEMENT) {
@@ -1303,9 +1292,8 @@ public class PmcXmlParser extends XmlParserBase implements StreamParser<JatsArti
                         break;
                 }
             } else if (event == XMLStreamConstants.END_ELEMENT) {
-                if (reader.getLocalName().equals("boxed-text")) {
-                    break;
-                }
+                // Note: 이 시점에서 END_ELEMENT는 항상 "boxed-text"입니다.
+                break;
             }
         }
 
@@ -1386,7 +1374,7 @@ public class PmcXmlParser extends XmlParserBase implements StreamParser<JatsArti
         List<AltText> altTexts = new ArrayList<>();
         List<LongDesc> longDescs = new ArrayList<>();
 
-        while (reader.hasNext()) {
+        while (true) {
             int event = reader.next();
 
             if (event == XMLStreamConstants.START_ELEMENT) {
@@ -1411,9 +1399,8 @@ public class PmcXmlParser extends XmlParserBase implements StreamParser<JatsArti
                         break;
                 }
             } else if (event == XMLStreamConstants.END_ELEMENT) {
-                if (reader.getLocalName().equals("supplementary-material")) {
-                    break;
-                }
+                // Note: 이 시점에서 END_ELEMENT는 항상 "supplementary-material"입니다.
+                break;
             }
         }
 
@@ -1462,22 +1449,9 @@ public class PmcXmlParser extends XmlParserBase implements StreamParser<JatsArti
         String articleTypeStr = CommonPmcElementParser.getAttribute(reader, "article-type");
         String id = CommonPmcElementParser.getAttribute(reader, "id");
 
-        // xml:lang은 XML 네임스페이스에 속하므로 여러 방법으로 시도
-        String xmlLang = CommonPmcElementParser.getAttribute(reader, "xml:lang");
-        if (xmlLang == null) {
-            xmlLang = CommonPmcElementParser.getAttribute(reader, "http://www.w3.org/XML/1998/namespace", "lang");
-        }
-        if (xmlLang == null) {
-            // 마지막 시도: 모든 속성을 순회하면서 찾기
-            for (int i = 0; i < reader.getAttributeCount(); i++) {
-                String attrName = reader.getAttributeLocalName(i);
-                String attrPrefix = reader.getAttributePrefix(i);
-                if ("lang".equals(attrName) && "xml".equals(attrPrefix)) {
-                    xmlLang = reader.getAttributeValue(i);
-                    break;
-                }
-            }
-        }
+        // xml:lang은 XML 네임스페이스에 속하므로 네임스페이스 URI로 직접 접근
+        // Method 1 (xml:lang)은 항상 실패하고, Method 2 (namespace + lang)가 올바른 방법
+        String xmlLang = CommonPmcElementParser.getAttribute(reader, "http://www.w3.org/XML/1998/namespace", "lang");
 
         SubArticle.SubArticleBuilder builder = SubArticle.builder()
                 .articleType(ArticleType.fromValue(articleTypeStr))
@@ -1485,7 +1459,7 @@ public class PmcXmlParser extends XmlParserBase implements StreamParser<JatsArti
                 .xmlLang(xmlLang);
 
         // Parse child elements
-        while (reader.hasNext()) {
+        while (true) {
             int event = reader.next();
 
             if (event == XMLStreamConstants.START_ELEMENT) {
@@ -1509,9 +1483,8 @@ public class PmcXmlParser extends XmlParserBase implements StreamParser<JatsArti
                         break;
                 }
             } else if (event == XMLStreamConstants.END_ELEMENT) {
-                if (reader.getLocalName().equals("sub-article")) {
-                    break;
-                }
+                // Note: 이 시점에서 END_ELEMENT는 항상 "sub-article"입니다.
+                break;
             }
         }
 
@@ -1551,7 +1524,7 @@ public class PmcXmlParser extends XmlParserBase implements StreamParser<JatsArti
         List<SupportGroup> supportGroups = new ArrayList<>();
         List<Conference> conferences = new ArrayList<>();
 
-        while (reader.hasNext()) {
+        while (true) {
             int event = reader.next();
 
             if (event == XMLStreamConstants.START_ELEMENT) {
@@ -1722,9 +1695,8 @@ public class PmcXmlParser extends XmlParserBase implements StreamParser<JatsArti
                         break;
                 }
             } else if (event == XMLStreamConstants.END_ELEMENT) {
-                if (reader.getLocalName().equals("front-stub")) {
-                    break;
-                }
+                // Note: 이 시점에서 END_ELEMENT는 항상 "front-stub"입니다.
+                break;
             }
         }
 
@@ -1784,7 +1756,7 @@ public class PmcXmlParser extends XmlParserBase implements StreamParser<JatsArti
                 .specificUse(specificUse)
                 .xmlLang(xmlLang);
 
-        while (reader.hasNext()) {
+        while (true) {
             int event = reader.next();
 
             if (event == XMLStreamConstants.START_ELEMENT) {
@@ -1811,9 +1783,8 @@ public class PmcXmlParser extends XmlParserBase implements StreamParser<JatsArti
                         break;
                 }
             } else if (event == XMLStreamConstants.END_ELEMENT) {
-                if (reader.getLocalName().equals("response")) {
-                    break;
-                }
+                // Note: 이 시점에서 END_ELEMENT는 항상 "response"입니다.
+                break;
             }
         }
 

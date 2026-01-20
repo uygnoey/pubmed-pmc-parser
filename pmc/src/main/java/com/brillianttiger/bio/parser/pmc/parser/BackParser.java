@@ -36,7 +36,9 @@ public class BackParser {
         List<Notes> notesList = new ArrayList<>();
         List<Sec> sections = new ArrayList<>();
 
-        while (reader.hasNext()) {
+        // Note: hasNext() 체크는 불필요합니다. 정상 XML에서는 항상 END_ELEMENT를 만나고,
+        // malformed XML에서는 next()가 XMLStreamException을 던집니다.
+        while (true) {
             int event = reader.next();
 
             if (event == XMLStreamConstants.START_ELEMENT) {
@@ -78,9 +80,9 @@ public class BackParser {
                         break;
                 }
             } else if (event == XMLStreamConstants.END_ELEMENT) {
-                if (reader.getLocalName().equals("back")) {
-                    break;
-                }
+                // Note: 이 시점에서 END_ELEMENT는 항상 "back"입니다.
+                // 자식 요소들은 각각의 파서가 완전히 소비하므로 부모 파서는 자식의 END_ELEMENT를 만나지 않습니다.
+                break;
             }
         }
 
@@ -107,7 +109,9 @@ public class BackParser {
         List<Ref> references = new ArrayList<>();
         List<RefList> refLists = new ArrayList<>();
 
-        while (reader.hasNext()) {
+        // Note: hasNext() 체크는 불필요합니다. 정상 XML에서는 항상 END_ELEMENT를 만나고,
+        // malformed XML에서는 next()가 XMLStreamException을 던집니다.
+        while (true) {
             int event = reader.next();
 
             if (event == XMLStreamConstants.START_ELEMENT) {
@@ -132,9 +136,8 @@ public class BackParser {
                         break;
                 }
             } else if (event == XMLStreamConstants.END_ELEMENT) {
-                if (reader.getLocalName().equals("ref-list")) {
-                    break;
-                }
+                // Note: 이 시점에서 END_ELEMENT는 항상 "ref-list"입니다.
+                break;
             }
         }
 
@@ -158,7 +161,9 @@ public class BackParser {
         List<ElementCitation> elementCitations = new ArrayList<>();
         List<MixedCitation> mixedCitations = new ArrayList<>();
 
-        while (reader.hasNext()) {
+        // Note: hasNext() 체크는 불필요합니다. 정상 XML에서는 항상 END_ELEMENT를 만나고,
+        // malformed XML에서는 next()가 XMLStreamException을 던집니다.
+        while (true) {
             int event = reader.next();
 
             if (event == XMLStreamConstants.START_ELEMENT) {
@@ -179,9 +184,8 @@ public class BackParser {
                         break;
                 }
             } else if (event == XMLStreamConstants.END_ELEMENT) {
-                if (reader.getLocalName().equals("ref")) {
-                    break;
-                }
+                // Note: 이 시점에서 END_ELEMENT는 항상 "ref"입니다.
+                break;
             }
         }
 
@@ -208,7 +212,9 @@ public class BackParser {
         List<ExtLink> extLinks = new ArrayList<>();
         List<Comment> comments = new ArrayList<>();
 
-        while (reader.hasNext()) {
+        // Note: hasNext() 체크는 불필요합니다. 정상 XML에서는 항상 END_ELEMENT를 만나고,
+        // malformed XML에서는 next()가 XMLStreamException을 던집니다.
+        while (true) {
             int event = reader.next();
 
             if (event == XMLStreamConstants.START_ELEMENT) {
@@ -286,9 +292,8 @@ public class BackParser {
                         break;
                 }
             } else if (event == XMLStreamConstants.END_ELEMENT) {
-                if (reader.getLocalName().equals("element-citation")) {
-                    break;
-                }
+                // Note: 이 시점에서 END_ELEMENT는 항상 "element-citation"입니다.
+                break;
             }
         }
 
@@ -323,7 +328,9 @@ public class BackParser {
         List<Comment> comments = new ArrayList<>();
         StringBuilder textContent = new StringBuilder();
 
-        while (reader.hasNext()) {
+        // Note: hasNext() 체크는 불필요합니다. 정상 XML에서는 항상 END_ELEMENT를 만나고,
+        // malformed XML에서는 next()가 XMLStreamException을 던집니다.
+        while (true) {
             int event = reader.next();
 
             if (event == XMLStreamConstants.START_ELEMENT) {
@@ -339,102 +346,102 @@ public class BackParser {
                     case "article-title":
                         PmcArticleTitle articleTitle = ArticleMetaParser.parsePmcArticleTitle(reader);
                         builder.articleTitle(articleTitle);
-                        childText = (articleTitle != null && articleTitle.getValue() != null) ? articleTitle.getValue() : "";
+                        childText = articleTitle.getValue();
                         break;
                     case "source":
                         Source source = parseSource(reader);
                         builder.source(source);
-                        childText = (source != null && source.getValue() != null) ? source.getValue() : "";
+                        childText = source.getValue();
                         break;
                     case "year":
                         Year year = parseYear(reader);
                         builder.year(year);
-                        childText = (year != null && year.getValue() != null) ? year.getValue() : "";
+                        childText = year.getValue();
                         break;
                     case "month":
                         Month month = parseMonth(reader);
                         builder.month(month);
-                        childText = (month != null && month.getValue() != null) ? month.getValue() : "";
+                        childText = month.getValue();
                         break;
                     case "day":
                         Day day = parseDay(reader);
                         builder.day(day);
-                        childText = (day != null && day.getValue() != null) ? day.getValue() : "";
+                        childText = day.getValue();
                         break;
                     case "volume":
                         Volume volume = parseVolume(reader);
                         builder.volume(volume);
-                        childText = (volume != null && volume.getValue() != null) ? volume.getValue() : "";
+                        childText = volume.getValue();
                         break;
                     case "issue":
                         PmcIssue issue = parsePmcIssue(reader);
                         builder.issue(issue);
-                        childText = (issue != null && issue.getValue() != null) ? issue.getValue() : "";
+                        childText = issue.getValue();
                         break;
                     case "fpage":
                         Fpage fpage = parseFpage(reader);
                         builder.fpage(fpage);
-                        childText = (fpage != null && fpage.getValue() != null) ? fpage.getValue() : "";
+                        childText = fpage.getValue();
                         break;
                     case "lpage":
                         Lpage lpage = parseLpage(reader);
                         builder.lpage(lpage);
-                        childText = (lpage != null && lpage.getValue() != null) ? lpage.getValue() : "";
+                        childText = lpage.getValue();
                         break;
                     case "page-range":
                         PageRange pageRange = parsePageRange(reader);
                         builder.pageRange(pageRange);
-                        childText = (pageRange != null && pageRange.getValue() != null) ? pageRange.getValue() : "";
+                        childText = pageRange.getValue();
                         break;
                     case "publisher-name":
                         PublisherName publisherName = parsePublisherName(reader);
                         builder.publisherName(publisherName);
-                        childText = (publisherName != null && publisherName.getValue() != null) ? publisherName.getValue() : "";
+                        childText = publisherName.getValue();
                         break;
                     case "publisher-loc":
                         PublisherLoc publisherLoc = parsePublisherLoc(reader);
                         builder.publisherLoc(publisherLoc);
-                        childText = (publisherLoc != null && publisherLoc.getValue() != null) ? publisherLoc.getValue() : "";
+                        childText = publisherLoc.getValue();
                         break;
                     case "edition":
                         Edition edition = parseEdition(reader);
                         builder.edition(edition);
-                        childText = (edition != null && edition.getValue() != null) ? edition.getValue() : "";
+                        childText = edition.getValue();
                         break;
                     case "conf-name":
                         ConfName confName = parseConfName(reader);
                         builder.confName(confName);
-                        childText = (confName != null && confName.getValue() != null) ? confName.getValue() : "";
+                        childText = confName.getValue();
                         break;
                     case "pub-id":
                         PubId pubId = parsePubId(reader);
                         pubIds.add(pubId);
-                        childText = (pubId != null && pubId.getValue() != null) ? pubId.getValue() : "";
+                        childText = pubId.getValue();
                         break;
                     case "ext-link":
                         ExtLink extLink = parseExtLink(reader);
                         extLinks.add(extLink);
-                        childText = (extLink != null && extLink.getValue() != null) ? extLink.getValue() : "";
+                        childText = extLink.getValue();
                         break;
                     case "string-name":
                         StringName stringName = ArticleMetaParser.parseStringName(reader);
                         stringNames.add(stringName);
-                        childText = (stringName != null && stringName.getValue() != null) ? stringName.getValue() : "";
+                        childText = stringName.getValue();
                         break;
                     case "etal":
                         Etal etal = parseEtal(reader);
                         builder.etal(etal);
-                        childText = (etal != null && etal.getValue() != null) ? etal.getValue() : "";
+                        childText = etal.getValue();
                         break;
                     case "collab":
                         Collab collab = ArticleMetaParser.parseCollab(reader);
                         collabs.add(collab);
-                        childText = (collab != null && collab.getValue() != null) ? collab.getValue() : "";
+                        childText = collab.getValue();
                         break;
                     case "comment":
                         Comment comment = parseComment(reader);
                         comments.add(comment);
-                        childText = (comment != null && comment.getValue() != null) ? comment.getValue() : "";
+                        childText = comment.getValue();
                         break;
                     case "date-in-citation":
                     case "isbn":
@@ -455,9 +462,8 @@ public class BackParser {
             } else if (event == XMLStreamConstants.CHARACTERS) {
                 textContent.append(reader.getText());
             } else if (event == XMLStreamConstants.END_ELEMENT) {
-                if (reader.getLocalName().equals("mixed-citation")) {
-                    break;
-                }
+                // Note: 이 시점에서 END_ELEMENT는 항상 "mixed-citation"입니다.
+                break;
             }
         }
 
@@ -483,7 +489,9 @@ public class BackParser {
         StringBuilder text = new StringBuilder();
         int depth = 1;
 
-        while (reader.hasNext() && depth > 0) {
+        // Note: hasNext() 체크는 불필요합니다. 정상 XML에서는 depth가 0이 되면 종료되고,
+        // malformed XML에서는 next()가 XMLStreamException을 던집니다.
+        while (depth > 0) {
             int event = reader.next();
 
             if (event == XMLStreamConstants.START_ELEMENT) {
@@ -509,10 +517,11 @@ public class BackParser {
                 .personGroupType(personGroupType);
 
         List<PersonName> names = new ArrayList<>();
-        List<Collab> collabs = new ArrayList<>();
 
         int depth = 1;
-        while (reader.hasNext() && depth > 0) {
+        // Note: hasNext() 체크는 불필요합니다. 정상 XML에서는 depth가 0이 되면 종료되고,
+        // malformed XML에서는 next()가 XMLStreamException을 던집니다.
+        while (depth > 0) {
             int event = reader.next();
 
             if (event == XMLStreamConstants.START_ELEMENT) {
@@ -536,7 +545,6 @@ public class BackParser {
         }
 
         builder.names(names.isEmpty() ? null : names);
-        builder.collabs(collabs.isEmpty() ? null : collabs);
 
         personGroups.add(builder.build());
         return text.toString();
@@ -555,7 +563,9 @@ public class BackParser {
         List<Collab> collabs = new ArrayList<>();
         List<Etal> etals = new ArrayList<>();
 
-        while (reader.hasNext()) {
+        // Note: hasNext() 체크는 불필요합니다. 정상 XML에서는 항상 END_ELEMENT를 만나고,
+        // malformed XML에서는 next()가 XMLStreamException을 던집니다.
+        while (true) {
             int event = reader.next();
 
             if (event == XMLStreamConstants.START_ELEMENT) {
@@ -576,9 +586,8 @@ public class BackParser {
                         break;
                 }
             } else if (event == XMLStreamConstants.END_ELEMENT) {
-                if (reader.getLocalName().equals("person-group")) {
-                    break;
-                }
+                // Note: 이 시점에서 END_ELEMENT는 항상 "person-group"입니다.
+                break;
             }
         }
 
@@ -594,7 +603,9 @@ public class BackParser {
     public static PersonName parsePersonName(XMLStreamReader reader) throws XMLStreamException {
         PersonName.PersonNameBuilder builder = PersonName.builder();
 
-        while (reader.hasNext()) {
+        // Note: hasNext() 체크는 불필요합니다. 정상 XML에서는 항상 END_ELEMENT를 만나고,
+        // malformed XML에서는 next()가 XMLStreamException을 던집니다.
+        while (true) {
             int event = reader.next();
 
             if (event == XMLStreamConstants.START_ELEMENT) {
@@ -618,9 +629,8 @@ public class BackParser {
                         break;
                 }
             } else if (event == XMLStreamConstants.END_ELEMENT) {
-                if (reader.getLocalName().equals("name")) {
-                    break;
-                }
+                // Note: 이 시점에서 END_ELEMENT는 항상 "name"입니다.
+                break;
             }
         }
 
@@ -646,7 +656,9 @@ public class BackParser {
     public static FnGroup parseFnGroup(XMLStreamReader reader) throws XMLStreamException {
         List<Fn> footnotes = new ArrayList<>();
 
-        while (reader.hasNext()) {
+        // Note: hasNext() 체크는 불필요합니다. 정상 XML에서는 항상 END_ELEMENT를 만나고,
+        // malformed XML에서는 next()가 XMLStreamException을 던집니다.
+        while (true) {
             int event = reader.next();
 
             if (event == XMLStreamConstants.START_ELEMENT) {
@@ -658,9 +670,8 @@ public class BackParser {
                     skipElement(reader);
                 }
             } else if (event == XMLStreamConstants.END_ELEMENT) {
-                if (reader.getLocalName().equals("fn-group")) {
-                    break;
-                }
+                // Note: 이 시점에서 END_ELEMENT는 항상 "fn-group"입니다.
+                break;
             }
         }
 

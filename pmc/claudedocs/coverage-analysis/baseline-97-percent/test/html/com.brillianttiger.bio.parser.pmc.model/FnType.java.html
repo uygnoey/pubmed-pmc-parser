@@ -1,0 +1,217 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="ko"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>FnType.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">pmc</a> &gt; <a href="index.source.html" class="el_package">com.brillianttiger.bio.parser.pmc.model</a> &gt; <span class="el_source">FnType.java</span></div><h1>FnType.java</h1><pre class="source lang-java linenums">package com.brillianttiger.bio.parser.pmc.model;
+
+/**
+ * FnType / 각주 유형
+ *
+ * KR: JATS fn-type 속성 값을 나타내는 열거형.
+ *     각주의 종류를 분류하는 데 사용.
+ * EN: Enumeration representing JATS fn-type attribute values.
+ *     Used to classify the type of footnote.
+ *
+ * DTD: fn-type CDATA #IMPLIED
+ *
+ * Reference: https://jats.nlm.nih.gov/archiving/tag-library/1.4/attribute/fn-type.html
+ *
+ * Common Values:
+ * - abbr: Abbreviation or acronym
+ * - author: Author-related footnote
+ * - con: Contributor footnote
+ * - conflict: Conflict of interest
+ * - corresp: Corresponding author
+ * - current-aff: Current affiliation
+ * - deceased: Deceased author
+ * - edited-by: Edited by
+ * - equal: Equal contribution
+ * - financial-disclosure: Financial disclosure
+ * - on-leave: On leave
+ * - participating-researchers: Participating researchers
+ * - present-address: Present address
+ * - presented-at: Presented at (conference)
+ * - previously-at: Previously at
+ * - study-group-members: Study group members
+ * - supplementary-material: Supplementary material
+ * - supported-by: Supported by
+ * - other: Other footnote type
+ */
+<span class="fc" id="L36">public enum FnType {</span>
+
+    /**
+     * 약어 / Abbreviation
+     * KR: 약어 또는 두문자어
+     * EN: Abbreviation or acronym
+     */
+<span class="fc" id="L43">    ABBR(&quot;abbr&quot;),</span>
+
+    /**
+     * 저자 관련 / Author-related
+     * KR: 저자 관련 각주
+     * EN: Author-related footnote
+     */
+<span class="fc" id="L50">    AUTHOR(&quot;author&quot;),</span>
+
+    /**
+     * 기여자 / Contributor
+     * KR: 기여자 각주
+     * EN: Contributor footnote
+     */
+<span class="fc" id="L57">    CON(&quot;con&quot;),</span>
+
+    /**
+     * 이해 충돌 / Conflict of interest
+     * KR: 이해 충돌 선언
+     * EN: Conflict of interest statement
+     */
+<span class="fc" id="L64">    CONFLICT(&quot;conflict&quot;),</span>
+
+    /**
+     * 교신저자 / Corresponding author
+     * KR: 교신저자 정보
+     * EN: Corresponding author information
+     */
+<span class="fc" id="L71">    CORRESP(&quot;corresp&quot;),</span>
+
+    /**
+     * 현재 소속 / Current affiliation
+     * KR: 현재 소속 기관
+     * EN: Current affiliation
+     */
+<span class="fc" id="L78">    CURRENT_AFF(&quot;current-aff&quot;),</span>
+
+    /**
+     * 사망 / Deceased
+     * KR: 사망한 저자 표시
+     * EN: Deceased author indicator
+     */
+<span class="fc" id="L85">    DECEASED(&quot;deceased&quot;),</span>
+
+    /**
+     * 편집자 / Edited by
+     * KR: 편집자 정보
+     * EN: Edited by information
+     */
+<span class="fc" id="L92">    EDITED_BY(&quot;edited-by&quot;),</span>
+
+    /**
+     * 동등 기여 / Equal contribution
+     * KR: 동등하게 기여한 저자
+     * EN: Authors who contributed equally
+     */
+<span class="fc" id="L99">    EQUAL(&quot;equal&quot;),</span>
+
+    /**
+     * 재정 공개 / Financial disclosure
+     * KR: 재정적 관계 공개
+     * EN: Financial disclosure statement
+     */
+<span class="fc" id="L106">    FINANCIAL_DISCLOSURE(&quot;financial-disclosure&quot;),</span>
+
+    /**
+     * 휴직 중 / On leave
+     * KR: 휴직 중인 저자
+     * EN: Author currently on leave
+     */
+<span class="fc" id="L113">    ON_LEAVE(&quot;on-leave&quot;),</span>
+
+    /**
+     * 참여 연구자 / Participating researchers
+     * KR: 연구에 참여한 연구자 목록
+     * EN: List of participating researchers
+     */
+<span class="fc" id="L120">    PARTICIPATING_RESEARCHERS(&quot;participating-researchers&quot;),</span>
+
+    /**
+     * 현재 주소 / Present address
+     * KR: 현재 주소
+     * EN: Present address
+     */
+<span class="fc" id="L127">    PRESENT_ADDRESS(&quot;present-address&quot;),</span>
+
+    /**
+     * 발표 장소 / Presented at
+     * KR: 발표된 학회나 회의
+     * EN: Conference or meeting where presented
+     */
+<span class="fc" id="L134">    PRESENTED_AT(&quot;presented-at&quot;),</span>
+
+    /**
+     * 이전 소속 / Previously at
+     * KR: 이전 소속 기관
+     * EN: Previous affiliation
+     */
+<span class="fc" id="L141">    PREVIOUSLY_AT(&quot;previously-at&quot;),</span>
+
+    /**
+     * 연구 그룹 구성원 / Study group members
+     * KR: 연구 그룹 구성원 목록
+     * EN: List of study group members
+     */
+<span class="fc" id="L148">    STUDY_GROUP_MEMBERS(&quot;study-group-members&quot;),</span>
+
+    /**
+     * 보충 자료 / Supplementary material
+     * KR: 보충 자료 관련 각주
+     * EN: Supplementary material footnote
+     */
+<span class="fc" id="L155">    SUPPLEMENTARY_MATERIAL(&quot;supplementary-material&quot;),</span>
+
+    /**
+     * 지원 정보 / Supported by
+     * KR: 지원 기관이나 펀딩 정보
+     * EN: Funding or support information
+     */
+<span class="fc" id="L162">    SUPPORTED_BY(&quot;supported-by&quot;),</span>
+
+    /**
+     * 기타 / Other
+     * KR: 기타 각주 유형
+     * EN: Other footnote types
+     */
+<span class="fc" id="L169">    OTHER(&quot;other&quot;);</span>
+
+    private final String value;
+
+<span class="fc" id="L173">    FnType(String value) {</span>
+<span class="fc" id="L174">        this.value = value;</span>
+<span class="fc" id="L175">    }</span>
+
+    /**
+     * DTD 속성 값 / DTD attribute value
+     *
+     * @return fn-type 값 (예: &quot;corresp&quot;)
+     */
+    public String getValue() {
+<span class="fc" id="L183">        return value;</span>
+    }
+
+    /**
+     * 문자열에서 FnType 변환 / Convert from string to FnType
+     *
+     * KR: XML에서 파싱한 문자열을 FnType enum으로 변환.
+     *     매칭되는 값이 없으면 OTHER 반환.
+     * EN: Converts parsed string from XML to FnType enum.
+     *     Returns OTHER if no matching value found.
+     *
+     * @param value fn-type 속성 값 / fn-type attribute value
+     * @return 해당하는 FnType, 없으면 OTHER / Corresponding FnType, or OTHER if not found
+     */
+    public static FnType fromValue(String value) {
+<span class="fc bfc" id="L198" title="All 4 branches covered.">        if (value == null || value.trim().isEmpty()) {</span>
+<span class="fc" id="L199">            return null;</span>
+        }
+
+<span class="fc" id="L202">        String normalized = value.trim().toLowerCase();</span>
+<span class="fc bfc" id="L203" title="All 2 branches covered.">        for (FnType type : values()) {</span>
+<span class="fc bfc" id="L204" title="All 2 branches covered.">            if (type.value.equals(normalized)) {</span>
+<span class="fc" id="L205">                return type;</span>
+            }
+        }
+
+<span class="fc" id="L209">        return OTHER;</span>
+    }
+
+    @Override
+    public String toString() {
+<span class="fc" id="L214">        return value;</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.9.202303310957</span></div></body></html>

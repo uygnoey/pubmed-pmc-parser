@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="ko"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>CellAlign.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">pmc</a> &gt; <a href="index.source.html" class="el_package">com.brillianttiger.bio.parser.pmc.model</a> &gt; <span class="el_source">CellAlign.java</span></div><h1>CellAlign.java</h1><pre class="source lang-java linenums">package com.brillianttiger.bio.parser.pmc.model;
+
+/**
+ * CellAlign / 셀 수평 정렬
+ *
+ * KR: XHTML 테이블 셀 align 속성 값을 나타내는 열거형.
+ *     셀 내용의 수평 정렬 방식을 지정.
+ * EN: Enumeration representing XHTML table cell align attribute values.
+ *     Specifies horizontal alignment of cell content.
+ *
+ * DTD: align (left | center | right | justify | char) #IMPLIED
+ *
+ * Reference: https://jats.nlm.nih.gov/archiving/tag-library/1.4/attribute/align.html
+ */
+<span class="fc" id="L15">public enum CellAlign {</span>
+
+    /**
+     * 왼쪽 정렬 / Left align
+     * KR: 셀 내용을 왼쪽으로 정렬
+     * EN: Align cell content to the left
+     */
+<span class="fc" id="L22">    LEFT(&quot;left&quot;),</span>
+
+    /**
+     * 가운데 정렬 / Center align
+     * KR: 셀 내용을 가운데로 정렬
+     * EN: Center cell content
+     */
+<span class="fc" id="L29">    CENTER(&quot;center&quot;),</span>
+
+    /**
+     * 오른쪽 정렬 / Right align
+     * KR: 셀 내용을 오른쪽으로 정렬
+     * EN: Align cell content to the right
+     */
+<span class="fc" id="L36">    RIGHT(&quot;right&quot;),</span>
+
+    /**
+     * 양쪽 정렬 / Justify
+     * KR: 셀 내용을 양쪽으로 정렬
+     * EN: Justify cell content
+     */
+<span class="fc" id="L43">    JUSTIFY(&quot;justify&quot;),</span>
+
+    /**
+     * 문자 정렬 / Character align
+     * KR: 특정 문자(예: 소수점)를 기준으로 정렬
+     * EN: Align on a specific character (e.g., decimal point)
+     */
+<span class="fc" id="L50">    CHAR(&quot;char&quot;);</span>
+
+    private final String value;
+
+<span class="fc" id="L54">    CellAlign(String value) {</span>
+<span class="fc" id="L55">        this.value = value;</span>
+<span class="fc" id="L56">    }</span>
+
+    /**
+     * DTD 속성 값 / DTD attribute value
+     *
+     * @return align 값 (예: &quot;center&quot;)
+     */
+    public String getValue() {
+<span class="fc" id="L64">        return value;</span>
+    }
+
+    /**
+     * 문자열에서 CellAlign 변환 / Convert from string to CellAlign
+     *
+     * KR: XML에서 파싱한 문자열을 CellAlign enum으로 변환.
+     *     매칭되는 값이 없으면 null 반환 (선택적 속성).
+     * EN: Converts parsed string from XML to CellAlign enum.
+     *     Returns null if no matching value found (optional attribute).
+     *
+     * @param value align 속성 값 / align attribute value
+     * @return 해당하는 CellAlign, 없으면 null / Corresponding CellAlign, or null if not found
+     */
+    public static CellAlign fromValue(String value) {
+<span class="fc bfc" id="L79" title="All 4 branches covered.">        if (value == null || value.trim().isEmpty()) {</span>
+<span class="fc" id="L80">            return null;</span>
+        }
+
+<span class="fc" id="L83">        String normalized = value.trim().toLowerCase();</span>
+<span class="fc bfc" id="L84" title="All 2 branches covered.">        for (CellAlign align : values()) {</span>
+<span class="fc bfc" id="L85" title="All 2 branches covered.">            if (align.value.equals(normalized)) {</span>
+<span class="fc" id="L86">                return align;</span>
+            }
+        }
+
+<span class="fc" id="L90">        return null;</span>
+    }
+
+    @Override
+    public String toString() {
+<span class="fc" id="L95">        return value;</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.9.202303310957</span></div></body></html>
