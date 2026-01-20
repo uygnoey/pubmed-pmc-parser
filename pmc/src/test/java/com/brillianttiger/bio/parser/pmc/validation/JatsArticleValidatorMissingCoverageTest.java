@@ -1091,4 +1091,46 @@ class JatsArticleValidatorMissingCoverageTest {
         // Then: Should not cause errors, null ID simply not collected
         assertNotNull(errors);
     }
+
+    // ========================================================================
+    // Test 34: Line 703 - article.getDtdVersion() == null
+    // ========================================================================
+
+    /**
+     * Test 34: validateRecommendedAttributes() - null dtdVersion
+     * Coverage: Line 703 - if (article.getDtdVersion() == null || ...)
+     *
+     * KR: dtdVersion이 null인 경우를 테스트하여 OR 조건의 첫 번째 분기를 커버.
+     * EN: Test null dtdVersion case to cover first branch of OR condition.
+     */
+    @Test
+    @DisplayName("Test 34: validateRecommendedAttributes() - null dtdVersion should generate INFO warning")
+    void test34_nullDtdVersion() {
+        // Given: Article with null dtdVersion
+        JatsArticle article = JatsArticle.builder()
+                .articleType(ArticleType.RESEARCH_ARTICLE)
+                .dtdVersion(null)  // null dtdVersion - covers first part of OR condition (line 703)
+                .front(Front.builder()
+                        .articleMeta(ArticleMeta.builder()
+                                .titleGroup(TitleGroup.builder()
+                                        .articleTitle(ArticleTitle.builder()
+                                                .content("Test Article")
+                                                .build())
+                                        .build())
+                                .pubDates(List.of(PmcPubDate.builder().pubType("epub").build()))
+                                .build())
+                        .build())
+                .build();
+
+        // When
+        List<ValidationError> errors = validator.validateArticle(article);
+
+        // Then: Should generate INFO warning for null dtdVersion
+        assertNotNull(errors);
+        assertTrue(errors.stream().anyMatch(e ->
+                e.getCode().equals(ValidationError.ErrorCode.MISSING_RECOMMENDED_ATTRIBUTE) &&
+                e.getMessage().contains("dtd-version") &&
+                e.getSeverity() == ValidationError.Severity.INFO
+        ), "null dtdVersion은 INFO 경고가 발생해야 함");
+    }
 }

@@ -222,8 +222,9 @@ public class JatsArticleValidator {
         // PmcArticleId has pubIdType as String, convert to enum
         PubIdType idType = PubIdType.fromValue(articleId.getPubIdType());
 
-        if (idType == null || idType == PubIdType.OTHER) {
-            return errors; // pub-id-type이 없거나 알 수 없으면 검증 불가
+        // fromValue() always returns non-null (returns OTHER if null/empty/unknown)
+        if (idType == PubIdType.OTHER) {
+            return errors; // 알 수 없는 타입이면 검증 불가 / Skip validation for unknown type
         }
 
         String location = "/article/front/article-meta/article-id[@pub-id-type='" + idType + "']";
