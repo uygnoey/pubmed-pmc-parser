@@ -153,10 +153,7 @@ public class GzipUtils {
         }
 
         try (InputStream in = new BufferedInputStream(Files.newInputStream(filePath), DEFAULT_BUFFER_SIZE)) {
-            if (!in.markSupported()) {
-                return false;
-            }
-
+            // BufferedInputStream always supports mark
             in.mark(2);
             int byte1 = in.read();
             int byte2 = in.read();

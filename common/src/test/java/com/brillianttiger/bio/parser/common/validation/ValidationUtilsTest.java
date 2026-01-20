@@ -314,6 +314,13 @@ class ValidationUtilsTest {
         assertFalse(ValidationUtils.validateOrcidChecksum(null).isPresent());
     }
 
+    @Test
+    void testValidateOrcidChecksumEmpty() {
+        // 빈 문자열은 검증하지 않음 / Empty string is not validated
+        assertFalse(ValidationUtils.validateOrcidChecksum("").isPresent());
+        assertFalse(ValidationUtils.validateOrcidChecksum("   ").isPresent());
+    }
+
     // ========== ValidationError Helper Methods Tests ==========
 
     @Test
