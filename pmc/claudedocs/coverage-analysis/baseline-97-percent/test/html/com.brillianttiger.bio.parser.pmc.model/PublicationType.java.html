@@ -1,0 +1,220 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="ko"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>PublicationType.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">pmc</a> &gt; <a href="index.source.html" class="el_package">com.brillianttiger.bio.parser.pmc.model</a> &gt; <span class="el_source">PublicationType.java</span></div><h1>PublicationType.java</h1><pre class="source lang-java linenums">package com.brillianttiger.bio.parser.pmc.model;
+
+import lombok.Getter;
+
+/**
+ * PublicationType / 출판물 유형
+ *
+ * KR: 인용 참조의 출판물 유형을 나타내는 열거형. JATS 1.4 DTD 완전 준수.
+ *     저널, 서적, 학회 논문, 학위논문, 특허 등 다양한 출판물 유형을 포함.
+ * EN: Enumeration representing publication type for citations. Fully compliant with JATS 1.4 DTD.
+ *     Includes various publication types such as journal, book, conference proceedings, thesis, patent, etc.
+ *
+ * DTD: &lt;!ATTLIST element-citation
+ *          publication-type (book | confproc | gov | journal | other | patent |
+ *                            report | standard | thesis | webpage | software |
+ *                            data | database | preprint | working-paper) #IMPLIED&gt;
+ *
+ * Reference: https://jats.nlm.nih.gov/archiving/tag-library/1.4/attribute/publication-type.html
+ *
+ * Example:
+ * &lt;element-citation publication-type=&quot;journal&quot;&gt;
+ *   ...
+ * &lt;/element-citation&gt;
+ */
+<span class="fc" id="L25">@Getter</span>
+public enum PublicationType {
+
+    /**
+     * 저널/학술지
+     *
+     * KR: 학술지 논문
+     * EN: Journal article
+     */
+<span class="fc" id="L34">    JOURNAL(&quot;journal&quot;),</span>
+
+    /**
+     * 서적
+     *
+     * KR: 서적
+     * EN: Book
+     */
+<span class="fc" id="L42">    BOOK(&quot;book&quot;),</span>
+
+    /**
+     * 학회 논문
+     *
+     * KR: 학회 발표 논문
+     * EN: Conference proceedings
+     */
+<span class="fc" id="L50">    CONFPROC(&quot;confproc&quot;),</span>
+
+    /**
+     * 학위논문
+     *
+     * KR: 석사/박사 학위논문
+     * EN: Thesis or dissertation
+     */
+<span class="fc" id="L58">    THESIS(&quot;thesis&quot;),</span>
+
+    /**
+     * 특허
+     *
+     * KR: 특허
+     * EN: Patent
+     */
+<span class="fc" id="L66">    PATENT(&quot;patent&quot;),</span>
+
+    /**
+     * 소프트웨어
+     *
+     * KR: 소프트웨어
+     * EN: Software
+     */
+<span class="fc" id="L74">    SOFTWARE(&quot;software&quot;),</span>
+
+    /**
+     * 데이터
+     *
+     * KR: 데이터셋
+     * EN: Data or dataset
+     */
+<span class="fc" id="L82">    DATA(&quot;data&quot;),</span>
+
+    /**
+     * 데이터베이스
+     *
+     * KR: 데이터베이스
+     * EN: Database
+     */
+<span class="fc" id="L90">    DATABASE(&quot;database&quot;),</span>
+
+    /**
+     * 프리프린트
+     *
+     * KR: 프리프린트 (출판 전 원고)
+     * EN: Preprint (manuscript before publication)
+     */
+<span class="fc" id="L98">    PREPRINT(&quot;preprint&quot;),</span>
+
+    /**
+     * 웹페이지
+     *
+     * KR: 웹페이지
+     * EN: Webpage
+     */
+<span class="fc" id="L106">    WEBPAGE(&quot;webpage&quot;),</span>
+
+    /**
+     * 보고서
+     *
+     * KR: 보고서 (기술 보고서 등)
+     * EN: Report (technical report, etc.)
+     */
+<span class="fc" id="L114">    REPORT(&quot;report&quot;),</span>
+
+    /**
+     * 정부 문서
+     *
+     * KR: 정부 문서
+     * EN: Government document
+     */
+<span class="fc" id="L122">    GOV(&quot;gov&quot;),</span>
+
+    /**
+     * 표준
+     *
+     * KR: 표준 문서
+     * EN: Standard document
+     */
+<span class="fc" id="L130">    STANDARD(&quot;standard&quot;),</span>
+
+    /**
+     * 워킹 페이퍼
+     *
+     * KR: 워킹 페이퍼
+     * EN: Working paper
+     */
+<span class="fc" id="L138">    WORKING_PAPER(&quot;working-paper&quot;),</span>
+
+    /**
+     * 레터
+     *
+     * KR: 레터/서신
+     * EN: Letter
+     */
+<span class="fc" id="L146">    LETTER(&quot;letter&quot;),</span>
+
+    /**
+     * 편집자에게 보내는 편지
+     *
+     * KR: 편집자에게 보내는 편지
+     * EN: Letter to editor
+     */
+<span class="fc" id="L154">    LETTER_TO_EDITOR(&quot;letter-to-editor&quot;),</span>
+
+    /**
+     * 뉴스
+     *
+     * KR: 뉴스 기사
+     * EN: News article
+     */
+<span class="fc" id="L162">    NEWS(&quot;news&quot;),</span>
+
+    /**
+     * 커뮤니케이션
+     *
+     * KR: 커뮤니케이션
+     * EN: Communication
+     */
+<span class="fc" id="L170">    COMMUN(&quot;commun&quot;),</span>
+
+    /**
+     * 리뷰
+     *
+     * KR: 리뷰 논문
+     * EN: Review article
+     */
+<span class="fc" id="L178">    REVIEW(&quot;review&quot;),</span>
+
+    /**
+     * 기타
+     *
+     * KR: 기타 또는 알 수 없는 유형
+     * EN: Other or unknown type
+     */
+<span class="fc" id="L186">    OTHER(&quot;other&quot;);</span>
+
+    private final String value;
+
+<span class="fc" id="L190">    PublicationType(String value) {</span>
+<span class="fc" id="L191">        this.value = value;</span>
+<span class="fc" id="L192">    }</span>
+
+    /**
+     * 문자열 값으로부터 PublicationType을 찾아 반환 / Find and return PublicationType from string value
+     *
+     * @param value 문자열 값 / String value
+     * @return 매칭되는 PublicationType, 없으면 OTHER / Matching PublicationType, or OTHER if not found
+     */
+    public static PublicationType fromValue(String value) {
+<span class="fc bfc" id="L201" title="All 4 branches covered.">        if (value == null || value.trim().isEmpty()) {</span>
+<span class="fc" id="L202">            return OTHER;</span>
+        }
+
+<span class="fc" id="L205">        String normalized = value.trim().toLowerCase();</span>
+<span class="fc bfc" id="L206" title="All 2 branches covered.">        for (PublicationType type : values()) {</span>
+<span class="fc bfc" id="L207" title="All 2 branches covered.">            if (type.value.equals(normalized)) {</span>
+<span class="fc" id="L208">                return type;</span>
+            }
+        }
+
+<span class="fc" id="L212">        return OTHER;</span>
+    }
+
+    @Override
+    public String toString() {
+<span class="fc" id="L217">        return value;</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.9.202303310957</span></div></body></html>

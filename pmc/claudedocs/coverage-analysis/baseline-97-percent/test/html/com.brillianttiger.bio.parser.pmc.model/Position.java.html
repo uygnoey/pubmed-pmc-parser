@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="ko"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>Position.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">pmc</a> &gt; <a href="index.source.html" class="el_package">com.brillianttiger.bio.parser.pmc.model</a> &gt; <span class="el_source">Position.java</span></div><h1>Position.java</h1><pre class="source lang-java linenums">package com.brillianttiger.bio.parser.pmc.model;
+
+/**
+ * Position / 위치
+ *
+ * KR: JATS position 속성 값을 나타내는 열거형.
+ *     그림, 테이블 등 부유 요소의 배치 위치를 지정.
+ * EN: Enumeration representing JATS position attribute values.
+ *     Specifies placement of floating elements like figures and tables.
+ *
+ * DTD: position (anchor | background | float | margin) &quot;float&quot;
+ *
+ * Reference: https://jats.nlm.nih.gov/archiving/tag-library/1.4/attribute/position.html
+ */
+<span class="fc" id="L15">public enum Position {</span>
+
+    /**
+     * 고정 위치 / Anchored position
+     * KR: 텍스트 내 참조 위치에 고정
+     * EN: Fixed at the reference position in text
+     */
+<span class="fc" id="L22">    ANCHOR(&quot;anchor&quot;),</span>
+
+    /**
+     * 배경 / Background
+     * KR: 배경 요소로 배치
+     * EN: Placed as a background element
+     */
+<span class="fc" id="L29">    BACKGROUND(&quot;background&quot;),</span>
+
+    /**
+     * 부유 / Float (기본값)
+     * KR: 페이지 내 최적 위치에 부유 (기본값)
+     * EN: Floats to optimal position on page (default)
+     */
+<span class="fc" id="L36">    FLOAT(&quot;float&quot;),</span>
+
+    /**
+     * 여백 / Margin
+     * KR: 페이지 여백에 배치
+     * EN: Placed in page margin
+     */
+<span class="fc" id="L43">    MARGIN(&quot;margin&quot;);</span>
+
+    private final String value;
+
+<span class="fc" id="L47">    Position(String value) {</span>
+<span class="fc" id="L48">        this.value = value;</span>
+<span class="fc" id="L49">    }</span>
+
+    /**
+     * DTD 속성 값 / DTD attribute value
+     *
+     * @return position 값 (예: &quot;float&quot;)
+     */
+    public String getValue() {
+<span class="fc" id="L57">        return value;</span>
+    }
+
+    /**
+     * 문자열에서 Position 변환 / Convert from string to Position
+     *
+     * KR: XML에서 파싱한 문자열을 Position enum으로 변환.
+     *     매칭되는 값이 없으면 FLOAT 반환 (기본값).
+     * EN: Converts parsed string from XML to Position enum.
+     *     Returns FLOAT if no matching value found (default).
+     *
+     * @param value position 속성 값 / position attribute value
+     * @return 해당하는 Position, 없으면 FLOAT / Corresponding Position, or FLOAT if not found
+     */
+    public static Position fromValue(String value) {
+<span class="fc bfc" id="L72" title="All 4 branches covered.">        if (value == null || value.trim().isEmpty()) {</span>
+<span class="fc" id="L73">            return FLOAT;</span>
+        }
+
+<span class="fc" id="L76">        String normalized = value.trim().toLowerCase();</span>
+<span class="fc bfc" id="L77" title="All 2 branches covered.">        for (Position pos : values()) {</span>
+<span class="fc bfc" id="L78" title="All 2 branches covered.">            if (pos.value.equals(normalized)) {</span>
+<span class="fc" id="L79">                return pos;</span>
+            }
+        }
+
+<span class="fc" id="L83">        return FLOAT;</span>
+    }
+
+    @Override
+    public String toString() {
+<span class="fc" id="L88">        return value;</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.9.202303310957</span></div></body></html>

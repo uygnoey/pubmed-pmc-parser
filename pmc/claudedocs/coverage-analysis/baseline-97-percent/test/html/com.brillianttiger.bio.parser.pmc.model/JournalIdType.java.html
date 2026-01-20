@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="ko"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>JournalIdType.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">pmc</a> &gt; <a href="index.source.html" class="el_package">com.brillianttiger.bio.parser.pmc.model</a> &gt; <span class="el_source">JournalIdType.java</span></div><h1>JournalIdType.java</h1><pre class="source lang-java linenums">package com.brillianttiger.bio.parser.pmc.model;
+
+/**
+ * JournalIdType / 저널 ID 유형
+ *
+ * KR: JATS journal-id-type 속성 값을 나타내는 열거형.
+ *     저널을 식별하는 다양한 ID 체계를 구분.
+ * EN: Enumeration representing JATS journal-id-type attribute values.
+ *     Distinguishes various ID schemes for journal identification.
+ *
+ * DTD: &lt;!ATTLIST journal-id journal-id-type CDATA #IMPLIED&gt;
+ *
+ * Reference: https://jats.nlm.nih.gov/archiving/tag-library/1.4/attribute/journal-id-type.html
+ *
+ * Common Values:
+ * - nlm-ta: NLM Title Abbreviation (National Library of Medicine)
+ * - iso-abbrev: ISO abbreviated title
+ * - publisher-id: Publisher's internal ID
+ * - pmc: PubMed Central ID
+ * - doi: Digital Object Identifier
+ * - hwp: HighWire Press ID
+ */
+<span class="fc" id="L23">public enum JournalIdType {</span>
+
+    /**
+     * NLM 제목 약어 / NLM Title Abbreviation
+     *
+     * KR: National Library of Medicine의 표준 저널 약어
+     * EN: Standard journal abbreviation from National Library of Medicine
+     *
+     * Example: &quot;J Biol Chem&quot;
+     */
+<span class="fc" id="L33">    NLM_TA(&quot;nlm-ta&quot;),</span>
+
+    /**
+     * ISO 약어 / ISO abbreviation
+     *
+     * KR: ISO 4 표준에 따른 저널 약어
+     * EN: Journal abbreviation according to ISO 4 standard
+     *
+     * Example: &quot;J. Biol. Chem.&quot;
+     */
+<span class="fc" id="L43">    ISO_ABBREV(&quot;iso-abbrev&quot;),</span>
+
+    /**
+     * 출판사 ID / Publisher ID
+     *
+     * KR: 출판사의 내부 저널 식별자
+     * EN: Publisher's internal journal identifier
+     */
+<span class="fc" id="L51">    PUBLISHER_ID(&quot;publisher-id&quot;),</span>
+
+    /**
+     * PMC ID / PubMed Central ID
+     *
+     * KR: PubMed Central의 저널 식별자
+     * EN: PubMed Central journal identifier
+     */
+<span class="fc" id="L59">    PMC(&quot;pmc&quot;),</span>
+
+    /**
+     * DOI / Digital Object Identifier
+     *
+     * KR: 저널의 DOI (Digital Object Identifier)
+     * EN: Journal's Digital Object Identifier
+     */
+<span class="fc" id="L67">    DOI(&quot;doi&quot;),</span>
+
+    /**
+     * HighWire Press ID
+     *
+     * KR: HighWire Press의 저널 식별자
+     * EN: HighWire Press journal identifier
+     */
+<span class="fc" id="L75">    HWP(&quot;hwp&quot;),</span>
+
+    /**
+     * 기타 / Other
+     *
+     * KR: 위에 나열되지 않은 기타 ID 유형
+     * EN: Other ID types not listed above
+     */
+<span class="fc" id="L83">    OTHER(&quot;other&quot;);</span>
+
+    private final String value;
+
+<span class="fc" id="L87">    JournalIdType(String value) {</span>
+<span class="fc" id="L88">        this.value = value;</span>
+<span class="fc" id="L89">    }</span>
+
+    /**
+     * DTD 속성 값 / DTD attribute value
+     *
+     * KR: XML journal-id-type 속성값 반환
+     * EN: Returns XML journal-id-type attribute value
+     *
+     * @return journal-id-type 값 (예: &quot;nlm-ta&quot;)
+     */
+    public String getValue() {
+<span class="fc" id="L100">        return value;</span>
+    }
+
+    /**
+     * 문자열에서 JournalIdType 변환 / Convert from string to JournalIdType
+     *
+     * KR: XML에서 파싱한 문자열을 JournalIdType enum으로 변환.
+     *     매칭되는 값이 없으면 OTHER 반환.
+     * EN: Converts parsed string from XML to JournalIdType enum.
+     *     Returns OTHER if no matching value found.
+     *
+     * @param value journal-id-type 속성 값 / journal-id-type attribute value
+     * @return 해당하는 JournalIdType, 없으면 OTHER / Corresponding JournalIdType, or OTHER if not found
+     */
+    public static JournalIdType fromValue(String value) {
+<span class="fc bfc" id="L115" title="All 4 branches covered.">        if (value == null || value.trim().isEmpty()) {</span>
+<span class="fc" id="L116">            return OTHER;</span>
+        }
+
+<span class="fc" id="L119">        String normalized = value.trim().toLowerCase();</span>
+<span class="fc bfc" id="L120" title="All 2 branches covered.">        for (JournalIdType type : values()) {</span>
+<span class="fc bfc" id="L121" title="All 2 branches covered.">            if (type.value.equals(normalized)) {</span>
+<span class="fc" id="L122">                return type;</span>
+            }
+        }
+
+<span class="fc" id="L126">        return OTHER;</span>
+    }
+
+    @Override
+    public String toString() {
+<span class="fc" id="L131">        return value;</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.9.202303310957</span></div></body></html>

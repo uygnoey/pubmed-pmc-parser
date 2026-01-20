@@ -401,4 +401,122 @@ class ValidationErrorTest {
         assertEquals(ValidationError.ErrorCode.MISSING_FRONT, error1.getCode());
         assertEquals(ValidationError.ErrorCode.INVALID_DOI_FORMAT, error2.getCode());
     }
+
+    // ========================================
+    // Missing Coverage Tests (Line 174, 177, 68)
+    // ========================================
+
+    @Test
+    @DisplayName("toString() - location이 null일 때")
+    void testToStringWithNullLocation() {
+        // Given: location이 null인 ValidationError
+        ValidationError error = ValidationError.builder()
+                .severity(ValidationError.Severity.ERROR)
+                .code("ERROR_CODE")
+                .message("Error message")
+                .location(null)  // null location
+                .details("Some details")
+                .build();
+
+        // When
+        String result = error.toString();
+
+        // Then: location 부분이 포함되지 않아야 함
+        assertNotNull(result);
+        assertTrue(result.contains("ERROR"));
+        assertTrue(result.contains("ERROR_CODE"));
+        assertTrue(result.contains("Error message"));
+        assertTrue(result.contains("Some details"));
+        assertFalse(result.contains("(at:")); // location이 null이므로 "(at:" 문자열이 없어야 함
+    }
+
+    @Test
+    @DisplayName("toString() - location이 empty일 때")
+    void testToStringWithEmptyLocation() {
+        // Given: location이 empty string인 ValidationError
+        ValidationError error = ValidationError.builder()
+                .severity(ValidationError.Severity.WARNING)
+                .code("WARN_CODE")
+                .message("Warning message")
+                .location("")  // empty location
+                .details("Some details")
+                .build();
+
+        // When
+        String result = error.toString();
+
+        // Then: location 부분이 포함되지 않아야 함
+        assertNotNull(result);
+        assertTrue(result.contains("WARNING"));
+        assertTrue(result.contains("WARN_CODE"));
+        assertTrue(result.contains("Warning message"));
+        assertTrue(result.contains("Some details"));
+        assertFalse(result.contains("(at:")); // location이 empty이므로 "(at:" 문자열이 없어야 함
+    }
+
+    @Test
+    @DisplayName("toString() - details가 empty일 때")
+    void testToStringWithEmptyDetails() {
+        // Given: details가 empty string인 ValidationError
+        ValidationError error = ValidationError.builder()
+                .severity(ValidationError.Severity.INFO)
+                .code("INFO_CODE")
+                .message("Info message")
+                .location("/article/front")
+                .details("")  // empty details
+                .build();
+
+        // When
+        String result = error.toString();
+
+        // Then: details 부분이 포함되지 않아야 함
+        assertNotNull(result);
+        assertTrue(result.contains("INFO"));
+        assertTrue(result.contains("INFO_CODE"));
+        assertTrue(result.contains("Info message"));
+        assertTrue(result.contains("/article/front"));
+        // details가 empty이므로 " - " 구분자 뒤에 내용이 없어야 함
+        // (더 정확한 검증을 위해 " - " 자체가 없는지 확인)
+        int dashIndex = result.indexOf(" - ");
+        assertTrue(dashIndex == -1 || result.substring(dashIndex + 3).trim().isEmpty());
+    }
+
+    @Test
+    @DisplayName("toString() - location과 details 모두 null일 때")
+    void testToStringWithNullLocationAndDetails() {
+        // Given: location과 details 모두 null
+        ValidationError error = ValidationError.builder()
+                .severity(ValidationError.Severity.ERROR)
+                .code("SIMPLE_ERROR")
+                .message("Simple error message")
+                .location(null)  // null location
+                .details(null)   // null details
+                .build();
+
+        // When
+        String result = error.toString();
+
+        // Then: 기본 정보만 포함
+        assertNotNull(result);
+        assertTrue(result.contains("ERROR"));
+        assertTrue(result.contains("SIMPLE_ERROR"));
+        assertTrue(result.contains("Simple error message"));
+        assertFalse(result.contains("(at:"));
+        assertFalse(result.contains(" - "));
+    }
+
+    @Test
+    @DisplayName("ErrorCode 인스턴스 생성 (inner class coverage)")
+    void testErrorCodeInnerClassCoverage() {
+        // When: ErrorCode 인스턴스 생성 (inner class를 커버하기 위해)
+        ValidationError.ErrorCode errorCodeInstance = new ValidationError.ErrorCode();
+
+        // Then: 인스턴스가 생성되어야 함
+        assertNotNull(errorCodeInstance);
+
+        // ErrorCode 상수들이 제대로 접근 가능한지 확인
+        assertNotNull(ValidationError.ErrorCode.MISSING_REQUIRED_ELEMENT);
+        assertNotNull(ValidationError.ErrorCode.INVALID_DOI_FORMAT);
+        assertNotNull(ValidationError.ErrorCode.BROKEN_XREF_REFERENCE);
+    }
 }

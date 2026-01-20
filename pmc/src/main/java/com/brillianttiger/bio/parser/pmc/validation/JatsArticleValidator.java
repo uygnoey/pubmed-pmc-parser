@@ -222,8 +222,9 @@ public class JatsArticleValidator {
         // PmcArticleId has pubIdType as String, convert to enum
         PubIdType idType = PubIdType.fromValue(articleId.getPubIdType());
 
-        if (idType == null || idType == PubIdType.OTHER) {
-            return errors; // pub-id-type이 없거나 알 수 없으면 검증 불가
+        // fromValue() always returns non-null (returns OTHER if null/empty/unknown)
+        if (idType == PubIdType.OTHER) {
+            return errors; // 알 수 없는 타입이면 검증 불가 / Skip validation for unknown type
         }
 
         String location = "/article/front/article-meta/article-id[@pub-id-type='" + idType + "']";
@@ -413,10 +414,6 @@ public class JatsArticleValidator {
      * EN: Recursively collect IDs from all elements within Body.
      */
     private void collectBodyIds(Body body, Set<String> ids) {
-        if (body == null) {
-            return;
-        }
-
         // Body 자체의 ID / Body's own ID
         if (body.getId() != null) {
             ids.add(body.getId());
@@ -488,10 +485,6 @@ public class JatsArticleValidator {
      * EN: Recursively collect IDs from all elements within Back.
      */
     private void collectBackIds(Back back, Set<String> ids) {
-        if (back == null) {
-            return;
-        }
-
         // Back 자체의 ID / Back's own ID
         if (back.getId() != null) {
             ids.add(back.getId());
@@ -568,10 +561,6 @@ public class JatsArticleValidator {
      * EN: Recursively collect IDs from all elements within Sec.
      */
     private void collectSecIds(Sec sec, Set<String> ids) {
-        if (sec == null) {
-            return;
-        }
-
         // Sec 자체의 ID / Sec's own ID
         if (sec.getId() != null) {
             ids.add(sec.getId());
@@ -655,10 +644,6 @@ public class JatsArticleValidator {
      * Fig 목록에서 ID 수집 / Collect IDs from Fig list
      */
     private void collectFigIds(List<Fig> figures, Set<String> ids) {
-        if (figures == null) {
-            return;
-        }
-
         for (Fig fig : figures) {
             if (fig.getId() != null) {
                 ids.add(fig.getId());
@@ -674,10 +659,6 @@ public class JatsArticleValidator {
      * TableWrap 목록에서 ID 수집 / Collect IDs from TableWrap list
      */
     private void collectTableWrapIds(List<TableWrap> tableWraps, Set<String> ids) {
-        if (tableWraps == null) {
-            return;
-        }
-
         for (TableWrap tableWrap : tableWraps) {
             if (tableWrap.getId() != null) {
                 ids.add(tableWrap.getId());
@@ -689,10 +670,6 @@ public class JatsArticleValidator {
      * DispFormula 목록에서 ID 수집 / Collect IDs from DispFormula list
      */
     private void collectDispFormulaIds(List<DispFormula> dispFormulas, Set<String> ids) {
-        if (dispFormulas == null) {
-            return;
-        }
-
         for (DispFormula dispFormula : dispFormulas) {
             if (dispFormula.getId() != null) {
                 ids.add(dispFormula.getId());

@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="ko"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>XlinkShow.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">pmc</a> &gt; <a href="index.source.html" class="el_package">com.brillianttiger.bio.parser.pmc.model</a> &gt; <span class="el_source">XlinkShow.java</span></div><h1>XlinkShow.java</h1><pre class="source lang-java linenums">package com.brillianttiger.bio.parser.pmc.model;
+
+/**
+ * XlinkShow / XLink 표시 방식
+ *
+ * KR: XLink show 속성 값을 나타내는 열거형.
+ *     링크 리소스를 어떻게 표시할지 지정.
+ * EN: Enumeration representing XLink show attribute values.
+ *     Specifies how the linked resource should be displayed.
+ *
+ * DTD: xlink:show (embed | new | none | other | replace) #IMPLIED
+ *
+ * Reference: https://jats.nlm.nih.gov/archiving/tag-library/1.4/attribute/xlink-show.html
+ */
+<span class="fc" id="L15">public enum XlinkShow {</span>
+
+    /**
+     * 내장 / Embed
+     * KR: 링크 리소스를 현재 문서에 내장
+     * EN: Embed the linked resource in the current document
+     */
+<span class="fc" id="L22">    EMBED(&quot;embed&quot;),</span>
+
+    /**
+     * 새 창 / New
+     * KR: 새 창이나 탭에서 링크 리소스 표시
+     * EN: Display the linked resource in a new window or tab
+     */
+<span class="fc" id="L29">    NEW(&quot;new&quot;),</span>
+
+    /**
+     * 없음 / None
+     * KR: 링크 리소스를 자동으로 표시하지 않음
+     * EN: Do not automatically display the linked resource
+     */
+<span class="fc" id="L36">    NONE(&quot;none&quot;),</span>
+
+    /**
+     * 기타 / Other
+     * KR: 다른 방식으로 표시
+     * EN: Some other display method
+     */
+<span class="fc" id="L43">    OTHER(&quot;other&quot;),</span>
+
+    /**
+     * 대체 / Replace
+     * KR: 현재 리소스를 링크 리소스로 대체
+     * EN: Replace the current resource with the linked resource
+     */
+<span class="fc" id="L50">    REPLACE(&quot;replace&quot;);</span>
+
+    private final String value;
+
+<span class="fc" id="L54">    XlinkShow(String value) {</span>
+<span class="fc" id="L55">        this.value = value;</span>
+<span class="fc" id="L56">    }</span>
+
+    /**
+     * DTD 속성 값 / DTD attribute value
+     *
+     * @return xlink:show 값 (예: &quot;new&quot;)
+     */
+    public String getValue() {
+<span class="fc" id="L64">        return value;</span>
+    }
+
+    /**
+     * 문자열에서 XlinkShow 변환 / Convert from string to XlinkShow
+     *
+     * KR: XML에서 파싱한 문자열을 XlinkShow enum으로 변환.
+     *     매칭되는 값이 없으면 null 반환.
+     * EN: Converts parsed string from XML to XlinkShow enum.
+     *     Returns null if no matching value found.
+     *
+     * @param value xlink:show 속성 값 / xlink:show attribute value
+     * @return 해당하는 XlinkShow, 없으면 null / Corresponding XlinkShow, or null if not found
+     */
+    public static XlinkShow fromValue(String value) {
+<span class="fc bfc" id="L79" title="All 4 branches covered.">        if (value == null || value.trim().isEmpty()) {</span>
+<span class="fc" id="L80">            return null;</span>
+        }
+
+<span class="fc" id="L83">        String normalized = value.trim().toLowerCase();</span>
+<span class="fc bfc" id="L84" title="All 2 branches covered.">        for (XlinkShow show : values()) {</span>
+<span class="fc bfc" id="L85" title="All 2 branches covered.">            if (show.value.equals(normalized)) {</span>
+<span class="fc" id="L86">                return show;</span>
+            }
+        }
+
+<span class="fc" id="L90">        return null;</span>
+    }
+
+    @Override
+    public String toString() {
+<span class="fc" id="L95">        return value;</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.9.202303310957</span></div></body></html>

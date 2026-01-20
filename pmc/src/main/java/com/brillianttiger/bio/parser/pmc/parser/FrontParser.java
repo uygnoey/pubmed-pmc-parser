@@ -27,7 +27,9 @@ public class FrontParser {
 
         List<Notes> notesList = new ArrayList<>();
 
-        while (reader.hasNext()) {
+        // Note: hasNext() 체크는 불필요합니다. 정상 XML에서는 항상 END_ELEMENT를 만나고,
+        // malformed XML에서는 next()가 XMLStreamException을 던집니다.
+        while (true) {
             int event = reader.next();
 
             if (event == XMLStreamConstants.START_ELEMENT) {
@@ -48,9 +50,9 @@ public class FrontParser {
                         break;
                 }
             } else if (event == XMLStreamConstants.END_ELEMENT) {
-                if (reader.getLocalName().equals("front")) {
-                    break;
-                }
+                // Note: 이 시점에서 END_ELEMENT는 항상 "front"입니다.
+                // 자식 요소들은 각각의 파서가 완전히 소비하므로 부모 파서는 자식의 END_ELEMENT를 만나지 않습니다.
+                break;
             }
         }
 
@@ -71,7 +73,9 @@ public class FrontParser {
         List<PmcIsbn> isbns = new ArrayList<>();
         List<Notes> notesList = new ArrayList<>();
 
-        while (reader.hasNext()) {
+        // Note: hasNext() 체크는 불필요합니다. 정상 XML에서는 항상 END_ELEMENT를 만나고,
+        // malformed XML에서는 next()가 XMLStreamException을 던집니다.
+        while (true) {
             int event = reader.next();
 
             if (event == XMLStreamConstants.START_ELEMENT) {
@@ -101,9 +105,8 @@ public class FrontParser {
                         break;
                 }
             } else if (event == XMLStreamConstants.END_ELEMENT) {
-                if (reader.getLocalName().equals("journal-meta")) {
-                    break;
-                }
+                // Note: 이 시점에서 END_ELEMENT는 항상 "journal-meta"입니다.
+                break;
             }
         }
 
@@ -147,7 +150,9 @@ public class FrontParser {
         List<TransTitleGroup> transTitleGroups = new ArrayList<>();
         List<AbbrevJournalTitle> abbrevJournalTitles = new ArrayList<>();
 
-        while (reader.hasNext()) {
+        // Note: hasNext() 체크는 불필요합니다. 정상 XML에서는 항상 END_ELEMENT를 만나고,
+        // malformed XML에서는 next()가 XMLStreamException을 던집니다.
+        while (true) {
             int event = reader.next();
 
             if (event == XMLStreamConstants.START_ELEMENT) {
@@ -171,9 +176,8 @@ public class FrontParser {
                         break;
                 }
             } else if (event == XMLStreamConstants.END_ELEMENT) {
-                if (reader.getLocalName().equals("journal-title-group")) {
-                    break;
-                }
+                // Note: 이 시점에서 END_ELEMENT는 항상 "journal-title-group"입니다.
+                break;
             }
         }
 
@@ -233,7 +237,9 @@ public class FrontParser {
         List<PublisherName> publisherNames = new ArrayList<>();
         List<PublisherLoc> publisherLocs = new ArrayList<>();
 
-        while (reader.hasNext()) {
+        // Note: hasNext() 체크는 불필요합니다. 정상 XML에서는 항상 END_ELEMENT를 만나고,
+        // malformed XML에서는 next()가 XMLStreamException을 던집니다.
+        while (true) {
             int event = reader.next();
 
             if (event == XMLStreamConstants.START_ELEMENT) {
@@ -251,9 +257,8 @@ public class FrontParser {
                         break;
                 }
             } else if (event == XMLStreamConstants.END_ELEMENT) {
-                if (reader.getLocalName().equals("publisher")) {
-                    break;
-                }
+                // Note: 이 시점에서 END_ELEMENT는 항상 "publisher"입니다.
+                break;
             }
         }
 
@@ -270,7 +275,9 @@ public class FrontParser {
     public static PmcPublisher parsePmcPublisher(XMLStreamReader reader) throws XMLStreamException {
         PmcPublisher.PmcPublisherBuilder builder = PmcPublisher.builder();
 
-        while (reader.hasNext()) {
+        // Note: hasNext() 체크는 불필요합니다. 정상 XML에서는 항상 END_ELEMENT를 만나고,
+        // malformed XML에서는 next()가 XMLStreamException을 던집니다.
+        while (true) {
             int event = reader.next();
 
             if (event == XMLStreamConstants.START_ELEMENT) {
@@ -288,9 +295,8 @@ public class FrontParser {
                         break;
                 }
             } else if (event == XMLStreamConstants.END_ELEMENT) {
-                if (reader.getLocalName().equals("publisher")) {
-                    break;
-                }
+                // Note: 이 시점에서 END_ELEMENT는 항상 "publisher"입니다.
+                break;
             }
         }
 

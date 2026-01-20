@@ -55,6 +55,14 @@ pubmed-pmc-parser/
 - XXE (XML External Entity) 공격 방지
 - DTD 처리 비활성화
 
+### 4. 코드 품질 목표 ⚠️ CRITICAL
+- **Branch Coverage: 100% 달성 필수** ⭐
+- **Line Coverage: 100% 달성 필수** ⭐
+- **Instruction Coverage: 100% 달성 필수** ⭐
+- 모든 파서 클래스는 100% 커버리지 달성 필수
+- 모든 모델 클래스는 100% 커버리지 달성 필수
+- 예외: 자동 생성 코드만 제외
+
 ## Commands
 ```bash
 # Gradle Wrapper 생성 (최초 1회)
@@ -94,3 +102,44 @@ java -jar build/libs/pubmed-pmc-parser-1.0.0-SNAPSHOT-all.jar /path/to/pubmed24n
 - Lombok 사용 (@Data, @Builder, @NoArgsConstructor, @AllArgsConstructor)
 - 각 모델 클래스에 DTD 주석 포함
 - 테스트 코드 필수
+
+## Quality Standards ⚠️ MUST ACHIEVE
+
+### Test Coverage Requirements
+**모든 커버리지는 100% 달성이 목표입니다. 80%는 중간 목표가 아닙니다.**
+
+#### 현재 진행 상황 (2026-01-19 기준)
+```
+전체 프로젝트:
+├─ Branch Coverage: 79% → 목표 100% (21%p 남음)
+├─ Instruction Coverage: 94% → 목표 100% (6%p 남음)
+└─ Line Coverage: 94% → 목표 100% (6%p 남음)
+
+패키지별 Branch Coverage:
+├─ pmc.model: 100% ✅ (목표 달성!)
+├─ pmc.validation: 88% → 목표 100% (12%p 남음)
+└─ pmc.parser: 76% → 목표 100% (24%p 남음)
+    ├─ PmcXmlParser: 81% → 목표 100% (19%p 남음)
+    ├─ ArticleMetaParser: 75% → 목표 100% (25%p 남음)
+    ├─ BodyParser: 78% → 목표 100% (22%p 남음)
+    ├─ BackParser: 68% → 목표 100% (32%p 남음)
+    ├─ FrontParser: 84% → 목표 100% (16%p 남음)
+    └─ CommonPmcElementParser: 72% → 목표 100% (28%p 남음)
+```
+
+#### 달성 전략
+1. **BackParser 우선 처리** (68%, 가장 낮음, 99 missed branches)
+2. **CommonPmcElementParser** (72%, 11 missed branches)
+3. **ArticleMetaParser** (75%, 196 missed branches - 가장 많음)
+4. **BodyParser** (78%, 52 missed branches)
+5. **PmcXmlParser** (81%, 85 missed branches)
+6. **FrontParser** (84%, 13 missed branches)
+7. **Validation 패키지** (88%, 32 missed branches)
+
+#### 테스트 작성 원칙
+- 모든 switch-case 분기 테스트
+- 모든 if-else 분기 테스트
+- 모든 속성 조합 테스트
+- 모든 자식 요소 조합 테스트
+- 예외 상황 테스트
+- Null 체크 테스트

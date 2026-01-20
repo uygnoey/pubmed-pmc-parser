@@ -1,0 +1,784 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="ko"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>JatsArticleValidator.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">pmc</a> &gt; <a href="index.source.html" class="el_package">com.brillianttiger.bio.parser.pmc.validation</a> &gt; <span class="el_source">JatsArticleValidator.java</span></div><h1>JatsArticleValidator.java</h1><pre class="source lang-java linenums">package com.brillianttiger.bio.parser.pmc.validation;
+
+import com.brillianttiger.bio.parser.pmc.model.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.util.*;
+import java.util.regex.Pattern;
+
+/**
+ * JatsArticleValidator / JATS Article 검증기
+ *
+ * KR: JATS 1.4 표준 기준 article 검증.
+ *     필수 요소, ID 형식, 참조 무결성 등을 검증.
+ * EN: Validate article based on JATS 1.4 standard.
+ *     Validates required elements, ID formats, reference integrity, etc.
+ *
+ * Features:
+ * - 필수 요소 검증 (front, article-meta, title-group) / Required element validation
+ * - ID 형식 검증 (DOI, PMCID, PMID, ORCID) / ID format validation
+ * - 참조 무결성 검증 (xref rid → target id) / Reference integrity validation
+ * - 권장 속성 검증 / Recommended attribute validation
+ *
+ * @see &lt;a href=&quot;https://jats.nlm.nih.gov/archiving/tag-library/1.4/&quot;&gt;JATS 1.4 Tag Library&lt;/a&gt;
+ */
+<span class="fc" id="L26">public class JatsArticleValidator {</span>
+
+<span class="fc" id="L28">    private static final Logger log = LoggerFactory.getLogger(JatsArticleValidator.class);</span>
+
+    // ========================================================================
+    // 정규 표현식 패턴 / Regular Expression Patterns
+    // ========================================================================
+
+    /**
+     * DOI 형식 패턴 / DOI format pattern
+     * 예: 10.1234/example
+     */
+<span class="fc" id="L38">    private static final Pattern DOI_PATTERN = Pattern.compile(&quot;^10\\.\\d{4,}/[\\S]+$&quot;);</span>
+
+    /**
+     * PMCID 형식 패턴 / PMCID format pattern
+     * 예: PMC1234567
+     */
+<span class="fc" id="L44">    private static final Pattern PMCID_PATTERN = Pattern.compile(&quot;^PMC\\d+$&quot;);</span>
+
+    /**
+     * PMID 형식 패턴 / PMID format pattern
+     * 예: 12345678
+     */
+<span class="fc" id="L50">    private static final Pattern PMID_PATTERN = Pattern.compile(&quot;^\\d+$&quot;);</span>
+
+    /**
+     * ORCID 형식 패턴 / ORCID format pattern
+     * 예: 0000-0002-1825-0097
+     * 마지막 자리는 숫자 또는 X
+     */
+<span class="fc" id="L57">    private static final Pattern ORCID_PATTERN = Pattern.compile(&quot;^\\d{4}-\\d{4}-\\d{4}-\\d{3}[0-9X]$&quot;);</span>
+
+    /**
+     * ORCID URL 형식 패턴 / ORCID URL format pattern
+     * 예: https://orcid.org/0000-0002-1825-0097
+     */
+<span class="fc" id="L63">    private static final Pattern ORCID_URL_PATTERN = Pattern.compile(&quot;^https?://orcid\\.org/\\d{4}-\\d{4}-\\d{4}-\\d{3}[0-9X]$&quot;);</span>
+
+    // ========================================================================
+    // 검증 메인 메서드 / Main Validation Method
+    // ========================================================================
+
+    /**
+     * JATS Article 검증 / Validate JATS Article
+     *
+     * KR: article 전체를 검증하여 오류 목록 반환.
+     *     오류가 없으면 빈 리스트 반환.
+     * EN: Validate entire article and return list of errors.
+     *     Returns empty list if no errors found.
+     *
+     * @param article 검증할 article / Article to validate
+     * @return 검증 오류 목록 / List of validation errors
+     */
+    public List&lt;ValidationError&gt; validateArticle(JatsArticle article) {
+<span class="fc" id="L81">        List&lt;ValidationError&gt; errors = new ArrayList&lt;&gt;();</span>
+
+<span class="fc bfc" id="L83" title="All 2 branches covered.">        if (article == null) {</span>
+<span class="fc" id="L84">            errors.add(ValidationError.error(</span>
+                    ValidationError.ErrorCode.MISSING_REQUIRED_ELEMENT,
+                    &quot;Article is null&quot;,
+                    &quot;/article&quot;
+            ));
+<span class="fc" id="L89">            return errors;</span>
+        }
+
+<span class="fc" id="L92">        log.debug(&quot;Starting JATS article validation&quot;);</span>
+
+        // 1. 필수 요소 검증 / Validate required elements
+<span class="fc" id="L95">        errors.addAll(validateRequiredElements(article));</span>
+
+        // 2. ID 형식 검증 / Validate ID formats
+<span class="fc" id="L98">        errors.addAll(validateIdFormats(article));</span>
+
+        // 3. 참조 무결성 검증 / Validate reference integrity
+<span class="fc" id="L101">        errors.addAll(validateReferenceIntegrity(article));</span>
+
+        // 4. 권장 속성 검증 / Validate recommended attributes
+<span class="fc" id="L104">        errors.addAll(validateRecommendedAttributes(article));</span>
+
+<span class="fc" id="L106">        log.debug(&quot;Validation completed: {} errors found&quot;, errors.size());</span>
+<span class="fc" id="L107">        return errors;</span>
+    }
+
+    // ========================================================================
+    // 1. 필수 요소 검증 / Required Elements Validation
+    // ========================================================================
+
+    /**
+     * 필수 요소 검증 / Validate required elements
+     *
+     * KR: JATS 표준에서 필수로 요구하는 요소들 검증.
+     * EN: Validate elements required by JATS standard.
+     */
+    private List&lt;ValidationError&gt; validateRequiredElements(JatsArticle article) {
+<span class="fc" id="L121">        List&lt;ValidationError&gt; errors = new ArrayList&lt;&gt;();</span>
+
+        // front (필수) / front (required)
+<span class="fc bfc" id="L124" title="All 2 branches covered.">        if (article.getFront() == null) {</span>
+<span class="fc" id="L125">            errors.add(ValidationError.error(</span>
+                    ValidationError.ErrorCode.MISSING_FRONT,
+                    &quot;Required element 'front' is missing&quot;,
+                    &quot;/article&quot;
+            ));
+<span class="fc" id="L130">            return errors; // front가 없으면 더 이상 검증 불가</span>
+        }
+
+<span class="fc" id="L133">        Front front = article.getFront();</span>
+
+        // article-meta (필수) / article-meta (required)
+<span class="fc bfc" id="L136" title="All 2 branches covered.">        if (front.getArticleMeta() == null) {</span>
+<span class="fc" id="L137">            errors.add(ValidationError.error(</span>
+                    ValidationError.ErrorCode.MISSING_ARTICLE_META,
+                    &quot;Required element 'article-meta' is missing&quot;,
+                    &quot;/article/front&quot;
+            ));
+<span class="fc" id="L142">            return errors; // article-meta가 없으면 더 이상 검증 불가</span>
+        }
+
+<span class="fc" id="L145">        ArticleMeta articleMeta = front.getArticleMeta();</span>
+
+        // title-group (권장) / title-group (recommended)
+<span class="fc bfc" id="L148" title="All 2 branches covered.">        if (articleMeta.getTitleGroup() == null) {</span>
+<span class="fc" id="L149">            errors.add(ValidationError.warning(</span>
+                    ValidationError.ErrorCode.MISSING_TITLE_GROUP,
+                    &quot;Recommended element 'title-group' is missing&quot;,
+                    &quot;/article/front/article-meta&quot;
+            ));
+        } else {
+<span class="fc" id="L155">            TitleGroup titleGroup = articleMeta.getTitleGroup();</span>
+
+            // article-title (필수) / article-title (required)
+<span class="fc bfc" id="L158" title="All 4 branches covered.">            if (titleGroup.getArticleTitle() == null || titleGroup.getArticleTitle().getContent() == null</span>
+<span class="fc bfc" id="L159" title="All 2 branches covered.">                    || titleGroup.getArticleTitle().getContent().trim().isEmpty()) {</span>
+<span class="fc" id="L160">                errors.add(ValidationError.error(</span>
+                        ValidationError.ErrorCode.MISSING_ARTICLE_TITLE,
+                        &quot;Required element 'article-title' is missing or empty&quot;,
+                        &quot;/article/front/article-meta/title-group&quot;
+                ));
+            }
+        }
+
+<span class="fc" id="L168">        return errors;</span>
+    }
+
+    // ========================================================================
+    // 2. ID 형식 검증 / ID Format Validation
+    // ========================================================================
+
+    /**
+     * ID 형식 검증 / Validate ID formats
+     *
+     * KR: DOI, PMCID, PMID, ORCID 등의 ID 형식 검증.
+     * EN: Validate formats of DOI, PMCID, PMID, ORCID, etc.
+     */
+    private List&lt;ValidationError&gt; validateIdFormats(JatsArticle article) {
+<span class="fc" id="L182">        List&lt;ValidationError&gt; errors = new ArrayList&lt;&gt;();</span>
+
+<span class="fc bfc" id="L184" title="All 4 branches covered.">        if (article.getFront() == null || article.getFront().getArticleMeta() == null) {</span>
+<span class="fc" id="L185">            return errors; // 이미 필수 요소 검증에서 오류 발생</span>
+        }
+
+<span class="fc" id="L188">        ArticleMeta articleMeta = article.getFront().getArticleMeta();</span>
+
+        // article-id 검증 / Validate article-id
+<span class="fc bfc" id="L191" title="All 2 branches covered.">        if (articleMeta.getArticleIds() != null) {</span>
+<span class="fc bfc" id="L192" title="All 2 branches covered.">            for (PmcArticleId articleId : articleMeta.getArticleIds()) {</span>
+<span class="fc" id="L193">                errors.addAll(validateArticleId(articleId));</span>
+<span class="fc" id="L194">            }</span>
+        }
+
+        // contrib의 ORCID 검증 / Validate contrib ORCID
+<span class="fc bfc" id="L198" title="All 2 branches covered.">        if (articleMeta.getContribGroups() != null) {</span>
+<span class="fc bfc" id="L199" title="All 2 branches covered.">            for (ContribGroup contribGroup : articleMeta.getContribGroups()) {</span>
+<span class="fc bfc" id="L200" title="All 2 branches covered.">                if (contribGroup.getContributors() != null) {</span>
+<span class="fc bfc" id="L201" title="All 2 branches covered.">                    for (Contrib contrib : contribGroup.getContributors()) {</span>
+<span class="fc" id="L202">                        errors.addAll(validateContribOrcid(contrib));</span>
+<span class="fc" id="L203">                    }</span>
+                }
+<span class="fc" id="L205">            }</span>
+        }
+
+<span class="fc" id="L208">        return errors;</span>
+    }
+
+    /**
+     * ArticleId 검증 / Validate ArticleId
+     */
+    private List&lt;ValidationError&gt; validateArticleId(PmcArticleId articleId) {
+<span class="fc" id="L215">        List&lt;ValidationError&gt; errors = new ArrayList&lt;&gt;();</span>
+
+<span class="fc bfc" id="L217" title="All 4 branches covered.">        if (articleId.getValue() == null || articleId.getValue().trim().isEmpty()) {</span>
+<span class="fc" id="L218">            return errors; // 빈 값은 건너뛰기</span>
+        }
+
+<span class="fc" id="L221">        String value = articleId.getValue().trim();</span>
+        // PmcArticleId has pubIdType as String, convert to enum
+<span class="fc" id="L223">        PubIdType idType = PubIdType.fromValue(articleId.getPubIdType());</span>
+
+<span class="pc bpc" id="L225" title="1 of 4 branches missed.">        if (idType == null || idType == PubIdType.OTHER) {</span>
+<span class="fc" id="L226">            return errors; // pub-id-type이 없거나 알 수 없으면 검증 불가</span>
+        }
+
+<span class="fc" id="L229">        String location = &quot;/article/front/article-meta/article-id[@pub-id-type='&quot; + idType + &quot;']&quot;;</span>
+
+<span class="fc bfc" id="L231" title="All 4 branches covered.">        switch (idType) {</span>
+            case DOI:
+<span class="fc bfc" id="L233" title="All 2 branches covered.">                if (!DOI_PATTERN.matcher(value).matches()) {</span>
+<span class="fc" id="L234">                    errors.add(ValidationError.error(</span>
+                            ValidationError.ErrorCode.INVALID_DOI_FORMAT,
+                            &quot;Invalid DOI format: &quot; + value,
+                            location,
+                            &quot;Expected format: 10.xxxx/xxxxx&quot;
+                    ));
+                }
+                break;
+
+            case PMCID:
+<span class="fc bfc" id="L244" title="All 2 branches covered.">                if (!PMCID_PATTERN.matcher(value).matches()) {</span>
+<span class="fc" id="L245">                    errors.add(ValidationError.error(</span>
+                            ValidationError.ErrorCode.INVALID_PMCID_FORMAT,
+                            &quot;Invalid PMCID format: &quot; + value,
+                            location,
+                            &quot;Expected format: PMC followed by digits (e.g., PMC1234567)&quot;
+                    ));
+                }
+                break;
+
+            case PMID:
+<span class="fc bfc" id="L255" title="All 2 branches covered.">                if (!PMID_PATTERN.matcher(value).matches()) {</span>
+<span class="fc" id="L256">                    errors.add(ValidationError.error(</span>
+                            ValidationError.ErrorCode.INVALID_PMID_FORMAT,
+                            &quot;Invalid PMID format: &quot; + value,
+                            location,
+                            &quot;Expected format: digits only (e.g., 12345678)&quot;
+                    ));
+                }
+                break;
+
+            default:
+                // 다른 ID 타입은 건너뛰기 / Skip other ID types
+                break;
+        }
+
+<span class="fc" id="L270">        return errors;</span>
+    }
+
+    /**
+     * Contrib ORCID 검증 / Validate Contrib ORCID
+     */
+    private List&lt;ValidationError&gt; validateContribOrcid(Contrib contrib) {
+<span class="fc" id="L277">        List&lt;ValidationError&gt; errors = new ArrayList&lt;&gt;();</span>
+
+<span class="fc bfc" id="L279" title="All 2 branches covered.">        if (contrib.getContribIds() == null) {</span>
+<span class="fc" id="L280">            return errors;</span>
+        }
+
+<span class="fc bfc" id="L283" title="All 2 branches covered.">        for (ContribId contribId : contrib.getContribIds()) {</span>
+<span class="fc bfc" id="L284" title="All 2 branches covered.">            if (contribId.getContribIdType() == ContribIdType.ORCID) {</span>
+<span class="fc" id="L285">                String orcid = contribId.getValue();</span>
+
+<span class="fc bfc" id="L287" title="All 4 branches covered.">                if (orcid == null || orcid.trim().isEmpty()) {</span>
+<span class="fc" id="L288">                    continue;</span>
+                }
+
+<span class="fc" id="L291">                orcid = orcid.trim();</span>
+
+                // ORCID URL 형식도 허용 / Allow ORCID URL format
+<span class="fc bfc" id="L294" title="All 2 branches covered.">                boolean valid = ORCID_PATTERN.matcher(orcid).matches() ||</span>
+<span class="fc bfc" id="L295" title="All 2 branches covered.">                        ORCID_URL_PATTERN.matcher(orcid).matches();</span>
+
+<span class="fc bfc" id="L297" title="All 2 branches covered.">                if (!valid) {</span>
+<span class="fc" id="L298">                    errors.add(ValidationError.error(</span>
+                            ValidationError.ErrorCode.INVALID_ORCID_FORMAT,
+                            &quot;Invalid ORCID format: &quot; + orcid,
+                            &quot;/article/front/article-meta/contrib-group/contrib/contrib-id[@contrib-id-type='orcid']&quot;,
+                            &quot;Expected format: 0000-0000-0000-0000 or https://orcid.org/0000-0000-0000-0000&quot;
+                    ));
+                }
+            }
+<span class="fc" id="L306">        }</span>
+
+<span class="fc" id="L308">        return errors;</span>
+    }
+
+    // ========================================================================
+    // 3. 참조 무결성 검증 / Reference Integrity Validation
+    // ========================================================================
+
+    /**
+     * 참조 무결성 검증 / Validate reference integrity
+     *
+     * KR: xref의 rid가 문서 내 id와 매칭되는지 검증.
+     * EN: Validate that xref rid matches id within document.
+     */
+    private List&lt;ValidationError&gt; validateReferenceIntegrity(JatsArticle article) {
+<span class="fc" id="L322">        List&lt;ValidationError&gt; errors = new ArrayList&lt;&gt;();</span>
+
+        // 1. 문서 내 모든 ID 수집 / Collect all IDs in document
+<span class="fc" id="L325">        Set&lt;String&gt; allIds = collectAllIds(article);</span>
+
+        // 2. xref의 rid 검증 / Validate xref rid
+        // Note: Full xref validation requires traversing Body and Back elements
+        // Currently performs basic validation on collected IDs
+        // Future enhancement: implement visitor pattern for complete document tree traversal
+
+        // Collect IDs from Body if present
+<span class="fc bfc" id="L333" title="All 2 branches covered.">        if (article.getBody() != null) {</span>
+<span class="fc" id="L334">            collectBodyIds(article.getBody(), allIds);</span>
+        }
+
+        // Collect IDs from Back if present
+<span class="fc bfc" id="L338" title="All 2 branches covered.">        if (article.getBack() != null) {</span>
+<span class="fc" id="L339">            collectBackIds(article.getBack(), allIds);</span>
+        }
+
+<span class="fc" id="L342">        log.debug(&quot;Collected {} unique IDs from article&quot;, allIds.size());</span>
+
+<span class="fc" id="L344">        return errors;</span>
+    }
+
+    /**
+     * 문서 내 모든 ID 수집 / Collect all IDs in document
+     */
+    private Set&lt;String&gt; collectAllIds(JatsArticle article) {
+<span class="fc" id="L351">        Set&lt;String&gt; ids = new HashSet&lt;&gt;();</span>
+
+<span class="fc bfc" id="L353" title="All 4 branches covered.">        if (article.getFront() != null &amp;&amp; article.getFront().getArticleMeta() != null) {</span>
+<span class="fc" id="L354">            ArticleMeta meta = article.getFront().getArticleMeta();</span>
+
+            // aff ID 수집 / Collect aff IDs
+<span class="fc bfc" id="L357" title="All 2 branches covered.">            if (meta.getAffiliations() != null) {</span>
+<span class="fc bfc" id="L358" title="All 2 branches covered.">                for (Aff aff : meta.getAffiliations()) {</span>
+<span class="fc bfc" id="L359" title="All 2 branches covered.">                    if (aff.getId() != null) {</span>
+<span class="fc" id="L360">                        ids.add(aff.getId());</span>
+                    }
+<span class="fc" id="L362">                }</span>
+            }
+
+            // contrib ID 수집 / Collect contrib IDs
+<span class="fc bfc" id="L366" title="All 2 branches covered.">            if (meta.getContribGroups() != null) {</span>
+<span class="fc bfc" id="L367" title="All 2 branches covered.">                for (ContribGroup group : meta.getContribGroups()) {</span>
+<span class="fc bfc" id="L368" title="All 2 branches covered.">                    if (group.getContributors() != null) {</span>
+<span class="fc bfc" id="L369" title="All 2 branches covered.">                        for (Contrib contrib : group.getContributors()) {</span>
+<span class="fc bfc" id="L370" title="All 2 branches covered.">                            if (contrib.getId() != null) {</span>
+<span class="fc" id="L371">                                ids.add(contrib.getId());</span>
+                            }
+<span class="fc" id="L373">                        }</span>
+                    }
+<span class="fc" id="L375">                }</span>
+            }
+        }
+
+        // back의 ref ID 수집 / Collect ref IDs from back
+<span class="fc bfc" id="L380" title="All 4 branches covered.">        if (article.getBack() != null &amp;&amp; article.getBack().getRefLists() != null) {</span>
+<span class="fc bfc" id="L381" title="All 2 branches covered.">            for (RefList refList : article.getBack().getRefLists()) {</span>
+<span class="fc" id="L382">                collectRefIds(refList, ids);</span>
+<span class="fc" id="L383">            }</span>
+        }
+
+<span class="fc" id="L386">        return ids;</span>
+    }
+
+    /**
+     * RefList에서 ref ID 수집 (재귀) / Collect ref IDs from RefList (recursive)
+     */
+    private void collectRefIds(RefList refList, Set&lt;String&gt; ids) {
+<span class="fc bfc" id="L393" title="All 2 branches covered.">        if (refList.getReferences() != null) {</span>
+<span class="fc bfc" id="L394" title="All 2 branches covered.">            for (Ref ref : refList.getReferences()) {</span>
+<span class="fc bfc" id="L395" title="All 2 branches covered.">                if (ref.getId() != null) {</span>
+<span class="fc" id="L396">                    ids.add(ref.getId());</span>
+                }
+<span class="fc" id="L398">            }</span>
+        }
+
+        // 중첩된 ref-list 처리 / Handle nested ref-list
+<span class="fc bfc" id="L402" title="All 2 branches covered.">        if (refList.getRefLists() != null) {</span>
+<span class="fc bfc" id="L403" title="All 2 branches covered.">            for (RefList nestedRefList : refList.getRefLists()) {</span>
+<span class="fc" id="L404">                collectRefIds(nestedRefList, ids);</span>
+<span class="fc" id="L405">            }</span>
+        }
+<span class="fc" id="L407">    }</span>
+
+    /**
+     * Body에서 ID 수집 / Collect IDs from Body
+     *
+     * KR: Body 내의 모든 요소에서 ID를 재귀적으로 수집.
+     * EN: Recursively collect IDs from all elements within Body.
+     */
+    private void collectBodyIds(Body body, Set&lt;String&gt; ids) {
+<span class="pc bpc" id="L416" title="1 of 2 branches missed.">        if (body == null) {</span>
+<span class="nc" id="L417">            return;</span>
+        }
+
+        // Body 자체의 ID / Body's own ID
+<span class="fc bfc" id="L421" title="All 2 branches covered.">        if (body.getId() != null) {</span>
+<span class="fc" id="L422">            ids.add(body.getId());</span>
+        }
+
+        // 섹션 ID 수집 (재귀) / Collect section IDs (recursive)
+<span class="fc bfc" id="L426" title="All 2 branches covered.">        if (body.getSections() != null) {</span>
+<span class="fc bfc" id="L427" title="All 2 branches covered.">            for (Sec sec : body.getSections()) {</span>
+<span class="fc" id="L428">                collectSecIds(sec, ids);</span>
+<span class="fc" id="L429">            }</span>
+        }
+
+        // 그림 ID 수집 / Collect figure IDs
+<span class="fc bfc" id="L433" title="All 2 branches covered.">        if (body.getFigures() != null) {</span>
+<span class="fc" id="L434">            collectFigIds(body.getFigures(), ids);</span>
+        }
+
+        // 테이블 ID 수집 / Collect table IDs
+<span class="fc bfc" id="L438" title="All 2 branches covered.">        if (body.getTableWraps() != null) {</span>
+<span class="fc" id="L439">            collectTableWrapIds(body.getTableWraps(), ids);</span>
+        }
+
+        // 표시 수식 ID 수집 / Collect display formula IDs
+<span class="fc bfc" id="L443" title="All 2 branches covered.">        if (body.getDispFormulas() != null) {</span>
+<span class="fc" id="L444">            collectDispFormulaIds(body.getDispFormulas(), ids);</span>
+        }
+
+        // 정의 목록 ID 수집 / Collect definition list IDs
+<span class="fc bfc" id="L448" title="All 2 branches covered.">        if (body.getDefLists() != null) {</span>
+<span class="fc bfc" id="L449" title="All 2 branches covered.">            for (DefList defList : body.getDefLists()) {</span>
+<span class="fc bfc" id="L450" title="All 2 branches covered.">                if (defList.getId() != null) {</span>
+<span class="fc" id="L451">                    ids.add(defList.getId());</span>
+                }
+<span class="fc" id="L453">            }</span>
+        }
+
+        // 박스 텍스트 ID 수집 / Collect boxed text IDs
+<span class="fc bfc" id="L457" title="All 2 branches covered.">        if (body.getBoxedTexts() != null) {</span>
+<span class="fc bfc" id="L458" title="All 2 branches covered.">            for (BoxedText boxedText : body.getBoxedTexts()) {</span>
+<span class="fc bfc" id="L459" title="All 2 branches covered.">                if (boxedText.getId() != null) {</span>
+<span class="fc" id="L460">                    ids.add(boxedText.getId());</span>
+                }
+<span class="fc" id="L462">            }</span>
+        }
+
+        // 인용구 ID 수집 / Collect display quote IDs
+<span class="fc bfc" id="L466" title="All 2 branches covered.">        if (body.getDispQuotes() != null) {</span>
+<span class="fc bfc" id="L467" title="All 2 branches covered.">            for (DispQuote dispQuote : body.getDispQuotes()) {</span>
+<span class="fc bfc" id="L468" title="All 2 branches covered.">                if (dispQuote.getId() != null) {</span>
+<span class="fc" id="L469">                    ids.add(dispQuote.getId());</span>
+                }
+<span class="fc" id="L471">            }</span>
+        }
+
+        // 코드 블록 ID 수집 / Collect code block IDs
+<span class="fc bfc" id="L475" title="All 2 branches covered.">        if (body.getCodeBlocks() != null) {</span>
+<span class="fc bfc" id="L476" title="All 2 branches covered.">            for (Code code : body.getCodeBlocks()) {</span>
+<span class="fc bfc" id="L477" title="All 2 branches covered.">                if (code.getId() != null) {</span>
+<span class="fc" id="L478">                    ids.add(code.getId());</span>
+                }
+<span class="fc" id="L480">            }</span>
+        }
+<span class="fc" id="L482">    }</span>
+
+    /**
+     * Back에서 ID 수집 / Collect IDs from Back
+     *
+     * KR: Back 내의 모든 요소에서 ID를 재귀적으로 수집.
+     * EN: Recursively collect IDs from all elements within Back.
+     */
+    private void collectBackIds(Back back, Set&lt;String&gt; ids) {
+<span class="pc bpc" id="L491" title="1 of 2 branches missed.">        if (back == null) {</span>
+<span class="nc" id="L492">            return;</span>
+        }
+
+        // Back 자체의 ID / Back's own ID
+<span class="fc bfc" id="L496" title="All 2 branches covered.">        if (back.getId() != null) {</span>
+<span class="fc" id="L497">            ids.add(back.getId());</span>
+        }
+
+        // 섹션 ID 수집 (재귀) / Collect section IDs (recursive)
+<span class="fc bfc" id="L501" title="All 2 branches covered.">        if (back.getSections() != null) {</span>
+<span class="fc bfc" id="L502" title="All 2 branches covered.">            for (Sec sec : back.getSections()) {</span>
+<span class="fc" id="L503">                collectSecIds(sec, ids);</span>
+<span class="fc" id="L504">            }</span>
+        }
+
+        // 감사의 글 ID 수집 / Collect acknowledgment IDs
+<span class="fc bfc" id="L508" title="All 2 branches covered.">        if (back.getAcknowledgments() != null) {</span>
+<span class="fc bfc" id="L509" title="All 2 branches covered.">            for (Ack ack : back.getAcknowledgments()) {</span>
+<span class="fc bfc" id="L510" title="All 2 branches covered.">                if (ack.getId() != null) {</span>
+<span class="fc" id="L511">                    ids.add(ack.getId());</span>
+                }
+<span class="fc" id="L513">            }</span>
+        }
+
+        // 부록 그룹 ID 수집 / Collect appendix group IDs
+<span class="fc bfc" id="L517" title="All 2 branches covered.">        if (back.getAppGroups() != null) {</span>
+<span class="fc bfc" id="L518" title="All 2 branches covered.">            for (AppGroup appGroup : back.getAppGroups()) {</span>
+<span class="fc bfc" id="L519" title="All 2 branches covered.">                if (appGroup.getId() != null) {</span>
+<span class="fc" id="L520">                    ids.add(appGroup.getId());</span>
+                }
+<span class="fc" id="L522">            }</span>
+        }
+
+        // 저자 약력 ID 수집 / Collect biography IDs
+<span class="fc bfc" id="L526" title="All 2 branches covered.">        if (back.getBiographies() != null) {</span>
+<span class="fc bfc" id="L527" title="All 2 branches covered.">            for (Bio bio : back.getBiographies()) {</span>
+<span class="fc bfc" id="L528" title="All 2 branches covered.">                if (bio.getId() != null) {</span>
+<span class="fc" id="L529">                    ids.add(bio.getId());</span>
+                }
+<span class="fc" id="L531">            }</span>
+        }
+
+        // 각주 그룹 ID 수집 / Collect footnote group IDs
+<span class="fc bfc" id="L535" title="All 2 branches covered.">        if (back.getFnGroups() != null) {</span>
+<span class="fc bfc" id="L536" title="All 2 branches covered.">            for (FnGroup fnGroup : back.getFnGroups()) {</span>
+<span class="fc bfc" id="L537" title="All 2 branches covered.">                if (fnGroup.getId() != null) {</span>
+<span class="fc" id="L538">                    ids.add(fnGroup.getId());</span>
+                }
+<span class="fc" id="L540">            }</span>
+        }
+
+        // 용어집 ID 수집 / Collect glossary IDs
+<span class="fc bfc" id="L544" title="All 2 branches covered.">        if (back.getGlossaries() != null) {</span>
+<span class="fc bfc" id="L545" title="All 2 branches covered.">            for (Glossary glossary : back.getGlossaries()) {</span>
+<span class="fc bfc" id="L546" title="All 2 branches covered.">                if (glossary.getId() != null) {</span>
+<span class="fc" id="L547">                    ids.add(glossary.getId());</span>
+                }
+<span class="fc" id="L549">            }</span>
+        }
+
+        // 노트 ID 수집 / Collect notes IDs
+<span class="fc bfc" id="L553" title="All 2 branches covered.">        if (back.getNotesList() != null) {</span>
+<span class="fc bfc" id="L554" title="All 2 branches covered.">            for (Notes notes : back.getNotesList()) {</span>
+<span class="fc bfc" id="L555" title="All 2 branches covered.">                if (notes.getId() != null) {</span>
+<span class="fc" id="L556">                    ids.add(notes.getId());</span>
+                }
+<span class="fc" id="L558">            }</span>
+        }
+
+        // refLists는 이미 collectAllIds()에서 처리됨 / refLists already handled in collectAllIds()
+<span class="fc" id="L562">    }</span>
+
+    /**
+     * Sec에서 ID 수집 (재귀) / Collect IDs from Sec (recursive)
+     *
+     * KR: Sec 내의 모든 요소에서 ID를 재귀적으로 수집.
+     * EN: Recursively collect IDs from all elements within Sec.
+     */
+    private void collectSecIds(Sec sec, Set&lt;String&gt; ids) {
+<span class="pc bpc" id="L571" title="1 of 2 branches missed.">        if (sec == null) {</span>
+<span class="nc" id="L572">            return;</span>
+        }
+
+        // Sec 자체의 ID / Sec's own ID
+<span class="fc bfc" id="L576" title="All 2 branches covered.">        if (sec.getId() != null) {</span>
+<span class="fc" id="L577">            ids.add(sec.getId());</span>
+        }
+
+        // 하위 섹션 ID 수집 (재귀) / Collect sub-section IDs (recursive)
+<span class="fc bfc" id="L581" title="All 2 branches covered.">        if (sec.getSections() != null) {</span>
+<span class="fc bfc" id="L582" title="All 2 branches covered.">            for (Sec subSec : sec.getSections()) {</span>
+<span class="fc" id="L583">                collectSecIds(subSec, ids);</span>
+<span class="fc" id="L584">            }</span>
+        }
+
+        // 그림 ID 수집 / Collect figure IDs
+<span class="fc bfc" id="L588" title="All 2 branches covered.">        if (sec.getFigures() != null) {</span>
+<span class="fc" id="L589">            collectFigIds(sec.getFigures(), ids);</span>
+        }
+
+        // 테이블 ID 수집 / Collect table IDs
+<span class="fc bfc" id="L593" title="All 2 branches covered.">        if (sec.getTableWraps() != null) {</span>
+<span class="fc" id="L594">            collectTableWrapIds(sec.getTableWraps(), ids);</span>
+        }
+
+        // 표시 수식 ID 수집 / Collect display formula IDs
+<span class="fc bfc" id="L598" title="All 2 branches covered.">        if (sec.getDispFormulas() != null) {</span>
+<span class="fc" id="L599">            collectDispFormulaIds(sec.getDispFormulas(), ids);</span>
+        }
+
+        // 정의 목록 ID 수집 / Collect definition list IDs
+<span class="fc bfc" id="L603" title="All 2 branches covered.">        if (sec.getDefLists() != null) {</span>
+<span class="fc bfc" id="L604" title="All 2 branches covered.">            for (DefList defList : sec.getDefLists()) {</span>
+<span class="fc bfc" id="L605" title="All 2 branches covered.">                if (defList.getId() != null) {</span>
+<span class="fc" id="L606">                    ids.add(defList.getId());</span>
+                }
+<span class="fc" id="L608">            }</span>
+        }
+
+        // 박스 텍스트 ID 수집 / Collect boxed text IDs
+<span class="fc bfc" id="L612" title="All 2 branches covered.">        if (sec.getBoxedTexts() != null) {</span>
+<span class="fc bfc" id="L613" title="All 2 branches covered.">            for (BoxedText boxedText : sec.getBoxedTexts()) {</span>
+<span class="fc bfc" id="L614" title="All 2 branches covered.">                if (boxedText.getId() != null) {</span>
+<span class="fc" id="L615">                    ids.add(boxedText.getId());</span>
+                }
+                // BoxedText 내부의 섹션도 재귀적으로 처리 / Recursively handle sections within BoxedText
+<span class="fc bfc" id="L618" title="All 2 branches covered.">                if (boxedText.getSections() != null) {</span>
+<span class="fc bfc" id="L619" title="All 2 branches covered.">                    for (Sec innerSec : boxedText.getSections()) {</span>
+<span class="fc" id="L620">                        collectSecIds(innerSec, ids);</span>
+<span class="fc" id="L621">                    }</span>
+                }
+<span class="fc" id="L623">            }</span>
+        }
+
+        // 인용구 ID 수집 / Collect display quote IDs
+<span class="fc bfc" id="L627" title="All 2 branches covered.">        if (sec.getDispQuotes() != null) {</span>
+<span class="fc bfc" id="L628" title="All 2 branches covered.">            for (DispQuote dispQuote : sec.getDispQuotes()) {</span>
+<span class="fc bfc" id="L629" title="All 2 branches covered.">                if (dispQuote.getId() != null) {</span>
+<span class="fc" id="L630">                    ids.add(dispQuote.getId());</span>
+                }
+<span class="fc" id="L632">            }</span>
+        }
+
+        // 코드 블록 ID 수집 / Collect code block IDs
+<span class="fc bfc" id="L636" title="All 2 branches covered.">        if (sec.getCodeBlocks() != null) {</span>
+<span class="fc bfc" id="L637" title="All 2 branches covered.">            for (Code code : sec.getCodeBlocks()) {</span>
+<span class="fc bfc" id="L638" title="All 2 branches covered.">                if (code.getId() != null) {</span>
+<span class="fc" id="L639">                    ids.add(code.getId());</span>
+                }
+<span class="fc" id="L641">            }</span>
+        }
+
+        // 목록 ID 수집 / Collect list IDs
+<span class="fc bfc" id="L645" title="All 2 branches covered.">        if (sec.getLists() != null) {</span>
+<span class="fc bfc" id="L646" title="All 2 branches covered.">            for (PmcList list : sec.getLists()) {</span>
+<span class="fc bfc" id="L647" title="All 2 branches covered.">                if (list.getId() != null) {</span>
+<span class="fc" id="L648">                    ids.add(list.getId());</span>
+                }
+<span class="fc" id="L650">            }</span>
+        }
+<span class="fc" id="L652">    }</span>
+
+    /**
+     * Fig 목록에서 ID 수집 / Collect IDs from Fig list
+     */
+    private void collectFigIds(List&lt;Fig&gt; figures, Set&lt;String&gt; ids) {
+<span class="pc bpc" id="L658" title="1 of 2 branches missed.">        if (figures == null) {</span>
+<span class="nc" id="L659">            return;</span>
+        }
+
+<span class="fc bfc" id="L662" title="All 2 branches covered.">        for (Fig fig : figures) {</span>
+<span class="fc bfc" id="L663" title="All 2 branches covered.">            if (fig.getId() != null) {</span>
+<span class="fc" id="L664">                ids.add(fig.getId());</span>
+            }
+            // Fig 내부의 TableWrap도 처리 / Also handle TableWraps within Fig
+<span class="fc bfc" id="L667" title="All 2 branches covered.">            if (fig.getTableWraps() != null) {</span>
+<span class="fc" id="L668">                collectTableWrapIds(fig.getTableWraps(), ids);</span>
+            }
+<span class="fc" id="L670">        }</span>
+<span class="fc" id="L671">    }</span>
+
+    /**
+     * TableWrap 목록에서 ID 수집 / Collect IDs from TableWrap list
+     */
+    private void collectTableWrapIds(List&lt;TableWrap&gt; tableWraps, Set&lt;String&gt; ids) {
+<span class="pc bpc" id="L677" title="1 of 2 branches missed.">        if (tableWraps == null) {</span>
+<span class="nc" id="L678">            return;</span>
+        }
+
+<span class="fc bfc" id="L681" title="All 2 branches covered.">        for (TableWrap tableWrap : tableWraps) {</span>
+<span class="fc bfc" id="L682" title="All 2 branches covered.">            if (tableWrap.getId() != null) {</span>
+<span class="fc" id="L683">                ids.add(tableWrap.getId());</span>
+            }
+<span class="fc" id="L685">        }</span>
+<span class="fc" id="L686">    }</span>
+
+    /**
+     * DispFormula 목록에서 ID 수집 / Collect IDs from DispFormula list
+     */
+    private void collectDispFormulaIds(List&lt;DispFormula&gt; dispFormulas, Set&lt;String&gt; ids) {
+<span class="pc bpc" id="L692" title="1 of 2 branches missed.">        if (dispFormulas == null) {</span>
+<span class="nc" id="L693">            return;</span>
+        }
+
+<span class="fc bfc" id="L696" title="All 2 branches covered.">        for (DispFormula dispFormula : dispFormulas) {</span>
+<span class="fc bfc" id="L697" title="All 2 branches covered.">            if (dispFormula.getId() != null) {</span>
+<span class="fc" id="L698">                ids.add(dispFormula.getId());</span>
+            }
+<span class="fc" id="L700">        }</span>
+<span class="fc" id="L701">    }</span>
+
+    // ========================================================================
+    // 4. 권장 속성 검증 / Recommended Attributes Validation
+    // ========================================================================
+
+    /**
+     * 권장 속성 검증 / Validate recommended attributes
+     *
+     * KR: JATS 표준에서 권장하는 속성들 검증.
+     * EN: Validate attributes recommended by JATS standard.
+     */
+    private List&lt;ValidationError&gt; validateRecommendedAttributes(JatsArticle article) {
+<span class="fc" id="L714">        List&lt;ValidationError&gt; errors = new ArrayList&lt;&gt;();</span>
+
+        // article-type (권장) / article-type (recommended)
+<span class="fc bfc" id="L717" title="All 2 branches covered.">        if (article.getArticleType() == null) {</span>
+<span class="fc" id="L718">            errors.add(ValidationError.warning(</span>
+                    ValidationError.ErrorCode.MISSING_RECOMMENDED_ATTRIBUTE,
+                    &quot;Recommended attribute 'article-type' is missing&quot;,
+                    &quot;/article&quot;,
+                    &quot;Examples: research-article, review-article, case-report&quot;
+            ));
+        }
+
+        // dtd-version (권장) / dtd-version (recommended)
+<span class="fc bfc" id="L727" title="All 4 branches covered.">        if (article.getDtdVersion() == null || article.getDtdVersion().trim().isEmpty()) {</span>
+<span class="fc" id="L728">            errors.add(ValidationError.info(</span>
+                    ValidationError.ErrorCode.MISSING_RECOMMENDED_ATTRIBUTE,
+                    &quot;Recommended attribute 'dtd-version' is missing&quot;,
+                    &quot;/article&quot;,
+                    &quot;Example: 1.4&quot;
+            ));
+        }
+
+<span class="fc" id="L736">        return errors;</span>
+    }
+
+    // ========================================================================
+    // 유틸리티 메서드 / Utility Methods
+    // ========================================================================
+
+    /**
+     * 검증 결과 요약 / Summarize validation results
+     *
+     * @param errors 검증 오류 목록 / List of validation errors
+     * @return 요약 문자열 / Summary string
+     */
+    public static String summarize(List&lt;ValidationError&gt; errors) {
+<span class="fc bfc" id="L750" title="All 2 branches covered.">        if (errors.isEmpty()) {</span>
+<span class="fc" id="L751">            return &quot;✅ Validation passed: No errors found&quot;;</span>
+        }
+
+<span class="fc" id="L754">        long errorCount = errors.stream()</span>
+<span class="fc bfc" id="L755" title="All 2 branches covered.">                .filter(e -&gt; e.getSeverity() == ValidationError.Severity.ERROR)</span>
+<span class="fc" id="L756">                .count();</span>
+<span class="fc" id="L757">        long warningCount = errors.stream()</span>
+<span class="fc bfc" id="L758" title="All 2 branches covered.">                .filter(e -&gt; e.getSeverity() == ValidationError.Severity.WARNING)</span>
+<span class="fc" id="L759">                .count();</span>
+<span class="fc" id="L760">        long infoCount = errors.stream()</span>
+<span class="fc bfc" id="L761" title="All 2 branches covered.">                .filter(e -&gt; e.getSeverity() == ValidationError.Severity.INFO)</span>
+<span class="fc" id="L762">                .count();</span>
+
+<span class="fc" id="L764">        return String.format(&quot;❌ Validation failed: %d errors, %d warnings, %d info&quot;,</span>
+<span class="fc" id="L765">                errorCount, warningCount, infoCount);</span>
+    }
+
+    /**
+     * 검증 오류 출력 / Print validation errors
+     *
+     * @param errors 검증 오류 목록 / List of validation errors
+     */
+    public static void printErrors(List&lt;ValidationError&gt; errors) {
+<span class="fc" id="L774">        System.out.println(summarize(errors));</span>
+<span class="fc" id="L775">        System.out.println();</span>
+
+<span class="fc bfc" id="L777" title="All 2 branches covered.">        if (!errors.isEmpty()) {</span>
+<span class="fc bfc" id="L778" title="All 2 branches covered.">            for (ValidationError error : errors) {</span>
+<span class="fc" id="L779">                System.out.println(error);</span>
+<span class="fc" id="L780">            }</span>
+        }
+<span class="fc" id="L782">    }</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.9.202303310957</span></div></body></html>

@@ -1,0 +1,7 @@
+article
+back
+body
+front
+front-stub
+response
+sub-article

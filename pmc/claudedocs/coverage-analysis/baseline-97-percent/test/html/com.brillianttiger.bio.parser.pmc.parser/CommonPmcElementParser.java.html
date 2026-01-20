@@ -1,0 +1,667 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="ko"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>CommonPmcElementParser.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">pmc</a> &gt; <a href="index.source.html" class="el_package">com.brillianttiger.bio.parser.pmc.parser</a> &gt; <span class="el_source">CommonPmcElementParser.java</span></div><h1>CommonPmcElementParser.java</h1><pre class="source lang-java linenums">package com.brillianttiger.bio.parser.pmc.parser;
+
+import com.brillianttiger.bio.parser.pmc.model.*;
+
+import javax.xml.stream.XMLStreamConstants;
+import javax.xml.stream.XMLStreamException;
+import javax.xml.stream.XMLStreamReader;
+import java.util.ArrayList;
+import java.util.List;
+
+/**
+ * CommonPmcElementParser / PMC 공통 요소 파서
+ *
+ * KR: PMC XML에서 공통으로 사용되는 요소들을 파싱하는 유틸리티 클래스
+ * EN: Utility class for parsing common elements used in PMC XML
+ */
+<span class="fc" id="L17">public class CommonPmcElementParser {</span>
+
+    /**
+     * 텍스트 콘텐츠 추출 / Extract text content
+     *
+     * KR: 요소의 텍스트 내용을 추출
+     * EN: Extract text content from element
+     */
+    public static String parseTextContent(XMLStreamReader reader, String elementName) throws XMLStreamException {
+<span class="fc" id="L26">        StringBuilder content = new StringBuilder();</span>
+
+        // Note: hasNext() 체크는 불필요합니다. 정상 XML에서는 항상 END_ELEMENT를 만나고,
+        // malformed XML에서는 next()가 XMLStreamException을 던집니다.
+        while (true) {
+<span class="fc" id="L31">            int event = reader.next();</span>
+
+<span class="fc bfc" id="L33" title="All 2 branches covered.">            if (event == XMLStreamConstants.CHARACTERS) {</span>
+<span class="fc" id="L34">                content.append(reader.getText());</span>
+<span class="fc bfc" id="L35" title="All 2 branches covered.">            } else if (event == XMLStreamConstants.END_ELEMENT) {</span>
+<span class="fc bfc" id="L36" title="All 2 branches covered.">                if (reader.getLocalName().equals(elementName)) {</span>
+<span class="fc" id="L37">                    break;</span>
+                }
+            }
+<span class="fc" id="L40">        }</span>
+
+<span class="fc" id="L42">        return content.toString().trim();</span>
+    }
+
+    /**
+     * 요소 건너뛰기 / Skip element
+     *
+     * KR: 처리하지 않는 요소를 건너뜀
+     * EN: Skip unprocessed element
+     */
+    public static void skipElement(XMLStreamReader reader) throws XMLStreamException {
+<span class="fc" id="L52">        int depth = 1;</span>
+
+        // Note: hasNext() 체크는 불필요합니다. 정상 XML에서는 depth가 0이 되면 종료되고,
+        // malformed XML에서는 next()가 XMLStreamException을 던집니다.
+<span class="fc bfc" id="L56" title="All 2 branches covered.">        while (depth &gt; 0) {</span>
+<span class="fc" id="L57">            int event = reader.next();</span>
+
+<span class="fc bfc" id="L59" title="All 2 branches covered.">            if (event == XMLStreamConstants.START_ELEMENT) {</span>
+<span class="fc" id="L60">                depth++;</span>
+<span class="fc bfc" id="L61" title="All 2 branches covered.">            } else if (event == XMLStreamConstants.END_ELEMENT) {</span>
+<span class="fc" id="L62">                depth--;</span>
+            }
+<span class="fc" id="L64">        }</span>
+<span class="fc" id="L65">    }</span>
+
+    /**
+     * 속성값 가져오기 / Get attribute value
+     *
+     * KR: 속성값을 가져옴
+     * EN: Get attribute value
+     *
+     * @param reader XMLStreamReader
+     * @param name attribute name
+     * @return attribute value or null
+     */
+    public static String getAttribute(XMLStreamReader reader, String name) {
+<span class="fc" id="L78">        return reader.getAttributeValue(null, name);</span>
+    }
+
+    /**
+     * 속성값 가져오기 (네임스페이스 포함) / Get attribute value (with namespace)
+     *
+     * KR: 네임스페이스를 포함한 속성값을 가져옴
+     * EN: Get attribute value with namespace
+     *
+     * @param reader XMLStreamReader
+     * @param namespace namespace URI
+     * @param name attribute name
+     * @return attribute value or null
+     */
+    public static String getAttribute(XMLStreamReader reader, String namespace, String name) {
+<span class="fc" id="L93">        return reader.getAttributeValue(namespace, name);</span>
+    }
+
+    /**
+     * 속성값 가져오기 (기본값 제공) / Get attribute value with default
+     *
+     * KR: 속성값을 가져오거나 기본값을 반환
+     * EN: Get attribute value or return default
+     *
+     * @param reader XMLStreamReader
+     * @param name attribute name
+     * @param defaultValue default value if attribute not found
+     * @return attribute value or default value
+     */
+    public static String getAttributeOrDefault(XMLStreamReader reader, String name, String defaultValue) {
+<span class="fc" id="L108">        String value = getAttribute(reader, name);</span>
+<span class="fc bfc" id="L109" title="All 2 branches covered.">        return value != null ? value : defaultValue;</span>
+    }
+
+    /**
+     * Label 파싱 / Parse Label
+     * DTD: &lt;!ELEMENT label (#PCDATA | %label-elements;)*&gt;
+     */
+    public static Label parseLabel(XMLStreamReader reader) throws XMLStreamException {
+<span class="fc" id="L117">        String value = parseTextContent(reader, &quot;label&quot;);</span>
+<span class="fc" id="L118">        return Label.builder().value(value).build();</span>
+    }
+
+    /**
+     * Title 파싱 / Parse Title
+     * DTD: &lt;!ELEMENT title (#PCDATA | %title-elements;)*&gt;
+     */
+    public static Title parseTitle(XMLStreamReader reader) throws XMLStreamException {
+<span class="fc" id="L126">        String value = parseTextContent(reader, &quot;title&quot;);</span>
+<span class="fc" id="L127">        return Title.builder().value(value).build();</span>
+    }
+
+    /**
+     * P (Paragraph) 파싱 / Parse P (Paragraph)
+     * DTD: &lt;!ELEMENT p (#PCDATA | %p-elements;)*&gt;
+     */
+    public static P parseP(XMLStreamReader reader) throws XMLStreamException {
+<span class="fc" id="L135">        String value = parseTextContent(reader, &quot;p&quot;);</span>
+<span class="fc" id="L136">        return P.builder().value(value).build();</span>
+    }
+
+    /**
+     * Year 파싱 / Parse Year
+     */
+    public static Year parseYear(XMLStreamReader reader) throws XMLStreamException {
+<span class="fc" id="L143">        String value = parseTextContent(reader, &quot;year&quot;);</span>
+<span class="fc" id="L144">        return Year.builder().value(value).build();</span>
+    }
+
+    /**
+     * Month 파싱 / Parse Month
+     */
+    public static Month parseMonth(XMLStreamReader reader) throws XMLStreamException {
+<span class="fc" id="L151">        String value = parseTextContent(reader, &quot;month&quot;);</span>
+<span class="fc" id="L152">        return Month.builder().value(value).build();</span>
+    }
+
+    /**
+     * Day 파싱 / Parse Day
+     */
+    public static Day parseDay(XMLStreamReader reader) throws XMLStreamException {
+<span class="fc" id="L159">        String value = parseTextContent(reader, &quot;day&quot;);</span>
+<span class="fc" id="L160">        return Day.builder().value(value).build();</span>
+    }
+
+    /**
+     * Volume 파싱 / Parse Volume
+     */
+    public static Volume parseVolume(XMLStreamReader reader) throws XMLStreamException {
+<span class="fc" id="L167">        String value = parseTextContent(reader, &quot;volume&quot;);</span>
+<span class="fc" id="L168">        return Volume.builder().value(value).build();</span>
+    }
+
+    /**
+     * VolumeId 파싱 / Parse VolumeId
+     */
+    public static VolumeId parseVolumeId(XMLStreamReader reader) throws XMLStreamException {
+<span class="fc" id="L175">        String value = parseTextContent(reader, &quot;volume-id&quot;);</span>
+<span class="fc" id="L176">        return VolumeId.builder().value(value).build();</span>
+    }
+
+    /**
+     * VolumeSeries 파싱 / Parse VolumeSeries
+     */
+    public static VolumeSeries parseVolumeSeries(XMLStreamReader reader) throws XMLStreamException {
+<span class="fc" id="L183">        String value = parseTextContent(reader, &quot;volume-series&quot;);</span>
+<span class="fc" id="L184">        return VolumeSeries.builder().value(value).build();</span>
+    }
+
+    /**
+     * PmcIssue 파싱 / Parse PmcIssue
+     */
+    public static PmcIssue parsePmcIssue(XMLStreamReader reader) throws XMLStreamException {
+<span class="fc" id="L191">        String value = parseTextContent(reader, &quot;issue&quot;);</span>
+<span class="fc" id="L192">        return PmcIssue.builder().value(value).build();</span>
+    }
+
+    /**
+     * IssueId 파싱 / Parse IssueId
+     */
+    public static IssueId parseIssueId(XMLStreamReader reader) throws XMLStreamException {
+<span class="fc" id="L199">        String value = parseTextContent(reader, &quot;issue-id&quot;);</span>
+<span class="fc" id="L200">        return IssueId.builder().value(value).build();</span>
+    }
+
+    /**
+     * IssueTitle 파싱 / Parse IssueTitle
+     */
+    public static IssueTitle parseIssueTitle(XMLStreamReader reader) throws XMLStreamException {
+<span class="fc" id="L207">        String value = parseTextContent(reader, &quot;issue-title&quot;);</span>
+<span class="fc" id="L208">        return IssueTitle.builder().value(value).build();</span>
+    }
+
+    /**
+     * IssueSponsor 파싱 / Parse IssueSponsor
+     */
+    public static IssueSponsor parseIssueSponsor(XMLStreamReader reader) throws XMLStreamException {
+<span class="fc" id="L215">        String value = parseTextContent(reader, &quot;issue-sponsor&quot;);</span>
+<span class="fc" id="L216">        return IssueSponsor.builder().value(value).build();</span>
+    }
+
+    /**
+     * IssuePart 파싱 / Parse IssuePart
+     */
+    public static IssuePart parseIssuePart(XMLStreamReader reader) throws XMLStreamException {
+<span class="fc" id="L223">        String value = parseTextContent(reader, &quot;issue-part&quot;);</span>
+<span class="fc" id="L224">        return IssuePart.builder().value(value).build();</span>
+    }
+
+    /**
+     * Fpage 파싱 / Parse Fpage
+     */
+    public static Fpage parseFpage(XMLStreamReader reader) throws XMLStreamException {
+<span class="fc" id="L231">        String value = parseTextContent(reader, &quot;fpage&quot;);</span>
+<span class="fc" id="L232">        return Fpage.builder().value(value).build();</span>
+    }
+
+    /**
+     * Lpage 파싱 / Parse Lpage
+     */
+    public static Lpage parseLpage(XMLStreamReader reader) throws XMLStreamException {
+<span class="fc" id="L239">        String value = parseTextContent(reader, &quot;lpage&quot;);</span>
+<span class="fc" id="L240">        return Lpage.builder().value(value).build();</span>
+    }
+
+    /**
+     * PageRange 파싱 / Parse PageRange
+     */
+    public static PageRange parsePageRange(XMLStreamReader reader) throws XMLStreamException {
+<span class="fc" id="L247">        String value = parseTextContent(reader, &quot;page-range&quot;);</span>
+<span class="fc" id="L248">        return PageRange.builder().value(value).build();</span>
+    }
+
+    /**
+     * ElocationId 파싱 / Parse ElocationId
+     */
+    public static ElocationId parseElocationId(XMLStreamReader reader) throws XMLStreamException {
+<span class="fc" id="L255">        String value = parseTextContent(reader, &quot;elocation-id&quot;);</span>
+<span class="fc" id="L256">        return ElocationId.builder().value(value).build();</span>
+    }
+
+    /**
+     * Email 파싱 / Parse Email
+     */
+    public static Email parseEmail(XMLStreamReader reader) throws XMLStreamException {
+<span class="fc" id="L263">        String value = parseTextContent(reader, &quot;email&quot;);</span>
+<span class="fc" id="L264">        return Email.builder().value(value).build();</span>
+    }
+
+    /**
+     * ExtLink 파싱 / Parse ExtLink
+     * DTD: &lt;!ATTLIST ext-link
+     *          assigning-authority CDATA #IMPLIED
+     *          ext-link-type CDATA #IMPLIED
+     *          id ID #IMPLIED
+     *          specific-use CDATA #IMPLIED
+     *          xlink:actuate (onLoad | onRequest | other | none) #IMPLIED
+     *          xlink:href CDATA #IMPLIED
+     *          xlink:role CDATA #IMPLIED
+     *          xlink:show (embed | new | none | other | replace) #IMPLIED
+     *          xlink:title CDATA #IMPLIED
+     *          xlink:type (simple) #IMPLIED
+     *      &gt;
+     */
+    public static ExtLink parseExtLink(XMLStreamReader reader) throws XMLStreamException {
+<span class="fc" id="L283">        String extLinkType = reader.getAttributeValue(null, &quot;ext-link-type&quot;);</span>
+<span class="fc" id="L284">        String assigningAuthority = reader.getAttributeValue(null, &quot;assigning-authority&quot;);</span>
+<span class="fc" id="L285">        String id = reader.getAttributeValue(null, &quot;id&quot;);</span>
+<span class="fc" id="L286">        String specificUse = reader.getAttributeValue(null, &quot;specific-use&quot;);</span>
+
+        // XLink attributes
+        // Note: XML 스펙상 namespace prefix는 반드시 선언되어야 하므로,
+        // getAttributeValue(null, &quot;xlink:*&quot;)는 항상 null을 반환합니다.
+        // 따라서 직접 xlink namespace URI에서 속성을 읽습니다.
+<span class="fc" id="L292">        String xlinkHref = reader.getAttributeValue(&quot;http://www.w3.org/1999/xlink&quot;, &quot;href&quot;);</span>
+<span class="fc" id="L293">        String xlinkActuate = reader.getAttributeValue(&quot;http://www.w3.org/1999/xlink&quot;, &quot;actuate&quot;);</span>
+<span class="fc" id="L294">        String xlinkRole = reader.getAttributeValue(&quot;http://www.w3.org/1999/xlink&quot;, &quot;role&quot;);</span>
+<span class="fc" id="L295">        String xlinkShow = reader.getAttributeValue(&quot;http://www.w3.org/1999/xlink&quot;, &quot;show&quot;);</span>
+<span class="fc" id="L296">        String xlinkTitle = reader.getAttributeValue(&quot;http://www.w3.org/1999/xlink&quot;, &quot;title&quot;);</span>
+<span class="fc" id="L297">        String xlinkType = reader.getAttributeValue(&quot;http://www.w3.org/1999/xlink&quot;, &quot;type&quot;);</span>
+
+<span class="fc" id="L299">        String value = parseTextContent(reader, &quot;ext-link&quot;);</span>
+
+<span class="fc" id="L301">        return ExtLink.builder()</span>
+<span class="fc" id="L302">                .extLinkType(extLinkType)</span>
+<span class="fc" id="L303">                .assigningAuthority(assigningAuthority)</span>
+<span class="fc" id="L304">                .id(id)</span>
+<span class="fc" id="L305">                .specificUse(specificUse)</span>
+<span class="fc" id="L306">                .xlinkHref(xlinkHref)</span>
+<span class="fc" id="L307">                .xlinkActuate(xlinkActuate)</span>
+<span class="fc" id="L308">                .xlinkRole(xlinkRole)</span>
+<span class="fc" id="L309">                .xlinkShow(xlinkShow)</span>
+<span class="fc" id="L310">                .xlinkTitle(xlinkTitle)</span>
+<span class="fc" id="L311">                .xlinkType(xlinkType)</span>
+<span class="fc" id="L312">                .value(value)</span>
+<span class="fc" id="L313">                .build();</span>
+    }
+
+    /**
+     * Uri 파싱 / Parse Uri
+     */
+    public static Uri parseUri(XMLStreamReader reader) throws XMLStreamException {
+<span class="fc" id="L320">        String value = parseTextContent(reader, &quot;uri&quot;);</span>
+<span class="fc" id="L321">        return Uri.builder().value(value).build();</span>
+    }
+
+    /**
+     * SelfUri 파싱 / Parse SelfUri
+     */
+    public static SelfUri parseSelfUri(XMLStreamReader reader) throws XMLStreamException {
+        // Note: XML 스펙상 namespace prefix는 반드시 선언되어야 하므로,
+        // 직접 xlink namespace URI에서 속성을 읽습니다.
+<span class="fc" id="L330">        String href = reader.getAttributeValue(&quot;http://www.w3.org/1999/xlink&quot;, &quot;href&quot;);</span>
+<span class="fc" id="L331">        String value = parseTextContent(reader, &quot;self-uri&quot;);</span>
+
+<span class="fc" id="L333">        return SelfUri.builder()</span>
+<span class="fc" id="L334">                .xlinkHref(href)</span>
+<span class="fc" id="L335">                .value(value)</span>
+<span class="fc" id="L336">                .build();</span>
+    }
+
+    /**
+     * PublisherName 파싱 / Parse PublisherName
+     */
+    public static PublisherName parsePublisherName(XMLStreamReader reader) throws XMLStreamException {
+<span class="fc" id="L343">        String value = parseTextContent(reader, &quot;publisher-name&quot;);</span>
+<span class="fc" id="L344">        return PublisherName.builder().value(value).build();</span>
+    }
+
+    /**
+     * PublisherLoc 파싱 / Parse PublisherLoc
+     */
+    public static PublisherLoc parsePublisherLoc(XMLStreamReader reader) throws XMLStreamException {
+<span class="fc" id="L351">        String value = parseTextContent(reader, &quot;publisher-loc&quot;);</span>
+<span class="fc" id="L352">        return PublisherLoc.builder().value(value).build();</span>
+    }
+
+    /**
+     * Edition 파싱 / Parse Edition
+     */
+    public static Edition parseEdition(XMLStreamReader reader) throws XMLStreamException {
+<span class="fc" id="L359">        String value = parseTextContent(reader, &quot;edition&quot;);</span>
+<span class="fc" id="L360">        return Edition.builder().value(value).build();</span>
+    }
+
+    /**
+     * Source 파싱 / Parse Source
+     */
+    public static Source parseSource(XMLStreamReader reader) throws XMLStreamException {
+<span class="fc" id="L367">        String value = parseTextContent(reader, &quot;source&quot;);</span>
+<span class="fc" id="L368">        return Source.builder().value(value).build();</span>
+    }
+
+    /**
+     * Comment 파싱 / Parse Comment
+     */
+    public static Comment parseComment(XMLStreamReader reader) throws XMLStreamException {
+<span class="fc" id="L375">        String value = parseTextContent(reader, &quot;comment&quot;);</span>
+<span class="fc" id="L376">        return Comment.builder().value(value).build();</span>
+    }
+
+    /**
+     * ChapterTitle 파싱 / Parse ChapterTitle
+     */
+    public static ChapterTitle parseChapterTitle(XMLStreamReader reader) throws XMLStreamException {
+<span class="fc" id="L383">        String value = parseTextContent(reader, &quot;chapter-title&quot;);</span>
+<span class="fc" id="L384">        return ChapterTitle.builder().value(value).build();</span>
+    }
+
+    /**
+     * ConfName 파싱 / Parse ConfName
+     */
+    public static ConfName parseConfName(XMLStreamReader reader) throws XMLStreamException {
+<span class="fc" id="L391">        String value = parseTextContent(reader, &quot;conf-name&quot;);</span>
+<span class="fc" id="L392">        return ConfName.builder().value(value).build();</span>
+    }
+
+    /**
+     * ConfLoc 파싱 / Parse ConfLoc
+     */
+    public static ConfLoc parseConfLoc(XMLStreamReader reader) throws XMLStreamException {
+<span class="fc" id="L399">        String value = parseTextContent(reader, &quot;conf-loc&quot;);</span>
+<span class="fc" id="L400">        return ConfLoc.builder().value(value).build();</span>
+    }
+
+    /**
+     * Supplement 파싱 / Parse Supplement
+     */
+    public static Supplement parseSupplement(XMLStreamReader reader) throws XMLStreamException {
+<span class="fc" id="L407">        String value = parseTextContent(reader, &quot;supplement&quot;);</span>
+<span class="fc" id="L408">        return Supplement.builder().value(value).build();</span>
+    }
+
+    /**
+     * PmcIsbn 파싱 / Parse PmcIsbn
+     */
+    public static PmcIsbn parsePmcIsbn(XMLStreamReader reader) throws XMLStreamException {
+<span class="fc" id="L415">        String value = parseTextContent(reader, &quot;isbn&quot;);</span>
+<span class="fc" id="L416">        return PmcIsbn.builder().value(value).build();</span>
+    }
+
+    /**
+     * PmcArticleId 파싱 / Parse PmcArticleId
+     * DTD: &lt;!ATTLIST article-id pub-id-type CDATA #IMPLIED&gt;
+     */
+    public static PmcArticleId parsePmcArticleId(XMLStreamReader reader, String elementName) throws XMLStreamException {
+<span class="fc" id="L424">        String pubIdType = reader.getAttributeValue(null, &quot;pub-id-type&quot;);</span>
+<span class="fc" id="L425">        String value = parseTextContent(reader, elementName);</span>
+
+<span class="fc" id="L427">        return PmcArticleId.builder()</span>
+<span class="fc" id="L428">                .pubIdType(pubIdType)</span>
+<span class="fc" id="L429">                .value(value)</span>
+<span class="fc" id="L430">                .build();</span>
+    }
+
+    /**
+     * PubId 파싱 / Parse PubId
+     * DTD: &lt;!ELEMENT pub-id (#PCDATA)&gt;
+     * DTD: &lt;!ATTLIST pub-id
+     *          assigning-authority CDATA #IMPLIED
+     *          custom-type CDATA #IMPLIED
+     *          id ID #IMPLIED
+     *          pub-id-type CDATA #IMPLIED
+     *          specific-use CDATA #IMPLIED
+     *          xlink:actuate (onLoad | onRequest | other | none) #IMPLIED
+     *          xlink:href CDATA #IMPLIED
+     *          xlink:show (embed | new | none | other | replace) #IMPLIED
+     *          xml:base CDATA #IMPLIED
+     *          xml:lang NMTOKEN #IMPLIED
+     *      &gt;
+     */
+    public static PubId parsePubId(XMLStreamReader reader) throws XMLStreamException {
+        // Attributes
+<span class="fc" id="L451">        String assigningAuthority = reader.getAttributeValue(null, &quot;assigning-authority&quot;);</span>
+<span class="fc" id="L452">        String customType = reader.getAttributeValue(null, &quot;custom-type&quot;);</span>
+<span class="fc" id="L453">        String id = reader.getAttributeValue(null, &quot;id&quot;);</span>
+<span class="fc" id="L454">        String pubIdTypeStr = reader.getAttributeValue(null, &quot;pub-id-type&quot;);</span>
+<span class="fc" id="L455">        String specificUse = reader.getAttributeValue(null, &quot;specific-use&quot;);</span>
+
+        // XLink attributes
+<span class="fc" id="L458">        String xlinkActuate = reader.getAttributeValue(&quot;http://www.w3.org/1999/xlink&quot;, &quot;actuate&quot;);</span>
+<span class="fc" id="L459">        String xlinkHref = reader.getAttributeValue(&quot;http://www.w3.org/1999/xlink&quot;, &quot;href&quot;);</span>
+<span class="fc" id="L460">        String xlinkShow = reader.getAttributeValue(&quot;http://www.w3.org/1999/xlink&quot;, &quot;show&quot;);</span>
+
+<span class="fc" id="L462">        String xmlBase = reader.getAttributeValue(null, &quot;xml:base&quot;);</span>
+<span class="fc" id="L463">        String xmlLang = reader.getAttributeValue(null, &quot;xml:lang&quot;);</span>
+
+        // Parse text content
+<span class="fc" id="L466">        String value = parseTextContent(reader, &quot;pub-id&quot;);</span>
+
+<span class="fc" id="L468">        return PubId.builder()</span>
+<span class="fc" id="L469">                .assigningAuthority(assigningAuthority)</span>
+<span class="fc" id="L470">                .customType(customType)</span>
+<span class="fc" id="L471">                .id(id)</span>
+<span class="fc" id="L472">                .pubIdType(PubIdType.fromValue(pubIdTypeStr))</span>
+<span class="fc" id="L473">                .specificUse(specificUse)</span>
+<span class="fc" id="L474">                .xlinkActuate(XlinkActuate.fromValue(xlinkActuate))</span>
+<span class="fc" id="L475">                .xlinkHref(xlinkHref)</span>
+<span class="fc" id="L476">                .xlinkShow(XlinkShow.fromValue(xlinkShow))</span>
+<span class="fc" id="L477">                .xmlBase(xmlBase)</span>
+<span class="fc" id="L478">                .xmlLang(xmlLang)</span>
+<span class="fc" id="L479">                .value(value)</span>
+<span class="fc" id="L480">                .build();</span>
+    }
+
+    /**
+     * Xref 파싱 / Parse Xref
+     * DTD: &lt;!ATTLIST xref
+     *          id ID #IMPLIED
+     *          ref-type CDATA #IMPLIED
+     *          rid IDREFS #IMPLIED
+     *          specific-use CDATA #IMPLIED
+     *      &gt;
+     */
+    public static Xref parseXref(XMLStreamReader reader) throws XMLStreamException {
+<span class="fc" id="L493">        String id = reader.getAttributeValue(null, &quot;id&quot;);</span>
+<span class="fc" id="L494">        String refType = reader.getAttributeValue(null, &quot;ref-type&quot;);</span>
+<span class="fc" id="L495">        String rid = reader.getAttributeValue(null, &quot;rid&quot;);</span>
+<span class="fc" id="L496">        String specificUse = reader.getAttributeValue(null, &quot;specific-use&quot;);</span>
+<span class="fc" id="L497">        String value = parseTextContent(reader, &quot;xref&quot;);</span>
+
+<span class="fc" id="L499">        return Xref.builder()</span>
+<span class="fc" id="L500">                .id(id)</span>
+<span class="fc" id="L501">                .refType(refType)</span>
+<span class="fc" id="L502">                .rid(rid)</span>
+<span class="fc" id="L503">                .specificUse(specificUse)</span>
+<span class="fc" id="L504">                .value(value)</span>
+<span class="fc" id="L505">                .build();</span>
+    }
+
+    /**
+     * CopyrightStatement 파싱 / Parse CopyrightStatement
+     */
+    public static CopyrightStatement parseCopyrightStatement(XMLStreamReader reader) throws XMLStreamException {
+<span class="fc" id="L512">        String value = parseTextContent(reader, &quot;copyright-statement&quot;);</span>
+<span class="fc" id="L513">        return CopyrightStatement.builder().value(value).build();</span>
+    }
+
+    /**
+     * CopyrightYear 파싱 / Parse CopyrightYear
+     */
+    public static CopyrightYear parseCopyrightYear(XMLStreamReader reader) throws XMLStreamException {
+<span class="fc" id="L520">        String value = parseTextContent(reader, &quot;copyright-year&quot;);</span>
+<span class="fc" id="L521">        return CopyrightYear.builder().value(value).build();</span>
+    }
+
+    /**
+     * CopyrightHolder 파싱 / Parse CopyrightHolder
+     */
+    public static CopyrightHolder parseCopyrightHolder(XMLStreamReader reader) throws XMLStreamException {
+<span class="fc" id="L528">        String value = parseTextContent(reader, &quot;copyright-holder&quot;);</span>
+<span class="fc" id="L529">        return CopyrightHolder.builder().value(value).build();</span>
+    }
+
+    /**
+     * License 파싱 / Parse License
+     * DTD: &lt;!ATTLIST license license-type CDATA #IMPLIED xlink:href CDATA #IMPLIED&gt;
+     */
+    public static License parseLicense(XMLStreamReader reader) throws XMLStreamException {
+<span class="fc" id="L537">        String licenseType = reader.getAttributeValue(null, &quot;license-type&quot;);</span>
+        // Note: XML 스펙상 namespace prefix는 반드시 선언되어야 하므로,
+        // 직접 xlink namespace URI에서 속성을 읽습니다.
+<span class="fc" id="L540">        String xlinkHref = reader.getAttributeValue(&quot;http://www.w3.org/1999/xlink&quot;, &quot;href&quot;);</span>
+
+        // Skip license element content (we don't parse license-p here)
+        // Note: hasNext() 체크는 불필요합니다. 정상 XML에서는 항상 END_ELEMENT를 만나고,
+        // malformed XML에서는 next()가 XMLStreamException을 던집니다.
+        while (true) {
+<span class="fc" id="L546">            int event = reader.next();</span>
+<span class="fc bfc" id="L547" title="All 4 branches covered.">            if (event == XMLStreamConstants.END_ELEMENT &amp;&amp; reader.getLocalName().equals(&quot;license&quot;)) {</span>
+<span class="fc" id="L548">                break;</span>
+            }
+<span class="fc" id="L550">        }</span>
+
+<span class="fc" id="L552">        return License.builder()</span>
+<span class="fc" id="L553">                .licenseType(licenseType)</span>
+<span class="fc" id="L554">                .xlinkHref(xlinkHref)</span>
+<span class="fc" id="L555">                .build();</span>
+    }
+
+    /**
+     * PmcSuffix 파싱 / Parse PmcSuffix
+     */
+    public static PmcSuffix parsePmcSuffix(XMLStreamReader reader) throws XMLStreamException {
+<span class="fc" id="L562">        String value = parseTextContent(reader, &quot;suffix&quot;);</span>
+<span class="fc" id="L563">        return PmcSuffix.builder().value(value).build();</span>
+    }
+
+    // ==================== Formatting Elements (Part 10.1) ====================
+
+    /**
+     * Bold 파싱 / Parse Bold
+     * DTD: &lt;!ELEMENT bold (#PCDATA | %all-phrase;)*&gt;
+     */
+    public static Bold parseBold(XMLStreamReader reader) throws XMLStreamException {
+<span class="fc" id="L573">        String value = parseTextContent(reader, &quot;bold&quot;);</span>
+<span class="fc" id="L574">        return Bold.builder().value(value).build();</span>
+    }
+
+    /**
+     * Italic 파싱 / Parse Italic
+     * DTD: &lt;!ELEMENT italic (#PCDATA | %all-phrase;)*&gt;
+     */
+    public static Italic parseItalic(XMLStreamReader reader) throws XMLStreamException {
+<span class="fc" id="L582">        String value = parseTextContent(reader, &quot;italic&quot;);</span>
+<span class="fc" id="L583">        return Italic.builder().value(value).build();</span>
+    }
+
+    /**
+     * Underline 파싱 / Parse Underline
+     * DTD: &lt;!ELEMENT underline (#PCDATA | %all-phrase;)*&gt;
+     */
+    public static Underline parseUnderline(XMLStreamReader reader) throws XMLStreamException {
+<span class="fc" id="L591">        String value = parseTextContent(reader, &quot;underline&quot;);</span>
+<span class="fc" id="L592">        return Underline.builder().value(value).build();</span>
+    }
+
+    /**
+     * Overline 파싱 / Parse Overline
+     * DTD: &lt;!ELEMENT overline (#PCDATA | %all-phrase;)*&gt;
+     */
+    public static Overline parseOverline(XMLStreamReader reader) throws XMLStreamException {
+<span class="fc" id="L600">        String value = parseTextContent(reader, &quot;overline&quot;);</span>
+<span class="fc" id="L601">        return Overline.builder().value(value).build();</span>
+    }
+
+    /**
+     * Strike 파싱 / Parse Strike
+     * DTD: &lt;!ELEMENT strike (#PCDATA | %all-phrase;)*&gt;
+     */
+    public static Strike parseStrike(XMLStreamReader reader) throws XMLStreamException {
+<span class="fc" id="L609">        String value = parseTextContent(reader, &quot;strike&quot;);</span>
+<span class="fc" id="L610">        return Strike.builder().value(value).build();</span>
+    }
+
+    /**
+     * Roman 파싱 / Parse Roman
+     * DTD: &lt;!ELEMENT roman (#PCDATA | %all-phrase;)*&gt;
+     */
+    public static Roman parseRoman(XMLStreamReader reader) throws XMLStreamException {
+<span class="fc" id="L618">        String value = parseTextContent(reader, &quot;roman&quot;);</span>
+<span class="fc" id="L619">        return Roman.builder().value(value).build();</span>
+    }
+
+    /**
+     * SansSerif 파싱 / Parse SansSerif
+     * DTD: &lt;!ELEMENT sans-serif (#PCDATA | %all-phrase;)*&gt;
+     */
+    public static SansSerif parseSansSerif(XMLStreamReader reader) throws XMLStreamException {
+<span class="fc" id="L627">        String value = parseTextContent(reader, &quot;sans-serif&quot;);</span>
+<span class="fc" id="L628">        return SansSerif.builder().value(value).build();</span>
+    }
+
+    /**
+     * Sc 파싱 / Parse Sc (Small Caps)
+     * DTD: &lt;!ELEMENT sc (#PCDATA | %all-phrase;)*&gt;
+     */
+    public static Sc parseSc(XMLStreamReader reader) throws XMLStreamException {
+<span class="fc" id="L636">        String value = parseTextContent(reader, &quot;sc&quot;);</span>
+<span class="fc" id="L637">        return Sc.builder().value(value).build();</span>
+    }
+
+    /**
+     * Monospace 파싱 / Parse Monospace
+     * DTD: &lt;!ELEMENT monospace (#PCDATA | %all-phrase;)*&gt;
+     */
+    public static Monospace parseMonospace(XMLStreamReader reader) throws XMLStreamException {
+<span class="fc" id="L645">        String value = parseTextContent(reader, &quot;monospace&quot;);</span>
+<span class="fc" id="L646">        return Monospace.builder().value(value).build();</span>
+    }
+
+    /**
+     * Sup 파싱 / Parse Sup (Superscript)
+     * DTD: &lt;!ELEMENT sup (#PCDATA | %all-phrase;)*&gt;
+     */
+    public static Sup parseSup(XMLStreamReader reader) throws XMLStreamException {
+<span class="fc" id="L654">        String value = parseTextContent(reader, &quot;sup&quot;);</span>
+<span class="fc" id="L655">        return Sup.builder().value(value).build();</span>
+    }
+
+    /**
+     * Sub 파싱 / Parse Sub (Subscript)
+     * DTD: &lt;!ELEMENT sub (#PCDATA | %all-phrase;)*&gt;
+     */
+    public static Sub parseSub(XMLStreamReader reader) throws XMLStreamException {
+<span class="fc" id="L663">        String value = parseTextContent(reader, &quot;sub&quot;);</span>
+<span class="fc" id="L664">        return Sub.builder().value(value).build();</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.9.202303310957</span></div></body></html>

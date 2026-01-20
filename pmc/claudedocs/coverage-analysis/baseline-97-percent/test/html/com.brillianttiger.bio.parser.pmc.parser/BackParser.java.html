@@ -1,0 +1,723 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="ko"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>BackParser.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">pmc</a> &gt; <a href="index.source.html" class="el_package">com.brillianttiger.bio.parser.pmc.parser</a> &gt; <span class="el_source">BackParser.java</span></div><h1>BackParser.java</h1><pre class="source lang-java linenums">package com.brillianttiger.bio.parser.pmc.parser;
+
+import com.brillianttiger.bio.parser.pmc.model.*;
+
+import javax.xml.stream.XMLStreamConstants;
+import javax.xml.stream.XMLStreamException;
+import javax.xml.stream.XMLStreamReader;
+import java.util.ArrayList;
+import java.util.List;
+
+import static com.brillianttiger.bio.parser.pmc.parser.CommonPmcElementParser.*;
+
+/**
+ * BackParser / Back 파서
+ *
+ * KR: PMC XML의 Back (후면부), RefList, Ref, Citation 요소들을 파싱하는 클래스
+ * EN: Class for parsing Back (back matter), RefList, Ref, and Citation elements in PMC XML
+ */
+<span class="fc" id="L19">public class BackParser {</span>
+
+    /**
+     * Back 파싱 / Parse Back
+     * DTD: &lt;!ELEMENT back (label?, title*, ack*, app-group*, bio*, fn-group*,
+     *                      glossary*, ref-list*, notes*, sec*)&gt;
+     */
+    public static Back parseBack(XMLStreamReader reader) throws XMLStreamException {
+<span class="fc" id="L27">        Back.BackBuilder builder = Back.builder();</span>
+
+<span class="fc" id="L29">        List&lt;Title&gt; titles = new ArrayList&lt;&gt;();</span>
+<span class="fc" id="L30">        List&lt;Ack&gt; acknowledgments = new ArrayList&lt;&gt;();</span>
+<span class="fc" id="L31">        List&lt;AppGroup&gt; appGroups = new ArrayList&lt;&gt;();</span>
+<span class="fc" id="L32">        List&lt;Bio&gt; biographies = new ArrayList&lt;&gt;();</span>
+<span class="fc" id="L33">        List&lt;FnGroup&gt; fnGroups = new ArrayList&lt;&gt;();</span>
+<span class="fc" id="L34">        List&lt;Glossary&gt; glossaries = new ArrayList&lt;&gt;();</span>
+<span class="fc" id="L35">        List&lt;RefList&gt; refLists = new ArrayList&lt;&gt;();</span>
+<span class="fc" id="L36">        List&lt;Notes&gt; notesList = new ArrayList&lt;&gt;();</span>
+<span class="fc" id="L37">        List&lt;Sec&gt; sections = new ArrayList&lt;&gt;();</span>
+
+        // Note: hasNext() 체크는 불필요합니다. 정상 XML에서는 항상 END_ELEMENT를 만나고,
+        // malformed XML에서는 next()가 XMLStreamException을 던집니다.
+        while (true) {
+<span class="fc" id="L42">            int event = reader.next();</span>
+
+<span class="fc bfc" id="L44" title="All 2 branches covered.">            if (event == XMLStreamConstants.START_ELEMENT) {</span>
+<span class="fc" id="L45">                String localName = reader.getLocalName();</span>
+
+<span class="fc bfc" id="L47" title="All 11 branches covered.">                switch (localName) {</span>
+                    case &quot;label&quot;:
+<span class="fc" id="L49">                        builder.label(parseLabel(reader));</span>
+<span class="fc" id="L50">                        break;</span>
+                    case &quot;title&quot;:
+<span class="fc" id="L52">                        titles.add(parseTitle(reader));</span>
+<span class="fc" id="L53">                        break;</span>
+                    case &quot;ack&quot;:
+<span class="fc" id="L55">                        acknowledgments.add(parseAck(reader));</span>
+<span class="fc" id="L56">                        break;</span>
+                    case &quot;app-group&quot;:
+<span class="fc" id="L58">                        appGroups.add(parseAppGroup(reader));</span>
+<span class="fc" id="L59">                        break;</span>
+                    case &quot;bio&quot;:
+<span class="fc" id="L61">                        biographies.add(parseBio(reader));</span>
+<span class="fc" id="L62">                        break;</span>
+                    case &quot;fn-group&quot;:
+<span class="fc" id="L64">                        fnGroups.add(parseFnGroup(reader));</span>
+<span class="fc" id="L65">                        break;</span>
+                    case &quot;glossary&quot;:
+<span class="fc" id="L67">                        glossaries.add(parseGlossary(reader));</span>
+<span class="fc" id="L68">                        break;</span>
+                    case &quot;ref-list&quot;:
+<span class="fc" id="L70">                        refLists.add(parseRefList(reader));</span>
+<span class="fc" id="L71">                        break;</span>
+                    case &quot;notes&quot;:
+<span class="fc" id="L73">                        notesList.add(parseNotes(reader));</span>
+<span class="fc" id="L74">                        break;</span>
+                    case &quot;sec&quot;:
+<span class="fc" id="L76">                        sections.add(BodyParser.parseSec(reader));</span>
+<span class="fc" id="L77">                        break;</span>
+                    default:
+<span class="fc" id="L79">                        skipElement(reader);</span>
+                        break;
+                }
+<span class="fc bfc" id="L82" title="All 2 branches covered.">            } else if (event == XMLStreamConstants.END_ELEMENT) {</span>
+                // Note: 이 시점에서 END_ELEMENT는 항상 &quot;back&quot;입니다.
+                // 자식 요소들은 각각의 파서가 완전히 소비하므로 부모 파서는 자식의 END_ELEMENT를 만나지 않습니다.
+<span class="fc" id="L85">                break;</span>
+            }
+<span class="fc" id="L87">        }</span>
+
+<span class="fc bfc" id="L89" title="All 2 branches covered.">        builder.titles(titles.isEmpty() ? null : titles);</span>
+<span class="fc bfc" id="L90" title="All 2 branches covered.">        builder.acknowledgments(acknowledgments.isEmpty() ? null : acknowledgments);</span>
+<span class="fc bfc" id="L91" title="All 2 branches covered.">        builder.appGroups(appGroups.isEmpty() ? null : appGroups);</span>
+<span class="fc bfc" id="L92" title="All 2 branches covered.">        builder.biographies(biographies.isEmpty() ? null : biographies);</span>
+<span class="fc bfc" id="L93" title="All 2 branches covered.">        builder.fnGroups(fnGroups.isEmpty() ? null : fnGroups);</span>
+<span class="fc bfc" id="L94" title="All 2 branches covered.">        builder.glossaries(glossaries.isEmpty() ? null : glossaries);</span>
+<span class="fc bfc" id="L95" title="All 2 branches covered.">        builder.refLists(refLists.isEmpty() ? null : refLists);</span>
+<span class="fc bfc" id="L96" title="All 2 branches covered.">        builder.notesList(notesList.isEmpty() ? null : notesList);</span>
+<span class="fc bfc" id="L97" title="All 2 branches covered.">        builder.sections(sections.isEmpty() ? null : sections);</span>
+
+<span class="fc" id="L99">        return builder.build();</span>
+    }
+
+    /**
+     * RefList 파싱 (재귀 구조) / Parse RefList (recursive structure)
+     * DTD: &lt;!ELEMENT ref-list (label?, title?, (%ref-list.class;)*, ref*, ref-list*)&gt;
+     */
+    public static RefList parseRefList(XMLStreamReader reader) throws XMLStreamException {
+<span class="fc" id="L107">        RefList.RefListBuilder builder = RefList.builder();</span>
+
+<span class="fc" id="L109">        List&lt;Ref&gt; references = new ArrayList&lt;&gt;();</span>
+<span class="fc" id="L110">        List&lt;RefList&gt; refLists = new ArrayList&lt;&gt;();</span>
+
+        // Note: hasNext() 체크는 불필요합니다. 정상 XML에서는 항상 END_ELEMENT를 만나고,
+        // malformed XML에서는 next()가 XMLStreamException을 던집니다.
+        while (true) {
+<span class="fc" id="L115">            int event = reader.next();</span>
+
+<span class="fc bfc" id="L117" title="All 2 branches covered.">            if (event == XMLStreamConstants.START_ELEMENT) {</span>
+<span class="fc" id="L118">                String localName = reader.getLocalName();</span>
+
+<span class="fc bfc" id="L120" title="All 5 branches covered.">                switch (localName) {</span>
+                    case &quot;label&quot;:
+<span class="fc" id="L122">                        builder.label(parseLabel(reader));</span>
+<span class="fc" id="L123">                        break;</span>
+                    case &quot;title&quot;:
+<span class="fc" id="L125">                        builder.title(parseTitle(reader));</span>
+<span class="fc" id="L126">                        break;</span>
+                    case &quot;ref&quot;:
+<span class="fc" id="L128">                        references.add(parseRef(reader));</span>
+<span class="fc" id="L129">                        break;</span>
+                    case &quot;ref-list&quot;:
+                        // 재귀: 하위 RefList 파싱 / Recursive: parse sub-RefList
+<span class="fc" id="L132">                        refLists.add(parseRefList(reader));</span>
+<span class="fc" id="L133">                        break;</span>
+                    default:
+<span class="fc" id="L135">                        skipElement(reader);</span>
+                        break;
+                }
+<span class="fc bfc" id="L138" title="All 2 branches covered.">            } else if (event == XMLStreamConstants.END_ELEMENT) {</span>
+                // Note: 이 시점에서 END_ELEMENT는 항상 &quot;ref-list&quot;입니다.
+<span class="fc" id="L140">                break;</span>
+            }
+<span class="fc" id="L142">        }</span>
+
+<span class="fc bfc" id="L144" title="All 2 branches covered.">        builder.references(references.isEmpty() ? null : references);</span>
+<span class="fc bfc" id="L145" title="All 2 branches covered.">        builder.refLists(refLists.isEmpty() ? null : refLists);</span>
+
+<span class="fc" id="L147">        return builder.build();</span>
+    }
+
+    /**
+     * Ref 파싱 / Parse Ref
+     * DTD: &lt;!ELEMENT ref (label?, (%citation.class;)+)&gt;
+     * DTD: &lt;!ATTLIST ref id ID #IMPLIED&gt;
+     */
+    public static Ref parseRef(XMLStreamReader reader) throws XMLStreamException {
+<span class="fc" id="L156">        String id = reader.getAttributeValue(null, &quot;id&quot;);</span>
+
+<span class="fc" id="L158">        Ref.RefBuilder builder = Ref.builder()</span>
+<span class="fc" id="L159">                .id(id);</span>
+
+<span class="fc" id="L161">        List&lt;ElementCitation&gt; elementCitations = new ArrayList&lt;&gt;();</span>
+<span class="fc" id="L162">        List&lt;MixedCitation&gt; mixedCitations = new ArrayList&lt;&gt;();</span>
+
+        // Note: hasNext() 체크는 불필요합니다. 정상 XML에서는 항상 END_ELEMENT를 만나고,
+        // malformed XML에서는 next()가 XMLStreamException을 던집니다.
+        while (true) {
+<span class="fc" id="L167">            int event = reader.next();</span>
+
+<span class="fc bfc" id="L169" title="All 2 branches covered.">            if (event == XMLStreamConstants.START_ELEMENT) {</span>
+<span class="fc" id="L170">                String localName = reader.getLocalName();</span>
+
+<span class="fc bfc" id="L172" title="All 4 branches covered.">                switch (localName) {</span>
+                    case &quot;label&quot;:
+<span class="fc" id="L174">                        builder.label(parseLabel(reader));</span>
+<span class="fc" id="L175">                        break;</span>
+                    case &quot;element-citation&quot;:
+<span class="fc" id="L177">                        elementCitations.add(parseElementCitation(reader));</span>
+<span class="fc" id="L178">                        break;</span>
+                    case &quot;mixed-citation&quot;:
+<span class="fc" id="L180">                        mixedCitations.add(parseMixedCitation(reader));</span>
+<span class="fc" id="L181">                        break;</span>
+                    default:
+<span class="fc" id="L183">                        skipElement(reader);</span>
+                        break;
+                }
+<span class="fc bfc" id="L186" title="All 2 branches covered.">            } else if (event == XMLStreamConstants.END_ELEMENT) {</span>
+                // Note: 이 시점에서 END_ELEMENT는 항상 &quot;ref&quot;입니다.
+<span class="fc" id="L188">                break;</span>
+            }
+<span class="fc" id="L190">        }</span>
+
+<span class="fc bfc" id="L192" title="All 2 branches covered.">        builder.elementCitations(elementCitations.isEmpty() ? null : elementCitations);</span>
+<span class="fc bfc" id="L193" title="All 2 branches covered.">        builder.mixedCitations(mixedCitations.isEmpty() ? null : mixedCitations);</span>
+
+<span class="fc" id="L195">        return builder.build();</span>
+    }
+
+    /**
+     * ElementCitation 파싱 / Parse ElementCitation
+     * DTD: &lt;!ELEMENT element-citation (%element-citation-model;)*&gt;
+     * DTD: &lt;!ATTLIST element-citation publication-type CDATA #IMPLIED&gt;
+     */
+    public static ElementCitation parseElementCitation(XMLStreamReader reader) throws XMLStreamException {
+<span class="fc" id="L204">        String publicationType = reader.getAttributeValue(null, &quot;publication-type&quot;);</span>
+
+<span class="fc" id="L206">        ElementCitation.ElementCitationBuilder builder = ElementCitation.builder()</span>
+<span class="fc" id="L207">                .publicationType(publicationType);</span>
+
+<span class="fc" id="L209">        List&lt;PersonGroup&gt; personGroups = new ArrayList&lt;&gt;();</span>
+<span class="fc" id="L210">        List&lt;PmcArticleId&gt; articleIds = new ArrayList&lt;&gt;();</span>
+<span class="fc" id="L211">        List&lt;PubId&gt; pubIds = new ArrayList&lt;&gt;();</span>
+<span class="fc" id="L212">        List&lt;ExtLink&gt; extLinks = new ArrayList&lt;&gt;();</span>
+<span class="fc" id="L213">        List&lt;Comment&gt; comments = new ArrayList&lt;&gt;();</span>
+
+        // Note: hasNext() 체크는 불필요합니다. 정상 XML에서는 항상 END_ELEMENT를 만나고,
+        // malformed XML에서는 next()가 XMLStreamException을 던집니다.
+        while (true) {
+<span class="fc" id="L218">            int event = reader.next();</span>
+
+<span class="fc bfc" id="L220" title="All 2 branches covered.">            if (event == XMLStreamConstants.START_ELEMENT) {</span>
+<span class="fc" id="L221">                String localName = reader.getLocalName();</span>
+
+<span class="fc bfc" id="L223" title="All 23 branches covered.">                switch (localName) {</span>
+                    case &quot;person-group&quot;:
+<span class="fc" id="L225">                        personGroups.add(parsePersonGroup(reader));</span>
+<span class="fc" id="L226">                        break;</span>
+                    case &quot;article-title&quot;:
+<span class="fc" id="L228">                        builder.articleTitle(ArticleMetaParser.parsePmcArticleTitle(reader));</span>
+<span class="fc" id="L229">                        break;</span>
+                    case &quot;source&quot;:
+<span class="fc" id="L231">                        builder.source(parseSource(reader));</span>
+<span class="fc" id="L232">                        break;</span>
+                    case &quot;year&quot;:
+<span class="fc" id="L234">                        builder.year(parseYear(reader));</span>
+<span class="fc" id="L235">                        break;</span>
+                    case &quot;month&quot;:
+<span class="fc" id="L237">                        builder.month(parseMonth(reader));</span>
+<span class="fc" id="L238">                        break;</span>
+                    case &quot;day&quot;:
+<span class="fc" id="L240">                        builder.day(parseDay(reader));</span>
+<span class="fc" id="L241">                        break;</span>
+                    case &quot;volume&quot;:
+<span class="fc" id="L243">                        builder.volume(parseVolume(reader));</span>
+<span class="fc" id="L244">                        break;</span>
+                    case &quot;issue&quot;:
+<span class="fc" id="L246">                        builder.issue(parsePmcIssue(reader));</span>
+<span class="fc" id="L247">                        break;</span>
+                    case &quot;fpage&quot;:
+<span class="fc" id="L249">                        builder.fpage(parseFpage(reader));</span>
+<span class="fc" id="L250">                        break;</span>
+                    case &quot;lpage&quot;:
+<span class="fc" id="L252">                        builder.lpage(parseLpage(reader));</span>
+<span class="fc" id="L253">                        break;</span>
+                    case &quot;page-range&quot;:
+<span class="fc" id="L255">                        builder.pageRange(parsePageRange(reader));</span>
+<span class="fc" id="L256">                        break;</span>
+                    case &quot;elocation-id&quot;:
+<span class="fc" id="L258">                        builder.elocationId(parseElocationId(reader));</span>
+<span class="fc" id="L259">                        break;</span>
+                    case &quot;publisher-name&quot;:
+<span class="fc" id="L261">                        builder.publisherName(parsePublisherName(reader));</span>
+<span class="fc" id="L262">                        break;</span>
+                    case &quot;publisher-loc&quot;:
+<span class="fc" id="L264">                        builder.publisherLoc(parsePublisherLoc(reader));</span>
+<span class="fc" id="L265">                        break;</span>
+                    case &quot;edition&quot;:
+<span class="fc" id="L267">                        builder.edition(parseEdition(reader));</span>
+<span class="fc" id="L268">                        break;</span>
+                    case &quot;chapter-title&quot;:
+<span class="fc" id="L270">                        builder.chapterTitle(parseChapterTitle(reader));</span>
+<span class="fc" id="L271">                        break;</span>
+                    case &quot;conf-name&quot;:
+<span class="fc" id="L273">                        builder.confName(parseConfName(reader));</span>
+<span class="fc" id="L274">                        break;</span>
+                    case &quot;conf-loc&quot;:
+<span class="fc" id="L276">                        builder.confLoc(parseConfLoc(reader));</span>
+<span class="fc" id="L277">                        break;</span>
+                    case &quot;article-id&quot;:
+<span class="fc" id="L279">                        articleIds.add(parsePmcArticleId(reader, localName));</span>
+<span class="fc" id="L280">                        break;</span>
+                    case &quot;pub-id&quot;:
+<span class="fc" id="L282">                        pubIds.add(parsePubId(reader));</span>
+<span class="fc" id="L283">                        break;</span>
+                    case &quot;comment&quot;:
+<span class="fc" id="L285">                        comments.add(parseComment(reader));</span>
+<span class="fc" id="L286">                        break;</span>
+                    case &quot;ext-link&quot;:
+<span class="fc" id="L288">                        extLinks.add(parseExtLink(reader));</span>
+<span class="fc" id="L289">                        break;</span>
+                    default:
+<span class="fc" id="L291">                        skipElement(reader);</span>
+                        break;
+                }
+<span class="fc bfc" id="L294" title="All 2 branches covered.">            } else if (event == XMLStreamConstants.END_ELEMENT) {</span>
+                // Note: 이 시점에서 END_ELEMENT는 항상 &quot;element-citation&quot;입니다.
+<span class="fc" id="L296">                break;</span>
+            }
+<span class="fc" id="L298">        }</span>
+
+<span class="fc bfc" id="L300" title="All 2 branches covered.">        builder.personGroups(personGroups.isEmpty() ? null : personGroups);</span>
+<span class="fc bfc" id="L301" title="All 2 branches covered.">        builder.articleIds(articleIds.isEmpty() ? null : articleIds);</span>
+<span class="fc bfc" id="L302" title="All 2 branches covered.">        builder.pubIds(pubIds.isEmpty() ? null : pubIds);</span>
+<span class="fc bfc" id="L303" title="All 2 branches covered.">        builder.extLinks(extLinks.isEmpty() ? null : extLinks);</span>
+<span class="fc bfc" id="L304" title="All 2 branches covered.">        builder.comments(comments.isEmpty() ? null : comments);</span>
+
+<span class="fc" id="L306">        return builder.build();</span>
+    }
+
+    /**
+     * MixedCitation 파싱 / Parse MixedCitation
+     * DTD: &lt;!ELEMENT mixed-citation (#PCDATA | %citation-elements;)*&gt;
+     * DTD: &lt;!ATTLIST mixed-citation publication-type CDATA #IMPLIED&gt;
+     *
+     * Note: MixedCitation preserves ALL text content including text from nested elements,
+     * while also extracting structured data.
+     */
+    public static MixedCitation parseMixedCitation(XMLStreamReader reader) throws XMLStreamException {
+<span class="fc" id="L318">        String publicationType = reader.getAttributeValue(null, &quot;publication-type&quot;);</span>
+
+<span class="fc" id="L320">        MixedCitation.MixedCitationBuilder builder = MixedCitation.builder()</span>
+<span class="fc" id="L321">                .publicationType(publicationType);</span>
+
+<span class="fc" id="L323">        List&lt;PersonGroup&gt; personGroups = new ArrayList&lt;&gt;();</span>
+<span class="fc" id="L324">        List&lt;StringName&gt; stringNames = new ArrayList&lt;&gt;();</span>
+<span class="fc" id="L325">        List&lt;Collab&gt; collabs = new ArrayList&lt;&gt;();</span>
+<span class="fc" id="L326">        List&lt;ExtLink&gt; extLinks = new ArrayList&lt;&gt;();</span>
+<span class="fc" id="L327">        List&lt;PubId&gt; pubIds = new ArrayList&lt;&gt;();</span>
+<span class="fc" id="L328">        List&lt;Comment&gt; comments = new ArrayList&lt;&gt;();</span>
+<span class="fc" id="L329">        StringBuilder textContent = new StringBuilder();</span>
+
+        // Note: hasNext() 체크는 불필요합니다. 정상 XML에서는 항상 END_ELEMENT를 만나고,
+        // malformed XML에서는 next()가 XMLStreamException을 던집니다.
+        while (true) {
+<span class="fc" id="L334">            int event = reader.next();</span>
+
+<span class="fc bfc" id="L336" title="All 2 branches covered.">            if (event == XMLStreamConstants.START_ELEMENT) {</span>
+<span class="fc" id="L337">                String localName = reader.getLocalName();</span>
+
+                // Collect text from child element while also parsing structure
+<span class="fc" id="L340">                String childText = null;</span>
+
+<span class="fc bfc" id="L342" title="All 23 branches covered.">                switch (localName) {</span>
+                    case &quot;person-group&quot;:
+<span class="fc" id="L344">                        childText = collectTextAndParsePersonGroup(reader, personGroups);</span>
+<span class="fc" id="L345">                        break;</span>
+                    case &quot;article-title&quot;:
+<span class="fc" id="L347">                        PmcArticleTitle articleTitle = ArticleMetaParser.parsePmcArticleTitle(reader);</span>
+<span class="fc" id="L348">                        builder.articleTitle(articleTitle);</span>
+<span class="fc" id="L349">                        childText = articleTitle.getValue();</span>
+<span class="fc" id="L350">                        break;</span>
+                    case &quot;source&quot;:
+<span class="fc" id="L352">                        Source source = parseSource(reader);</span>
+<span class="fc" id="L353">                        builder.source(source);</span>
+<span class="fc" id="L354">                        childText = source.getValue();</span>
+<span class="fc" id="L355">                        break;</span>
+                    case &quot;year&quot;:
+<span class="fc" id="L357">                        Year year = parseYear(reader);</span>
+<span class="fc" id="L358">                        builder.year(year);</span>
+<span class="fc" id="L359">                        childText = year.getValue();</span>
+<span class="fc" id="L360">                        break;</span>
+                    case &quot;month&quot;:
+<span class="fc" id="L362">                        Month month = parseMonth(reader);</span>
+<span class="fc" id="L363">                        builder.month(month);</span>
+<span class="fc" id="L364">                        childText = month.getValue();</span>
+<span class="fc" id="L365">                        break;</span>
+                    case &quot;day&quot;:
+<span class="fc" id="L367">                        Day day = parseDay(reader);</span>
+<span class="fc" id="L368">                        builder.day(day);</span>
+<span class="fc" id="L369">                        childText = day.getValue();</span>
+<span class="fc" id="L370">                        break;</span>
+                    case &quot;volume&quot;:
+<span class="fc" id="L372">                        Volume volume = parseVolume(reader);</span>
+<span class="fc" id="L373">                        builder.volume(volume);</span>
+<span class="fc" id="L374">                        childText = volume.getValue();</span>
+<span class="fc" id="L375">                        break;</span>
+                    case &quot;issue&quot;:
+<span class="fc" id="L377">                        PmcIssue issue = parsePmcIssue(reader);</span>
+<span class="fc" id="L378">                        builder.issue(issue);</span>
+<span class="fc" id="L379">                        childText = issue.getValue();</span>
+<span class="fc" id="L380">                        break;</span>
+                    case &quot;fpage&quot;:
+<span class="fc" id="L382">                        Fpage fpage = parseFpage(reader);</span>
+<span class="fc" id="L383">                        builder.fpage(fpage);</span>
+<span class="fc" id="L384">                        childText = fpage.getValue();</span>
+<span class="fc" id="L385">                        break;</span>
+                    case &quot;lpage&quot;:
+<span class="fc" id="L387">                        Lpage lpage = parseLpage(reader);</span>
+<span class="fc" id="L388">                        builder.lpage(lpage);</span>
+<span class="fc" id="L389">                        childText = lpage.getValue();</span>
+<span class="fc" id="L390">                        break;</span>
+                    case &quot;page-range&quot;:
+<span class="fc" id="L392">                        PageRange pageRange = parsePageRange(reader);</span>
+<span class="fc" id="L393">                        builder.pageRange(pageRange);</span>
+<span class="fc" id="L394">                        childText = pageRange.getValue();</span>
+<span class="fc" id="L395">                        break;</span>
+                    case &quot;publisher-name&quot;:
+<span class="fc" id="L397">                        PublisherName publisherName = parsePublisherName(reader);</span>
+<span class="fc" id="L398">                        builder.publisherName(publisherName);</span>
+<span class="fc" id="L399">                        childText = publisherName.getValue();</span>
+<span class="fc" id="L400">                        break;</span>
+                    case &quot;publisher-loc&quot;:
+<span class="fc" id="L402">                        PublisherLoc publisherLoc = parsePublisherLoc(reader);</span>
+<span class="fc" id="L403">                        builder.publisherLoc(publisherLoc);</span>
+<span class="fc" id="L404">                        childText = publisherLoc.getValue();</span>
+<span class="fc" id="L405">                        break;</span>
+                    case &quot;edition&quot;:
+<span class="fc" id="L407">                        Edition edition = parseEdition(reader);</span>
+<span class="fc" id="L408">                        builder.edition(edition);</span>
+<span class="fc" id="L409">                        childText = edition.getValue();</span>
+<span class="fc" id="L410">                        break;</span>
+                    case &quot;conf-name&quot;:
+<span class="fc" id="L412">                        ConfName confName = parseConfName(reader);</span>
+<span class="fc" id="L413">                        builder.confName(confName);</span>
+<span class="fc" id="L414">                        childText = confName.getValue();</span>
+<span class="fc" id="L415">                        break;</span>
+                    case &quot;pub-id&quot;:
+<span class="fc" id="L417">                        PubId pubId = parsePubId(reader);</span>
+<span class="fc" id="L418">                        pubIds.add(pubId);</span>
+<span class="fc" id="L419">                        childText = pubId.getValue();</span>
+<span class="fc" id="L420">                        break;</span>
+                    case &quot;ext-link&quot;:
+<span class="fc" id="L422">                        ExtLink extLink = parseExtLink(reader);</span>
+<span class="fc" id="L423">                        extLinks.add(extLink);</span>
+<span class="fc" id="L424">                        childText = extLink.getValue();</span>
+<span class="fc" id="L425">                        break;</span>
+                    case &quot;string-name&quot;:
+<span class="fc" id="L427">                        StringName stringName = ArticleMetaParser.parseStringName(reader);</span>
+<span class="fc" id="L428">                        stringNames.add(stringName);</span>
+<span class="fc" id="L429">                        childText = stringName.getValue();</span>
+<span class="fc" id="L430">                        break;</span>
+                    case &quot;etal&quot;:
+<span class="fc" id="L432">                        Etal etal = parseEtal(reader);</span>
+<span class="fc" id="L433">                        builder.etal(etal);</span>
+<span class="fc" id="L434">                        childText = etal.getValue();</span>
+<span class="fc" id="L435">                        break;</span>
+                    case &quot;collab&quot;:
+<span class="fc" id="L437">                        Collab collab = ArticleMetaParser.parseCollab(reader);</span>
+<span class="fc" id="L438">                        collabs.add(collab);</span>
+<span class="fc" id="L439">                        childText = collab.getValue();</span>
+<span class="fc" id="L440">                        break;</span>
+                    case &quot;comment&quot;:
+<span class="fc" id="L442">                        Comment comment = parseComment(reader);</span>
+<span class="fc" id="L443">                        comments.add(comment);</span>
+<span class="fc" id="L444">                        childText = comment.getValue();</span>
+<span class="fc" id="L445">                        break;</span>
+                    case &quot;date-in-citation&quot;:
+                    case &quot;isbn&quot;:
+                    case &quot;page-count&quot;:
+                    case &quot;conf-date&quot;:
+                    case &quot;conf-loc&quot;:
+<span class="fc" id="L451">                        childText = collectElementText(reader, localName);</span>
+<span class="fc" id="L452">                        break;</span>
+                    default:
+                        // For unknown elements, collect their text but don't parse structure
+<span class="fc" id="L455">                        childText = collectElementText(reader, localName);</span>
+                        break;
+                }
+
+<span class="fc bfc" id="L459" title="All 2 branches covered.">                if (childText != null) {</span>
+<span class="fc" id="L460">                    textContent.append(childText);</span>
+                }
+<span class="fc bfc" id="L462" title="All 2 branches covered.">            } else if (event == XMLStreamConstants.CHARACTERS) {</span>
+<span class="fc" id="L463">                textContent.append(reader.getText());</span>
+<span class="fc bfc" id="L464" title="All 2 branches covered.">            } else if (event == XMLStreamConstants.END_ELEMENT) {</span>
+                // Note: 이 시점에서 END_ELEMENT는 항상 &quot;mixed-citation&quot;입니다.
+<span class="fc" id="L466">                break;</span>
+            }
+<span class="fc" id="L468">        }</span>
+
+<span class="fc" id="L470">        builder.value(textContent.toString().trim());</span>
+<span class="fc bfc" id="L471" title="All 2 branches covered.">        builder.personGroups(personGroups.isEmpty() ? null : personGroups);</span>
+<span class="fc bfc" id="L472" title="All 2 branches covered.">        builder.stringNames(stringNames.isEmpty() ? null : stringNames);</span>
+<span class="fc bfc" id="L473" title="All 2 branches covered.">        builder.collabs(collabs.isEmpty() ? null : collabs);</span>
+<span class="fc bfc" id="L474" title="All 2 branches covered.">        builder.pubIds(pubIds.isEmpty() ? null : pubIds);</span>
+<span class="fc bfc" id="L475" title="All 2 branches covered.">        builder.extLinks(extLinks.isEmpty() ? null : extLinks);</span>
+<span class="fc bfc" id="L476" title="All 2 branches covered.">        builder.comments(comments.isEmpty() ? null : comments);</span>
+
+<span class="fc" id="L478">        return builder.build();</span>
+    }
+
+    /**
+     * 요소의 모든 텍스트 내용을 재귀적으로 수집 / Recursively collect all text content from an element
+     *
+     * @param reader XMLStreamReader positioned at START_ELEMENT
+     * @param elementName Name of the element to collect text from
+     * @return All text content including nested elements
+     */
+    private static String collectElementText(XMLStreamReader reader, String elementName) throws XMLStreamException {
+<span class="fc" id="L489">        StringBuilder text = new StringBuilder();</span>
+<span class="fc" id="L490">        int depth = 1;</span>
+
+        // Note: hasNext() 체크는 불필요합니다. 정상 XML에서는 depth가 0이 되면 종료되고,
+        // malformed XML에서는 next()가 XMLStreamException을 던집니다.
+<span class="fc bfc" id="L494" title="All 2 branches covered.">        while (depth &gt; 0) {</span>
+<span class="fc" id="L495">            int event = reader.next();</span>
+
+<span class="fc bfc" id="L497" title="All 2 branches covered.">            if (event == XMLStreamConstants.START_ELEMENT) {</span>
+<span class="fc" id="L498">                depth++;</span>
+<span class="fc bfc" id="L499" title="All 4 branches covered.">            } else if (event == XMLStreamConstants.CHARACTERS || event == XMLStreamConstants.CDATA) {</span>
+<span class="fc" id="L500">                text.append(reader.getText());</span>
+<span class="fc bfc" id="L501" title="All 2 branches covered.">            } else if (event == XMLStreamConstants.END_ELEMENT) {</span>
+<span class="fc" id="L502">                depth--;</span>
+            }
+<span class="fc" id="L504">        }</span>
+
+<span class="fc" id="L506">        return text.toString();</span>
+    }
+
+    /**
+     * PersonGroup을 파싱하면서 텍스트도 수집 / Parse PersonGroup while collecting text
+     */
+    private static String collectTextAndParsePersonGroup(XMLStreamReader reader, List&lt;PersonGroup&gt; personGroups) throws XMLStreamException {
+<span class="fc" id="L513">        StringBuilder text = new StringBuilder();</span>
+<span class="fc" id="L514">        String personGroupType = reader.getAttributeValue(null, &quot;person-group-type&quot;);</span>
+
+<span class="fc" id="L516">        PersonGroup.PersonGroupBuilder builder = PersonGroup.builder()</span>
+<span class="fc" id="L517">                .personGroupType(personGroupType);</span>
+
+<span class="fc" id="L519">        List&lt;PersonName&gt; names = new ArrayList&lt;&gt;();</span>
+
+<span class="fc" id="L521">        int depth = 1;</span>
+        // Note: hasNext() 체크는 불필요합니다. 정상 XML에서는 depth가 0이 되면 종료되고,
+        // malformed XML에서는 next()가 XMLStreamException을 던집니다.
+<span class="fc bfc" id="L524" title="All 2 branches covered.">        while (depth &gt; 0) {</span>
+<span class="fc" id="L525">            int event = reader.next();</span>
+
+<span class="fc bfc" id="L527" title="All 2 branches covered.">            if (event == XMLStreamConstants.START_ELEMENT) {</span>
+<span class="fc" id="L528">                depth++;</span>
+<span class="fc" id="L529">                String localName = reader.getLocalName();</span>
+
+<span class="fc bfc" id="L531" title="All 2 branches covered.">                if (&quot;name&quot;.equals(localName)) {</span>
+<span class="fc" id="L532">                    PersonName name = parsePersonName(reader);</span>
+<span class="fc" id="L533">                    names.add(name);</span>
+                    // Collect name text
+<span class="fc bfc" id="L535" title="All 2 branches covered.">                    if (name.getSurname() != null) text.append(name.getSurname());</span>
+<span class="fc bfc" id="L536" title="All 4 branches covered.">                    if (name.getSurname() != null &amp;&amp; name.getGivenNames() != null) text.append(&quot; &quot;);</span>
+<span class="fc bfc" id="L537" title="All 2 branches covered.">                    if (name.getGivenNames() != null) text.append(name.getGivenNames());</span>
+<span class="fc" id="L538">                    depth--; // parsePersonName already consumed the end element</span>
+                }
+<span class="fc bfc" id="L540" title="All 2 branches covered.">            } else if (event == XMLStreamConstants.CHARACTERS) {</span>
+<span class="fc" id="L541">                text.append(reader.getText());</span>
+<span class="fc bfc" id="L542" title="All 2 branches covered.">            } else if (event == XMLStreamConstants.END_ELEMENT) {</span>
+<span class="fc" id="L543">                depth--;</span>
+            }
+<span class="fc" id="L545">        }</span>
+
+<span class="fc bfc" id="L547" title="All 2 branches covered.">        builder.names(names.isEmpty() ? null : names);</span>
+
+<span class="fc" id="L549">        personGroups.add(builder.build());</span>
+<span class="fc" id="L550">        return text.toString();</span>
+    }
+
+    /**
+     * PersonGroup 파싱 / Parse PersonGroup
+     */
+    public static PersonGroup parsePersonGroup(XMLStreamReader reader) throws XMLStreamException {
+<span class="fc" id="L557">        String personGroupType = reader.getAttributeValue(null, &quot;person-group-type&quot;);</span>
+
+<span class="fc" id="L559">        PersonGroup.PersonGroupBuilder builder = PersonGroup.builder()</span>
+<span class="fc" id="L560">                .personGroupType(personGroupType);</span>
+
+<span class="fc" id="L562">        List&lt;PersonName&gt; names = new ArrayList&lt;&gt;();</span>
+<span class="fc" id="L563">        List&lt;Collab&gt; collabs = new ArrayList&lt;&gt;();</span>
+<span class="fc" id="L564">        List&lt;Etal&gt; etals = new ArrayList&lt;&gt;();</span>
+
+        // Note: hasNext() 체크는 불필요합니다. 정상 XML에서는 항상 END_ELEMENT를 만나고,
+        // malformed XML에서는 next()가 XMLStreamException을 던집니다.
+        while (true) {
+<span class="fc" id="L569">            int event = reader.next();</span>
+
+<span class="fc bfc" id="L571" title="All 2 branches covered.">            if (event == XMLStreamConstants.START_ELEMENT) {</span>
+<span class="fc" id="L572">                String localName = reader.getLocalName();</span>
+
+<span class="fc bfc" id="L574" title="All 4 branches covered.">                switch (localName) {</span>
+                    case &quot;name&quot;:
+<span class="fc" id="L576">                        names.add(parsePersonName(reader));</span>
+<span class="fc" id="L577">                        break;</span>
+                    case &quot;collab&quot;:
+<span class="fc" id="L579">                        collabs.add(parseCollab(reader));</span>
+<span class="fc" id="L580">                        break;</span>
+                    case &quot;etal&quot;:
+<span class="fc" id="L582">                        etals.add(parseEtal(reader));</span>
+<span class="fc" id="L583">                        break;</span>
+                    default:
+<span class="fc" id="L585">                        skipElement(reader);</span>
+                        break;
+                }
+<span class="fc bfc" id="L588" title="All 2 branches covered.">            } else if (event == XMLStreamConstants.END_ELEMENT) {</span>
+                // Note: 이 시점에서 END_ELEMENT는 항상 &quot;person-group&quot;입니다.
+<span class="fc" id="L590">                break;</span>
+            }
+<span class="fc" id="L592">        }</span>
+
+<span class="fc bfc" id="L594" title="All 2 branches covered.">        builder.names(names.isEmpty() ? null : names);</span>
+<span class="fc bfc" id="L595" title="All 2 branches covered.">        builder.collabs(collabs.isEmpty() ? null : collabs);</span>
+<span class="fc bfc" id="L596" title="All 2 branches covered.">        builder.etals(etals.isEmpty() ? null : etals);</span>
+<span class="fc" id="L597">        return builder.build();</span>
+    }
+
+    /**
+     * PersonName 파싱 / Parse PersonName (name 요소)
+     */
+    public static PersonName parsePersonName(XMLStreamReader reader) throws XMLStreamException {
+<span class="fc" id="L604">        PersonName.PersonNameBuilder builder = PersonName.builder();</span>
+
+        // Note: hasNext() 체크는 불필요합니다. 정상 XML에서는 항상 END_ELEMENT를 만나고,
+        // malformed XML에서는 next()가 XMLStreamException을 던집니다.
+        while (true) {
+<span class="fc" id="L609">            int event = reader.next();</span>
+
+<span class="fc bfc" id="L611" title="All 2 branches covered.">            if (event == XMLStreamConstants.START_ELEMENT) {</span>
+<span class="fc" id="L612">                String localName = reader.getLocalName();</span>
+
+<span class="fc bfc" id="L614" title="All 5 branches covered.">                switch (localName) {</span>
+                    case &quot;surname&quot;:
+<span class="fc" id="L616">                        builder.surname(parseSurname(reader));</span>
+<span class="fc" id="L617">                        break;</span>
+                    case &quot;given-names&quot;:
+<span class="fc" id="L619">                        builder.givenNames(parseGivenNames(reader));</span>
+<span class="fc" id="L620">                        break;</span>
+                    case &quot;prefix&quot;:
+<span class="fc" id="L622">                        builder.prefix(parsePrefix(reader));</span>
+<span class="fc" id="L623">                        break;</span>
+                    case &quot;suffix&quot;:
+<span class="fc" id="L625">                        builder.suffix(parseSuffix(reader));</span>
+<span class="fc" id="L626">                        break;</span>
+                    default:
+<span class="fc" id="L628">                        skipElement(reader);</span>
+                        break;
+                }
+<span class="fc bfc" id="L631" title="All 2 branches covered.">            } else if (event == XMLStreamConstants.END_ELEMENT) {</span>
+                // Note: 이 시점에서 END_ELEMENT는 항상 &quot;name&quot;입니다.
+<span class="fc" id="L633">                break;</span>
+            }
+<span class="fc" id="L635">        }</span>
+
+<span class="fc" id="L637">        return builder.build();</span>
+    }
+
+    // Simple element parsers
+    public static Ack parseAck(XMLStreamReader reader) throws XMLStreamException {
+<span class="fc" id="L642">        String value = parseTextContent(reader, &quot;ack&quot;);</span>
+<span class="fc" id="L643">        return Ack.builder().value(value).build();</span>
+    }
+
+    public static AppGroup parseAppGroup(XMLStreamReader reader) throws XMLStreamException {
+<span class="fc" id="L647">        String value = parseTextContent(reader, &quot;app-group&quot;);</span>
+<span class="fc" id="L648">        return AppGroup.builder().value(value).build();</span>
+    }
+
+    public static Bio parseBio(XMLStreamReader reader) throws XMLStreamException {
+<span class="fc" id="L652">        String value = parseTextContent(reader, &quot;bio&quot;);</span>
+<span class="fc" id="L653">        return Bio.builder().value(value).build();</span>
+    }
+
+    public static FnGroup parseFnGroup(XMLStreamReader reader) throws XMLStreamException {
+<span class="fc" id="L657">        List&lt;Fn&gt; footnotes = new ArrayList&lt;&gt;();</span>
+
+        // Note: hasNext() 체크는 불필요합니다. 정상 XML에서는 항상 END_ELEMENT를 만나고,
+        // malformed XML에서는 next()가 XMLStreamException을 던집니다.
+        while (true) {
+<span class="fc" id="L662">            int event = reader.next();</span>
+
+<span class="fc bfc" id="L664" title="All 2 branches covered.">            if (event == XMLStreamConstants.START_ELEMENT) {</span>
+<span class="fc" id="L665">                String localName = reader.getLocalName();</span>
+
+<span class="fc bfc" id="L667" title="All 2 branches covered.">                if (&quot;fn&quot;.equals(localName)) {</span>
+<span class="fc" id="L668">                    footnotes.add(ArticleMetaParser.parseFn(reader));</span>
+                } else {
+<span class="fc" id="L670">                    skipElement(reader);</span>
+                }
+<span class="fc bfc" id="L672" title="All 2 branches covered.">            } else if (event == XMLStreamConstants.END_ELEMENT) {</span>
+                // Note: 이 시점에서 END_ELEMENT는 항상 &quot;fn-group&quot;입니다.
+<span class="fc" id="L674">                break;</span>
+            }
+<span class="fc" id="L676">        }</span>
+
+<span class="fc" id="L678">        return FnGroup.builder()</span>
+<span class="fc bfc" id="L679" title="All 2 branches covered.">                .footnotes(footnotes.isEmpty() ? null : footnotes)</span>
+<span class="fc" id="L680">                .build();</span>
+    }
+
+    public static Glossary parseGlossary(XMLStreamReader reader) throws XMLStreamException {
+<span class="fc" id="L684">        String value = parseTextContent(reader, &quot;glossary&quot;);</span>
+<span class="fc" id="L685">        return Glossary.builder().value(value).build();</span>
+    }
+
+    public static Notes parseNotes(XMLStreamReader reader) throws XMLStreamException {
+<span class="fc" id="L689">        String value = parseTextContent(reader, &quot;notes&quot;);</span>
+<span class="fc" id="L690">        return Notes.builder().value(value).build();</span>
+    }
+
+    public static Collab parseCollab(XMLStreamReader reader) throws XMLStreamException {
+<span class="fc" id="L694">        String value = parseTextContent(reader, &quot;collab&quot;);</span>
+<span class="fc" id="L695">        return Collab.builder().value(value).build();</span>
+    }
+
+    public static Etal parseEtal(XMLStreamReader reader) throws XMLStreamException {
+<span class="fc" id="L699">        String value = parseTextContent(reader, &quot;etal&quot;);</span>
+<span class="fc" id="L700">        return Etal.builder().value(value).build();</span>
+    }
+
+    public static Surname parseSurname(XMLStreamReader reader) throws XMLStreamException {
+<span class="fc" id="L704">        String value = parseTextContent(reader, &quot;surname&quot;);</span>
+<span class="fc" id="L705">        return Surname.builder().value(value).build();</span>
+    }
+
+    public static GivenNames parseGivenNames(XMLStreamReader reader) throws XMLStreamException {
+<span class="fc" id="L709">        String value = parseTextContent(reader, &quot;given-names&quot;);</span>
+<span class="fc" id="L710">        return GivenNames.builder().value(value).build();</span>
+    }
+
+    public static Prefix parsePrefix(XMLStreamReader reader) throws XMLStreamException {
+<span class="fc" id="L714">        String value = parseTextContent(reader, &quot;prefix&quot;);</span>
+<span class="fc" id="L715">        return Prefix.builder().value(value).build();</span>
+    }
+
+    public static Suffix parseSuffix(XMLStreamReader reader) throws XMLStreamException {
+<span class="fc" id="L719">        String value = parseTextContent(reader, &quot;suffix&quot;);</span>
+<span class="fc" id="L720">        return Suffix.builder().value(value).build();</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.9.202303310957</span></div></body></html>

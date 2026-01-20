@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="ko"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>ResponseType.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">pmc</a> &gt; <a href="index.source.html" class="el_package">com.brillianttiger.bio.parser.pmc.model</a> &gt; <span class="el_source">ResponseType.java</span></div><h1>ResponseType.java</h1><pre class="source lang-java linenums">package com.brillianttiger.bio.parser.pmc.model;
+
+import lombok.Getter;
+
+/**
+ * ResponseType / 응답 유형
+ *
+ * KR: JATS response-type 속성 값을 나타내는 열거형.
+ *     논문에 대한 응답의 유형을 지정.
+ * EN: Enumeration representing JATS response-type attribute values.
+ *     Specifies the type of response to an article.
+ *
+ * DTD: response-type CDATA #IMPLIED
+ *
+ * Reference: https://jats.nlm.nih.gov/archiving/tag-library/1.4/attribute/response-type.html
+ *
+ * Common values from SKILL-PMC.md:
+ * - addendum: 추가 사항
+ * - discussion: 토론
+ * - reply: 답변
+ * - author-comment: 저자 코멘트
+ * - reviewer-report: 심사자 보고서
+ */
+<span class="fc" id="L24">@Getter</span>
+public enum ResponseType {
+
+    /**
+     * 추가 사항 / Addendum
+     * KR: 논문에 대한 추가 사항이나 보충 정보
+     * EN: Additional material or supplementary information
+     */
+<span class="fc" id="L32">    ADDENDUM(&quot;addendum&quot;),</span>
+
+    /**
+     * 토론 / Discussion
+     * KR: 논문에 대한 학술적 토론
+     * EN: Academic discussion about the article
+     */
+<span class="fc" id="L39">    DISCUSSION(&quot;discussion&quot;),</span>
+
+    /**
+     * 답변 / Reply
+     * KR: 코멘트나 비평에 대한 저자의 답변
+     * EN: Author's reply to comments or critiques
+     */
+<span class="fc" id="L46">    REPLY(&quot;reply&quot;),</span>
+
+    /**
+     * 저자 코멘트 / Author comment
+     * KR: 저자의 추가 코멘트
+     * EN: Additional comment from the author
+     */
+<span class="fc" id="L53">    AUTHOR_COMMENT(&quot;author-comment&quot;),</span>
+
+    /**
+     * 심사자 보고서 / Reviewer report
+     * KR: 심사자의 평가 보고서
+     * EN: Peer reviewer's evaluation report
+     */
+<span class="fc" id="L60">    REVIEWER_REPORT(&quot;reviewer-report&quot;),</span>
+
+    /**
+     * 정정 / Correction
+     * KR: 오류 정정
+     * EN: Correction of errors
+     */
+<span class="fc" id="L67">    CORRECTION(&quot;correction&quot;),</span>
+
+    /**
+     * 편집자 코멘트 / Editor comment
+     * KR: 편집자의 코멘트
+     * EN: Comment from the editor
+     */
+<span class="fc" id="L74">    EDITOR_COMMENT(&quot;editor-comment&quot;),</span>
+
+    /**
+     * 서신 / Letter
+     * KR: 서신 형태의 응답
+     * EN: Response in letter form
+     */
+<span class="fc" id="L81">    LETTER(&quot;letter&quot;),</span>
+
+    /**
+     * 기타 / Other
+     * KR: 기타 응답 유형
+     * EN: Other response types
+     */
+<span class="fc" id="L88">    OTHER(&quot;other&quot;);</span>
+
+    private final String value;
+
+<span class="fc" id="L92">    ResponseType(String value) {</span>
+<span class="fc" id="L93">        this.value = value;</span>
+<span class="fc" id="L94">    }</span>
+
+    /**
+     * 문자열에서 ResponseType 변환 / Convert from string to ResponseType
+     *
+     * KR: XML에서 파싱한 문자열을 ResponseType enum으로 변환.
+     *     매칭되는 값이 없으면 OTHER 반환.
+     * EN: Converts parsed string from XML to ResponseType enum.
+     *     Returns OTHER if no matching value found.
+     *
+     * @param value response-type 속성 값 / response-type attribute value
+     * @return 해당하는 ResponseType, 없으면 OTHER / Corresponding ResponseType, or OTHER if not found
+     */
+    public static ResponseType fromValue(String value) {
+<span class="fc bfc" id="L108" title="All 4 branches covered.">        if (value == null || value.trim().isEmpty()) {</span>
+<span class="fc" id="L109">            return null;</span>
+        }
+
+<span class="fc" id="L112">        String normalized = value.trim().toLowerCase();</span>
+<span class="fc bfc" id="L113" title="All 2 branches covered.">        for (ResponseType type : values()) {</span>
+<span class="fc bfc" id="L114" title="All 2 branches covered.">            if (type.value.equals(normalized)) {</span>
+<span class="fc" id="L115">                return type;</span>
+            }
+        }
+
+<span class="fc" id="L119">        return OTHER;</span>
+    }
+
+    @Override
+    public String toString() {
+<span class="fc" id="L124">        return value;</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.9.202303310957</span></div></body></html>

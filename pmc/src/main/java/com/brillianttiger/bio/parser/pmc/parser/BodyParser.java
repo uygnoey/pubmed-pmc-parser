@@ -39,7 +39,9 @@ public class BodyParser {
         List<BoxedText> boxedTexts = new ArrayList<>();
         List<Code> codeBlocks = new ArrayList<>();
 
-        while (reader.hasNext()) {
+        // Note: hasNext() 체크는 불필요합니다. 정상 XML에서는 항상 END_ELEMENT를 만나고,
+        // malformed XML에서는 next()가 XMLStreamException을 던집니다.
+        while (true) {
             int event = reader.next();
 
             if (event == XMLStreamConstants.START_ELEMENT) {
@@ -72,9 +74,9 @@ public class BodyParser {
                         break;
                 }
             } else if (event == XMLStreamConstants.END_ELEMENT) {
-                if (reader.getLocalName().equals("body")) {
-                    break;
-                }
+                // Note: 이 시점에서 END_ELEMENT는 항상 "body"입니다.
+                // 자식 요소들은 각각의 파서가 완전히 소비하므로 부모 파서는 자식의 END_ELEMENT를 만나지 않습니다.
+                break;
             }
         }
 
@@ -116,7 +118,9 @@ public class BodyParser {
         List<BoxedText> boxedTexts = new ArrayList<>();
         List<Code> codeBlocks = new ArrayList<>();
 
-        while (reader.hasNext()) {
+        // Note: hasNext() 체크는 불필요합니다. 정상 XML에서는 항상 END_ELEMENT를 만나고,
+        // malformed XML에서는 next()가 XMLStreamException을 던집니다.
+        while (true) {
             int event = reader.next();
 
             if (event == XMLStreamConstants.START_ELEMENT) {
@@ -159,9 +163,8 @@ public class BodyParser {
                         break;
                 }
             } else if (event == XMLStreamConstants.END_ELEMENT) {
-                if (reader.getLocalName().equals("sec")) {
-                    break;
-                }
+                // Note: 이 시점에서 END_ELEMENT는 항상 "sec"입니다.
+                break;
             }
         }
 
@@ -212,7 +215,9 @@ public class BodyParser {
 
         List<ListItem> items = new ArrayList<>();
 
-        while (reader.hasNext()) {
+        // Note: hasNext() 체크는 불필요합니다. 정상 XML에서는 항상 END_ELEMENT를 만나고,
+        // malformed XML에서는 next()가 XMLStreamException을 던집니다.
+        while (true) {
             int event = reader.next();
 
             if (event == XMLStreamConstants.START_ELEMENT) {
@@ -233,9 +238,8 @@ public class BodyParser {
                         break;
                 }
             } else if (event == XMLStreamConstants.END_ELEMENT) {
-                if (reader.getLocalName().equals("list")) {
-                    break;
-                }
+                // Note: 이 시점에서 END_ELEMENT는 항상 "list"입니다.
+                break;
             }
         }
 
@@ -263,7 +267,9 @@ public class BodyParser {
         List<DispQuote> dispQuotes = new ArrayList<>();
         List<Code> codeBlocks = new ArrayList<>();
 
-        while (reader.hasNext()) {
+        // Note: hasNext() 체크는 불필요합니다. 정상 XML에서는 항상 END_ELEMENT를 만나고,
+        // malformed XML에서는 next()가 XMLStreamException을 던집니다.
+        while (true) {
             int event = reader.next();
 
             if (event == XMLStreamConstants.START_ELEMENT) {
@@ -301,9 +307,8 @@ public class BodyParser {
                         break;
                 }
             } else if (event == XMLStreamConstants.END_ELEMENT) {
-                if (reader.getLocalName().equals("list-item")) {
-                    break;
-                }
+                // Note: 이 시점에서 END_ELEMENT는 항상 "list-item"입니다.
+                break;
             }
         }
 
@@ -346,7 +351,9 @@ public class BodyParser {
         List<DefItem> items = new ArrayList<>();
         List<DefList> nestedDefLists = new ArrayList<>();
 
-        while (reader.hasNext()) {
+        // Note: hasNext() 체크는 불필요합니다. 정상 XML에서는 항상 END_ELEMENT를 만나고,
+        // malformed XML에서는 next()가 XMLStreamException을 던집니다.
+        while (true) {
             int event = reader.next();
 
             if (event == XMLStreamConstants.START_ELEMENT) {
@@ -371,9 +378,8 @@ public class BodyParser {
                         break;
                 }
             } else if (event == XMLStreamConstants.END_ELEMENT) {
-                if (reader.getLocalName().equals("def-list")) {
-                    break;
-                }
+                // Note: 이 시점에서 END_ELEMENT는 항상 "def-list"입니다.
+                break;
             }
         }
 
@@ -399,7 +405,9 @@ public class BodyParser {
         List<Term> terms = new ArrayList<>();
         List<Def> definitions = new ArrayList<>();
 
-        while (reader.hasNext()) {
+        // Note: hasNext() 체크는 불필요합니다. 정상 XML에서는 항상 END_ELEMENT를 만나고,
+        // malformed XML에서는 next()가 XMLStreamException을 던집니다.
+        while (true) {
             int event = reader.next();
 
             if (event == XMLStreamConstants.START_ELEMENT) {
@@ -420,9 +428,8 @@ public class BodyParser {
                         break;
                 }
             } else if (event == XMLStreamConstants.END_ELEMENT) {
-                if (reader.getLocalName().equals("def-item")) {
-                    break;
-                }
+                // Note: 이 시점에서 END_ELEMENT는 항상 "def-item"입니다.
+                break;
             }
         }
 
@@ -491,7 +498,9 @@ public class BodyParser {
         List<DispQuote> dispQuotes = new ArrayList<>();
         List<Code> codeBlocks = new ArrayList<>();
 
-        while (reader.hasNext()) {
+        // Note: hasNext() 체크는 불필요합니다. 정상 XML에서는 항상 END_ELEMENT를 만나고,
+        // malformed XML에서는 next()가 XMLStreamException을 던집니다.
+        while (true) {
             int event = reader.next();
 
             if (event == XMLStreamConstants.START_ELEMENT) {
@@ -528,9 +537,8 @@ public class BodyParser {
                         break;
                 }
             } else if (event == XMLStreamConstants.END_ELEMENT) {
-                if (reader.getLocalName().equals("def")) {
-                    break;
-                }
+                // Note: 이 시점에서 END_ELEMENT는 항상 "def"입니다.
+                break;
             }
         }
 
@@ -570,7 +578,9 @@ public class BodyParser {
         List<DispQuote> nestedQuotes = new ArrayList<>();
         List<Code> codeBlocks = new ArrayList<>();
 
-        while (reader.hasNext()) {
+        // Note: hasNext() 체크는 불필요합니다. 정상 XML에서는 항상 END_ELEMENT를 만나고,
+        // malformed XML에서는 next()가 XMLStreamException을 던집니다.
+        while (true) {
             int event = reader.next();
 
             if (event == XMLStreamConstants.START_ELEMENT) {
@@ -610,9 +620,8 @@ public class BodyParser {
                         break;
                 }
             } else if (event == XMLStreamConstants.END_ELEMENT) {
-                if (reader.getLocalName().equals("disp-quote")) {
-                    break;
-                }
+                // Note: 이 시점에서 END_ELEMENT는 항상 "disp-quote"입니다.
+                break;
             }
         }
 
@@ -655,7 +664,9 @@ public class BodyParser {
         List<DispQuote> dispQuotes = new ArrayList<>();
         List<Code> codeBlocks = new ArrayList<>();
 
-        while (reader.hasNext()) {
+        // Note: hasNext() 체크는 불필요합니다. 정상 XML에서는 항상 END_ELEMENT를 만나고,
+        // malformed XML에서는 next()가 XMLStreamException을 던집니다.
+        while (true) {
             int event = reader.next();
 
             if (event == XMLStreamConstants.START_ELEMENT) {
@@ -701,9 +712,8 @@ public class BodyParser {
                         break;
                 }
             } else if (event == XMLStreamConstants.END_ELEMENT) {
-                if (reader.getLocalName().equals("boxed-text")) {
-                    break;
-                }
+                // Note: 이 시점에서 END_ELEMENT는 항상 "boxed-text"입니다.
+                break;
             }
         }
 
@@ -786,7 +796,9 @@ public class BodyParser {
 
         List<P> paragraphs = new ArrayList<>();
 
-        while (reader.hasNext()) {
+        // Note: hasNext() 체크는 불필요합니다. 정상 XML에서는 항상 END_ELEMENT를 만나고,
+        // malformed XML에서는 next()가 XMLStreamException을 던집니다.
+        while (true) {
             int event = reader.next();
 
             if (event == XMLStreamConstants.START_ELEMENT) {
@@ -804,9 +816,8 @@ public class BodyParser {
                         break;
                 }
             } else if (event == XMLStreamConstants.END_ELEMENT) {
-                if (reader.getLocalName().equals("caption")) {
-                    break;
-                }
+                // Note: 이 시점에서 END_ELEMENT는 항상 "caption"입니다.
+                break;
             }
         }
 

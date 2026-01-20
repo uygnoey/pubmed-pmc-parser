@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="ko"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>TableFrame.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">pmc</a> &gt; <a href="index.source.html" class="el_package">com.brillianttiger.bio.parser.pmc.model</a> &gt; <span class="el_source">TableFrame.java</span></div><h1>TableFrame.java</h1><pre class="source lang-java linenums">package com.brillianttiger.bio.parser.pmc.model;
+
+/**
+ * TableFrame / 테이블 프레임
+ *
+ * KR: XHTML table frame 속성 값을 나타내는 열거형.
+ *     테이블 외곽 테두리의 표시 방식을 지정.
+ * EN: Enumeration representing XHTML table frame attribute values.
+ *     Specifies how the outer border of the table is displayed.
+ *
+ * DTD: frame (void | above | below | hsides | lhs | rhs | vsides | box | border) #IMPLIED
+ *
+ * Reference: https://jats.nlm.nih.gov/archiving/tag-library/1.4/attribute/frame.html
+ */
+<span class="fc" id="L15">public enum TableFrame {</span>
+
+    /**
+     * 테두리 없음 / No border
+     * KR: 외곽 테두리 없음
+     * EN: No outer border
+     */
+<span class="fc" id="L22">    VOID(&quot;void&quot;),</span>
+
+    /**
+     * 상단만 / Top only
+     * KR: 상단 테두리만 표시
+     * EN: Top border only
+     */
+<span class="fc" id="L29">    ABOVE(&quot;above&quot;),</span>
+
+    /**
+     * 하단만 / Bottom only
+     * KR: 하단 테두리만 표시
+     * EN: Bottom border only
+     */
+<span class="fc" id="L36">    BELOW(&quot;below&quot;),</span>
+
+    /**
+     * 상하단 / Top and bottom
+     * KR: 상단과 하단 테두리 표시
+     * EN: Top and bottom borders (horizontal sides)
+     */
+<span class="fc" id="L43">    HSIDES(&quot;hsides&quot;),</span>
+
+    /**
+     * 좌측만 / Left only
+     * KR: 좌측 테두리만 표시
+     * EN: Left border only (left-hand side)
+     */
+<span class="fc" id="L50">    LHS(&quot;lhs&quot;),</span>
+
+    /**
+     * 우측만 / Right only
+     * KR: 우측 테두리만 표시
+     * EN: Right border only (right-hand side)
+     */
+<span class="fc" id="L57">    RHS(&quot;rhs&quot;),</span>
+
+    /**
+     * 좌우측 / Left and right
+     * KR: 좌측과 우측 테두리 표시
+     * EN: Left and right borders (vertical sides)
+     */
+<span class="fc" id="L64">    VSIDES(&quot;vsides&quot;),</span>
+
+    /**
+     * 상자형 / Box
+     * KR: 네 면 모두 테두리 표시
+     * EN: All four sides (box)
+     */
+<span class="fc" id="L71">    BOX(&quot;box&quot;),</span>
+
+    /**
+     * 테두리형 / Border
+     * KR: 네 면 모두 테두리 표시 (box와 동일)
+     * EN: All four sides (same as box)
+     */
+<span class="fc" id="L78">    BORDER(&quot;border&quot;);</span>
+
+    private final String value;
+
+<span class="fc" id="L82">    TableFrame(String value) {</span>
+<span class="fc" id="L83">        this.value = value;</span>
+<span class="fc" id="L84">    }</span>
+
+    /**
+     * DTD 속성 값 / DTD attribute value
+     *
+     * @return frame 값 (예: &quot;box&quot;)
+     */
+    public String getValue() {
+<span class="fc" id="L92">        return value;</span>
+    }
+
+    /**
+     * 문자열에서 TableFrame 변환 / Convert from string to TableFrame
+     *
+     * KR: XML에서 파싱한 문자열을 TableFrame enum으로 변환.
+     *     매칭되는 값이 없으면 null 반환 (선택적 속성).
+     * EN: Converts parsed string from XML to TableFrame enum.
+     *     Returns null if no matching value found (optional attribute).
+     *
+     * @param value frame 속성 값 / frame attribute value
+     * @return 해당하는 TableFrame, 없으면 null / Corresponding TableFrame, or null if not found
+     */
+    public static TableFrame fromValue(String value) {
+<span class="fc bfc" id="L107" title="All 4 branches covered.">        if (value == null || value.trim().isEmpty()) {</span>
+<span class="fc" id="L108">            return null;</span>
+        }
+
+<span class="fc" id="L111">        String normalized = value.trim().toLowerCase();</span>
+<span class="fc bfc" id="L112" title="All 2 branches covered.">        for (TableFrame frame : values()) {</span>
+<span class="fc bfc" id="L113" title="All 2 branches covered.">            if (frame.value.equals(normalized)) {</span>
+<span class="fc" id="L114">                return frame;</span>
+            }
+        }
+
+<span class="fc" id="L118">        return null;</span>
+    }
+
+    @Override
+    public String toString() {
+<span class="fc" id="L123">        return value;</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.9.202303310957</span></div></body></html>

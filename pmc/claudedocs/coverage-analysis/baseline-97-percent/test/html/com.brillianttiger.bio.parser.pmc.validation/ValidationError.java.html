@@ -1,0 +1,183 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="ko"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>ValidationError.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">pmc</a> &gt; <a href="index.source.html" class="el_package">com.brillianttiger.bio.parser.pmc.validation</a> &gt; <span class="el_source">ValidationError.java</span></div><h1>ValidationError.java</h1><pre class="source lang-java linenums">package com.brillianttiger.bio.parser.pmc.validation;
+
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+/**
+ * ValidationError / 검증 오류
+ *
+ * KR: JATS article 검증 시 발견된 오류 정보.
+ * EN: Error information found during JATS article validation.
+ */
+@Data
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
+public class ValidationError {
+
+    /**
+     * 오류 심각도 / Error severity
+     */
+    private Severity severity;
+
+    /**
+     * 오류 코드 / Error code
+     */
+    private String code;
+
+    /**
+     * 오류 메시지 / Error message
+     */
+    private String message;
+
+    /**
+     * 오류 위치 (XPath 스타일) / Error location (XPath style)
+     */
+    private String location;
+
+    /**
+     * 오류 세부 정보 / Error details
+     */
+    private String details;
+
+    /**
+     * 오류 심각도 열거형 / Error severity enum
+     */
+<span class="fc" id="L48">    public enum Severity {</span>
+        /**
+         * 오류 - 반드시 수정 필요 / Error - must be fixed
+         */
+<span class="fc" id="L52">        ERROR,</span>
+
+        /**
+         * 경고 - 수정 권장 / Warning - recommended to fix
+         */
+<span class="fc" id="L57">        WARNING,</span>
+
+        /**
+         * 정보 - 참고 사항 / Info - informational
+         */
+<span class="fc" id="L62">        INFO</span>
+    }
+
+    /**
+     * 오류 코드 상수 / Error code constants
+     */
+<span class="fc" id="L68">    public static class ErrorCode {</span>
+        // 필수 요소 누락 / Missing required elements
+        public static final String MISSING_REQUIRED_ELEMENT = &quot;MISSING_REQUIRED_ELEMENT&quot;;
+        public static final String MISSING_FRONT = &quot;MISSING_FRONT&quot;;
+        public static final String MISSING_ARTICLE_META = &quot;MISSING_ARTICLE_META&quot;;
+        public static final String MISSING_TITLE_GROUP = &quot;MISSING_TITLE_GROUP&quot;;
+        public static final String MISSING_ARTICLE_TITLE = &quot;MISSING_ARTICLE_TITLE&quot;;
+
+        // ID 형식 오류 / ID format errors
+        public static final String INVALID_DOI_FORMAT = &quot;INVALID_DOI_FORMAT&quot;;
+        public static final String INVALID_PMCID_FORMAT = &quot;INVALID_PMCID_FORMAT&quot;;
+        public static final String INVALID_PMID_FORMAT = &quot;INVALID_PMID_FORMAT&quot;;
+        public static final String INVALID_ORCID_FORMAT = &quot;INVALID_ORCID_FORMAT&quot;;
+
+        // 참조 무결성 오류 / Reference integrity errors
+        public static final String BROKEN_XREF_REFERENCE = &quot;BROKEN_XREF_REFERENCE&quot;;
+        public static final String BROKEN_AFF_REFERENCE = &quot;BROKEN_AFF_REFERENCE&quot;;
+        public static final String BROKEN_FN_REFERENCE = &quot;BROKEN_FN_REFERENCE&quot;;
+
+        // 속성 오류 / Attribute errors
+        public static final String MISSING_RECOMMENDED_ATTRIBUTE = &quot;MISSING_RECOMMENDED_ATTRIBUTE&quot;;
+        public static final String INVALID_ATTRIBUTE_VALUE = &quot;INVALID_ATTRIBUTE_VALUE&quot;;
+
+        // 네임스페이스 오류 / Namespace errors
+        public static final String INVALID_XLINK_HREF = &quot;INVALID_XLINK_HREF&quot;;
+        public static final String MISSING_NAMESPACE = &quot;MISSING_NAMESPACE&quot;;
+    }
+
+    /**
+     * ERROR 심각도 검증 오류 생성 / Create ERROR severity validation error
+     */
+    public static ValidationError error(String code, String message, String location) {
+<span class="fc" id="L100">        return ValidationError.builder()</span>
+<span class="fc" id="L101">                .severity(Severity.ERROR)</span>
+<span class="fc" id="L102">                .code(code)</span>
+<span class="fc" id="L103">                .message(message)</span>
+<span class="fc" id="L104">                .location(location)</span>
+<span class="fc" id="L105">                .build();</span>
+    }
+
+    /**
+     * ERROR 심각도 검증 오류 생성 (세부 정보 포함) / Create ERROR severity validation error (with details)
+     */
+    public static ValidationError error(String code, String message, String location, String details) {
+<span class="fc" id="L112">        return ValidationError.builder()</span>
+<span class="fc" id="L113">                .severity(Severity.ERROR)</span>
+<span class="fc" id="L114">                .code(code)</span>
+<span class="fc" id="L115">                .message(message)</span>
+<span class="fc" id="L116">                .location(location)</span>
+<span class="fc" id="L117">                .details(details)</span>
+<span class="fc" id="L118">                .build();</span>
+    }
+
+    /**
+     * WARNING 심각도 검증 오류 생성 / Create WARNING severity validation error
+     */
+    public static ValidationError warning(String code, String message, String location) {
+<span class="fc" id="L125">        return ValidationError.builder()</span>
+<span class="fc" id="L126">                .severity(Severity.WARNING)</span>
+<span class="fc" id="L127">                .code(code)</span>
+<span class="fc" id="L128">                .message(message)</span>
+<span class="fc" id="L129">                .location(location)</span>
+<span class="fc" id="L130">                .build();</span>
+    }
+
+    /**
+     * WARNING 심각도 검증 오류 생성 (세부 정보 포함) / Create WARNING severity validation error (with details)
+     */
+    public static ValidationError warning(String code, String message, String location, String details) {
+<span class="fc" id="L137">        return ValidationError.builder()</span>
+<span class="fc" id="L138">                .severity(Severity.WARNING)</span>
+<span class="fc" id="L139">                .code(code)</span>
+<span class="fc" id="L140">                .message(message)</span>
+<span class="fc" id="L141">                .location(location)</span>
+<span class="fc" id="L142">                .details(details)</span>
+<span class="fc" id="L143">                .build();</span>
+    }
+
+    /**
+     * INFO 심각도 검증 오류 생성 / Create INFO severity validation error
+     */
+    public static ValidationError info(String code, String message, String location) {
+<span class="fc" id="L150">        return ValidationError.builder()</span>
+<span class="fc" id="L151">                .severity(Severity.INFO)</span>
+<span class="fc" id="L152">                .code(code)</span>
+<span class="fc" id="L153">                .message(message)</span>
+<span class="fc" id="L154">                .location(location)</span>
+<span class="fc" id="L155">                .build();</span>
+    }
+
+    public static ValidationError info(String code, String message, String location, String details) {
+<span class="fc" id="L159">        return ValidationError.builder()</span>
+<span class="fc" id="L160">                .severity(Severity.INFO)</span>
+<span class="fc" id="L161">                .code(code)</span>
+<span class="fc" id="L162">                .message(message)</span>
+<span class="fc" id="L163">                .location(location)</span>
+<span class="fc" id="L164">                .details(details)</span>
+<span class="fc" id="L165">                .build();</span>
+    }
+
+    @Override
+    public String toString() {
+<span class="fc" id="L170">        StringBuilder sb = new StringBuilder();</span>
+<span class="fc" id="L171">        sb.append(&quot;[&quot;).append(severity).append(&quot;] &quot;);</span>
+<span class="fc" id="L172">        sb.append(code).append(&quot;: &quot;);</span>
+<span class="fc" id="L173">        sb.append(message);</span>
+<span class="fc bfc" id="L174" title="All 4 branches covered.">        if (location != null &amp;&amp; !location.isEmpty()) {</span>
+<span class="fc" id="L175">            sb.append(&quot; (at: &quot;).append(location).append(&quot;)&quot;);</span>
+        }
+<span class="fc bfc" id="L177" title="All 4 branches covered.">        if (details != null &amp;&amp; !details.isEmpty()) {</span>
+<span class="fc" id="L178">            sb.append(&quot; - &quot;).append(details);</span>
+        }
+<span class="fc" id="L180">        return sb.toString();</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.9.202303310957</span></div></body></html>
