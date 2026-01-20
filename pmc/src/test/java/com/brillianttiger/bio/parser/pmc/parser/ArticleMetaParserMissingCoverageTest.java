@@ -1894,4 +1894,27 @@ class ArticleMetaParserMissingCoverageTest {
         assertThat(chemStruct.getId()).isEqualTo("chem-cdata");
         assertThat(chemStruct.getValue()).isEqualTo("C6H12O6");
     }
+
+    /**
+     * Test 82: ArticleMetaParser private constructor test
+     * This test covers the private constructor of the utility class using reflection
+     */
+    @Test
+    @DisplayName("Test 82: ArticleMetaParser - Private constructor")
+    void test82_ArticleMetaParser_PrivateConstructor() throws Exception {
+        // Use reflection to access the private constructor
+        var constructor = ArticleMetaParser.class.getDeclaredConstructor();
+        constructor.setAccessible(true);
+
+        // Verify that calling the constructor throws UnsupportedOperationException
+        try {
+            constructor.newInstance();
+            throw new AssertionError("Expected UnsupportedOperationException");
+        } catch (Exception e) {
+            // Unwrap the InvocationTargetException
+            Throwable cause = e.getCause();
+            assertThat(cause).isInstanceOf(UnsupportedOperationException.class);
+            assertThat(cause.getMessage()).isEqualTo("Utility class should not be instantiated");
+        }
+    }
 }

@@ -162,6 +162,16 @@ import static com.brillianttiger.bio.parser.pmc.parser.CommonPmcElementParser.sk
 public class ArticleMetaParser {
 
     /**
+     * Private 생성자 / Private constructor
+     *
+     * KR: Utility 클래스이므로 인스턴스화 방지
+     * EN: Prevent instantiation as this is a utility class
+     */
+    private ArticleMetaParser() {
+        throw new UnsupportedOperationException("Utility class should not be instantiated");
+    }
+
+    /**
      * ArticleMeta 파싱 / Parse ArticleMeta
      * DTD: <!ELEMENT article-meta (article-id*, article-categories?, title-group, contrib-group*, aff*, ...)>
      */

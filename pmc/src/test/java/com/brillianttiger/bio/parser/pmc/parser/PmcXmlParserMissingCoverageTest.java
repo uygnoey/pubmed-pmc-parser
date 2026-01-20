@@ -202,4 +202,52 @@ class PmcXmlParserMissingCoverageTest {
     // Note: parseFrontStub()과 parseSubArticle()은 private 메서드이므로
     // 직접 테스트하지 않고 parseJatsArticle()을 통해 간접적으로 테스트됨
     // sub-article 관련 커버리지는 PmcXmlParserTest.java의 통합 테스트에서 확보
+
+    // ==================== parseFile / parseStream / parseStreamBatch ====================
+    // These tests cover the finally block exception handling paths
+
+    @Test
+    @DisplayName("parseFile() - 정상 파싱")
+    void testParseFile() throws Exception {
+        Path testFile = Paths.get("src/test/resources/pmc/simple_article.xml");
+
+        PmcXmlParser parser = new PmcXmlParser();
+        JatsArticle article = parser.parseFile(testFile);
+
+        assertThat(article).isNotNull();
+        assertThat(article.getFront()).isNotNull();
+    }
+
+    @Test
+    @DisplayName("parseStream() - Consumer 사용")
+    void testParseStream() throws Exception {
+        Path testFile = Paths.get("src/test/resources/pmc/simple_article.xml");
+
+        PmcXmlParser parser = new PmcXmlParser();
+
+        // Consumer로 article 수집
+        final JatsArticle[] result = new JatsArticle[1];
+        parser.parseStream(testFile, article -> {
+            result[0] = article;
+        });
+
+        assertThat(result[0]).isNotNull();
+        assertThat(result[0].getFront()).isNotNull();
+    }
+
+    @Test
+    @DisplayName("parseStreamBatch() - 배치 크기 지정")
+    void testParseStreamBatch() throws Exception {
+        Path testFile = Paths.get("src/test/resources/pmc/simple_article.xml");
+
+        PmcXmlParser parser = new PmcXmlParser();
+
+        // Consumer로 article 수집
+        final int[] count = {0};
+        parser.parseStreamBatch(testFile, 10, article -> {
+            count[0]++;
+        });
+
+        assertThat(count[0]).isGreaterThan(0);
+    }
 }
