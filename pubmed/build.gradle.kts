@@ -54,19 +54,9 @@ tasks.jar {
     }
 }
 
-// Javadoc 추가 설정
+// Javadoc 설정 - CI에서는 실행 안 함
 tasks.javadoc {
-    title = "PubMed & PMC Parser - PubMed Module"
-    (options as StandardJavadocDocletOptions).apply {
-        overview = "src/main/java/overview.html"
-        group("PubMed Models", "com.brillianttiger.bio.parser.pubmed.model")
-        group("PubMed Parsers", "com.brillianttiger.bio.parser.pubmed.parser")
-        group("PubMed Validation", "com.brillianttiger.bio.parser.pubmed.validation")
-        // Ignore javadoc errors in CI environments
-        addStringOption("Xdoclint:none", "-quiet")
-    }
-    // Don't fail build if javadoc has errors
-    isFailOnError = false
+    enabled = false  // Disable javadoc generation completely
 }
 
 // Fat JAR 생성 (PubMed 단독 실행 가능)

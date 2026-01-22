@@ -49,14 +49,7 @@ tasks.jar {
     }
 }
 
-// Javadoc 추가 설정
+// Javadoc 설정 - CI에서는 실행 안 함
 tasks.javadoc {
-    title = "PubMed & PMC Parser - Common Module"
-    (options as StandardJavadocDocletOptions).apply {
-        overview = "src/main/java/overview.html"
-        // Ignore javadoc errors in CI environments
-        addStringOption("Xdoclint:none", "-quiet")
-    }
-    // Don't fail build if javadoc has errors
-    isFailOnError = false
+    enabled = false  // Disable javadoc generation completely
 }
