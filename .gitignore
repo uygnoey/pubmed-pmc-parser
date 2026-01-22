@@ -1,7 +1,6 @@
 # Gradle
 .gradle/
 build/
-!gradle/wrapper/gradle-wrapper.jar
 
 # IDE
 .idea/
@@ -18,6 +17,9 @@ build/
 *.jar
 *.war
 *.ear
+
+# Gradle Wrapper JAR exception (MUST be after *.jar rule)
+!gradle/wrapper/gradle-wrapper.jar
 
 # Logs
 *.log
