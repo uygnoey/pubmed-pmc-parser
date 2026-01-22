@@ -35,3 +35,10 @@ src/test/resources/pmc/
 
 # Large documentation files
 **/claudedocs/parsed-data/*-complete-data.md
+
+# Test result directories with timestamps
+test-docs-*/
+test-docs-20*
+
+# Extracted PMC data folders (numeric IDs only)
+PMC[0-9]*/
