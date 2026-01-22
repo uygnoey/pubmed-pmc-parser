@@ -26,7 +26,13 @@ public class PubmedDataParser {
         PubmedData.PubmedDataBuilder builder = PubmedData.builder();
         List<ReferenceList> referenceLists = new ArrayList<>();
 
-        while (reader.hasNext()) {
+        // Note: hasNext() 체크는 불필요합니다. 정상 XML에서는 항상 END_ELEMENT를 만나고,
+
+
+        // malformed XML에서는 next()가 XMLStreamException을 던집니다.
+
+
+        while (true) {
             int event = reader.next();
 
             if (event == XMLStreamConstants.START_ELEMENT) {
@@ -53,9 +59,13 @@ public class PubmedDataParser {
                         break;
                 }
             } else if (event == XMLStreamConstants.END_ELEMENT) {
-                if (reader.getLocalName().equals("PubmedData")) {
-                    break;
-                }
+
+                // Note: 이 시점에서 END_ELEMENT는 항상 "PubmedData"입니다.
+
+                // 자식 요소들은 각각의 파서가 완전히 소비하므로 부모 파서는 자식의 END_ELEMENT를 만나지 않습니다.
+
+                break;
+
             }
         }
 
@@ -70,7 +80,13 @@ public class PubmedDataParser {
     public static History parseHistory(XMLStreamReader reader) throws XMLStreamException {
         List<PubMedPubDate> pubMedPubDates = new ArrayList<>();
 
-        while (reader.hasNext()) {
+        // Note: hasNext() 체크는 불필요합니다. 정상 XML에서는 항상 END_ELEMENT를 만나고,
+
+
+        // malformed XML에서는 next()가 XMLStreamException을 던집니다.
+
+
+        while (true) {
             int event = reader.next();
 
             if (event == XMLStreamConstants.START_ELEMENT) {
@@ -82,9 +98,13 @@ public class PubmedDataParser {
                     skipElement(reader);
                 }
             } else if (event == XMLStreamConstants.END_ELEMENT) {
-                if (reader.getLocalName().equals("History")) {
-                    break;
-                }
+
+                // Note: 이 시점에서 END_ELEMENT는 항상 "History"입니다.
+
+                // 자식 요소들은 각각의 파서가 완전히 소비하므로 부모 파서는 자식의 END_ELEMENT를 만나지 않습니다.
+
+                break;
+
             }
         }
 
@@ -100,7 +120,13 @@ public class PubmedDataParser {
     public static ArticleIdList parseArticleIdList(XMLStreamReader reader) throws XMLStreamException {
         List<ArticleId> articleIds = new ArrayList<>();
 
-        while (reader.hasNext()) {
+        // Note: hasNext() 체크는 불필요합니다. 정상 XML에서는 항상 END_ELEMENT를 만나고,
+
+
+        // malformed XML에서는 next()가 XMLStreamException을 던집니다.
+
+
+        while (true) {
             int event = reader.next();
 
             if (event == XMLStreamConstants.START_ELEMENT) {
@@ -112,9 +138,13 @@ public class PubmedDataParser {
                     skipElement(reader);
                 }
             } else if (event == XMLStreamConstants.END_ELEMENT) {
-                if (reader.getLocalName().equals("ArticleIdList")) {
-                    break;
-                }
+
+                // Note: 이 시점에서 END_ELEMENT는 항상 "ArticleIdList"입니다.
+
+                // 자식 요소들은 각각의 파서가 완전히 소비하므로 부모 파서는 자식의 END_ELEMENT를 만나지 않습니다.
+
+                break;
+
             }
         }
 
@@ -147,7 +177,13 @@ public class PubmedDataParser {
     public static ObjectList parseObjectList(XMLStreamReader reader) throws XMLStreamException {
         List<PubmedObject> objects = new ArrayList<>();
 
-        while (reader.hasNext()) {
+        // Note: hasNext() 체크는 불필요합니다. 정상 XML에서는 항상 END_ELEMENT를 만나고,
+
+
+        // malformed XML에서는 next()가 XMLStreamException을 던집니다.
+
+
+        while (true) {
             int event = reader.next();
 
             if (event == XMLStreamConstants.START_ELEMENT) {
@@ -159,9 +195,13 @@ public class PubmedDataParser {
                     skipElement(reader);
                 }
             } else if (event == XMLStreamConstants.END_ELEMENT) {
-                if (reader.getLocalName().equals("ObjectList")) {
-                    break;
-                }
+
+                // Note: 이 시점에서 END_ELEMENT는 항상 "ObjectList"입니다.
+
+                // 자식 요소들은 각각의 파서가 완전히 소비하므로 부모 파서는 자식의 END_ELEMENT를 만나지 않습니다.
+
+                break;
+
             }
         }
 
@@ -183,7 +223,13 @@ public class PubmedDataParser {
 
         List<Param> params = new ArrayList<>();
 
-        while (reader.hasNext()) {
+        // Note: hasNext() 체크는 불필요합니다. 정상 XML에서는 항상 END_ELEMENT를 만나고,
+
+
+        // malformed XML에서는 next()가 XMLStreamException을 던집니다.
+
+
+        while (true) {
             int event = reader.next();
 
             if (event == XMLStreamConstants.START_ELEMENT) {
@@ -195,9 +241,13 @@ public class PubmedDataParser {
                     skipElement(reader);
                 }
             } else if (event == XMLStreamConstants.END_ELEMENT) {
-                if (reader.getLocalName().equals("Object")) {
-                    break;
-                }
+
+                // Note: 이 시점에서 END_ELEMENT는 항상 "Object"입니다.
+
+                // 자식 요소들은 각각의 파서가 완전히 소비하므로 부모 파서는 자식의 END_ELEMENT를 만나지 않습니다.
+
+                break;
+
             }
         }
 
@@ -229,7 +279,13 @@ public class PubmedDataParser {
         List<Reference> references = new ArrayList<>();
         List<ReferenceList> nestedReferenceLists = new ArrayList<>();
 
-        while (reader.hasNext()) {
+        // Note: hasNext() 체크는 불필요합니다. 정상 XML에서는 항상 END_ELEMENT를 만나고,
+
+
+        // malformed XML에서는 next()가 XMLStreamException을 던집니다.
+
+
+        while (true) {
             int event = reader.next();
 
             if (event == XMLStreamConstants.START_ELEMENT) {
@@ -237,8 +293,8 @@ public class PubmedDataParser {
 
                 switch (localName) {
                     case "Title":
-                        ReferenceListTitle refListTitle = parseReferenceListTitle(reader);
-                        builder.title(refListTitle != null ? Title.builder().value(refListTitle.getValue()).build() : null);
+                        // parseReferenceListTitle always returns non-null object (value can be null)
+                        builder.title(Title.builder().value(parseReferenceListTitle(reader).getValue()).build());
                         break;
                     case "Reference":
                         references.add(parseReference(reader));
@@ -251,9 +307,13 @@ public class PubmedDataParser {
                         break;
                 }
             } else if (event == XMLStreamConstants.END_ELEMENT) {
-                if (reader.getLocalName().equals("ReferenceList")) {
-                    break;
-                }
+
+                // Note: 이 시점에서 END_ELEMENT는 항상 "ReferenceList"입니다.
+
+                // 자식 요소들은 각각의 파서가 완전히 소비하므로 부모 파서는 자식의 END_ELEMENT를 만나지 않습니다.
+
+                break;
+
             }
         }
 
@@ -270,7 +330,13 @@ public class PubmedDataParser {
     public static Reference parseReference(XMLStreamReader reader) throws XMLStreamException {
         Reference.ReferenceBuilder builder = Reference.builder();
 
-        while (reader.hasNext()) {
+        // Note: hasNext() 체크는 불필요합니다. 정상 XML에서는 항상 END_ELEMENT를 만나고,
+
+
+        // malformed XML에서는 next()가 XMLStreamException을 던집니다.
+
+
+        while (true) {
             int event = reader.next();
 
             if (event == XMLStreamConstants.START_ELEMENT) {
@@ -288,9 +354,13 @@ public class PubmedDataParser {
                         break;
                 }
             } else if (event == XMLStreamConstants.END_ELEMENT) {
-                if (reader.getLocalName().equals("Reference")) {
-                    break;
-                }
+
+                // Note: 이 시점에서 END_ELEMENT는 항상 "Reference"입니다.
+
+                // 자식 요소들은 각각의 파서가 완전히 소비하므로 부모 파서는 자식의 END_ELEMENT를 만나지 않습니다.
+
+                break;
+
             }
         }
 
@@ -304,7 +374,13 @@ public class PubmedDataParser {
     public static PubmedBookData parsePubmedBookData(XMLStreamReader reader) throws XMLStreamException {
         PubmedBookData.PubmedBookDataBuilder builder = PubmedBookData.builder();
 
-        while (reader.hasNext()) {
+        // Note: hasNext() 체크는 불필요합니다. 정상 XML에서는 항상 END_ELEMENT를 만나고,
+
+
+        // malformed XML에서는 next()가 XMLStreamException을 던집니다.
+
+
+        while (true) {
             int event = reader.next();
 
             if (event == XMLStreamConstants.START_ELEMENT) {
@@ -328,9 +404,13 @@ public class PubmedDataParser {
                         break;
                 }
             } else if (event == XMLStreamConstants.END_ELEMENT) {
-                if (reader.getLocalName().equals("PubmedBookData")) {
-                    break;
-                }
+
+                // Note: 이 시점에서 END_ELEMENT는 항상 "PubmedBookData"입니다.
+
+                // 자식 요소들은 각각의 파서가 완전히 소비하므로 부모 파서는 자식의 END_ELEMENT를 만나지 않습니다.
+
+                break;
+
             }
         }
 

@@ -220,34 +220,52 @@ public class PubmedValidator {
             // Year 검증
             // Validate year
             if (yearObj != null) {
-                Integer year = Integer.parseInt(yearObj.toString());
-                ValidationUtils.validateYear(year)
-                        .ifPresent(error -> errors.add(ValidationError.error(
-                                fieldPath + ".Year",
-                                error.message()
-                        )));
+                // Year는 value 필드를 가진 객체이므로 getValue() 호출
+                // Year is an object with value field, so call getValue()
+                java.lang.reflect.Method getYearValue = yearObj.getClass().getMethod("getValue");
+                String yearStr = (String) getYearValue.invoke(yearObj);
+                if (yearStr != null && !yearStr.isEmpty()) {
+                    Integer year = Integer.parseInt(yearStr);
+                    ValidationUtils.validateYear(year)
+                            .ifPresent(error -> errors.add(ValidationError.error(
+                                    fieldPath + ".Year",
+                                    error.message()
+                            )));
+                }
             }
 
             // Month 검증
             // Validate month
             if (monthObj != null) {
-                Integer month = Integer.parseInt(monthObj.toString());
-                ValidationUtils.validateMonth(month)
-                        .ifPresent(error -> errors.add(ValidationError.error(
-                                fieldPath + ".Month",
-                                error.message()
-                        )));
+                // Month는 value 필드를 가진 객체이므로 getValue() 호출
+                // Month is an object with value field, so call getValue()
+                java.lang.reflect.Method getMonthValue = monthObj.getClass().getMethod("getValue");
+                String monthStr = (String) getMonthValue.invoke(monthObj);
+                if (monthStr != null && !monthStr.isEmpty()) {
+                    Integer month = Integer.parseInt(monthStr);
+                    ValidationUtils.validateMonth(month)
+                            .ifPresent(error -> errors.add(ValidationError.error(
+                                    fieldPath + ".Month",
+                                    error.message()
+                            )));
+                }
             }
 
             // Day 검증
             // Validate day
             if (dayObj != null) {
-                Integer day = Integer.parseInt(dayObj.toString());
-                ValidationUtils.validateDay(day)
-                        .ifPresent(error -> errors.add(ValidationError.error(
-                                fieldPath + ".Day",
-                                error.message()
-                        )));
+                // Day는 value 필드를 가진 객체이므로 getValue() 호출
+                // Day is an object with value field, so call getValue()
+                java.lang.reflect.Method getDayValue = dayObj.getClass().getMethod("getValue");
+                String dayStr = (String) getDayValue.invoke(dayObj);
+                if (dayStr != null && !dayStr.isEmpty()) {
+                    Integer day = Integer.parseInt(dayStr);
+                    ValidationUtils.validateDay(day)
+                            .ifPresent(error -> errors.add(ValidationError.error(
+                                    fieldPath + ".Day",
+                                    error.message()
+                            )));
+                }
             }
         } catch (Exception e) {
             // 리플렉션 실패 시 경고

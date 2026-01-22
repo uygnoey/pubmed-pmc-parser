@@ -1,6 +1,6 @@
 # PubMed 파싱 전체 요약 / Complete Parsing Summary
 
-**생성 일시:** Mon Jan 19 13:36:25 KST 2026
+**생성 일시:** Wed Jan 21 15:40:03 KST 2026
 
 ---
 

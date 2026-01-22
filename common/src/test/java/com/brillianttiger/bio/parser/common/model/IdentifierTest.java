@@ -138,4 +138,82 @@ class IdentifierTest {
         assertEquals(Identifier.IdType.OTHER, Identifier.parseIdType("unknown"));
         assertEquals(Identifier.IdType.OTHER, Identifier.parseIdType(null));
     }
+
+    @Test
+    void testParseIdTypeAllCases() {
+        // Test all missing IdType cases
+        assertEquals(Identifier.IdType.PMCID, Identifier.parseIdType("pmcid"));
+        assertEquals(Identifier.IdType.PMCID, Identifier.parseIdType("pmc"));
+        assertEquals(Identifier.IdType.PMC_UID, Identifier.parseIdType("pmc-uid"));
+        assertEquals(Identifier.IdType.PII, Identifier.parseIdType("pii"));
+        assertEquals(Identifier.IdType.PUBLISHER_ID, Identifier.parseIdType("publisher-id"));
+        assertEquals(Identifier.IdType.MANUSCRIPT, Identifier.parseIdType("manuscript"));
+        assertEquals(Identifier.IdType.MEDLINE, Identifier.parseIdType("medline"));
+        assertEquals(Identifier.IdType.ISNI, Identifier.parseIdType("isni"));
+        assertEquals(Identifier.IdType.SCOPUS, Identifier.parseIdType("scopus"));
+        assertEquals(Identifier.IdType.RESEARCHER_ID, Identifier.parseIdType("researcher-id"));
+        assertEquals(Identifier.IdType.ROR, Identifier.parseIdType("ror"));
+        assertEquals(Identifier.IdType.RINGGOLD, Identifier.parseIdType("ringgold"));
+        assertEquals(Identifier.IdType.GRID, Identifier.parseIdType("grid"));
+    }
+
+    @Test
+    void testValidateAllTypes() {
+        // Test validate() for all validation types
+        assertTrue(Identifier.validate(Identifier.IdType.PMCID, "PMC1234567"));
+        assertFalse(Identifier.validate(Identifier.IdType.PMCID, "invalid"));
+
+        assertTrue(Identifier.validate(Identifier.IdType.ISNI, "0000000121032683"));
+        assertFalse(Identifier.validate(Identifier.IdType.ISNI, "invalid"));
+
+        assertTrue(Identifier.validate(Identifier.IdType.ROR, "https://ror.org/0abcdef12"));
+        assertFalse(Identifier.validate(Identifier.IdType.ROR, "invalid"));
+
+        assertTrue(Identifier.validate(Identifier.IdType.ISBN, "1234567890"));
+        assertFalse(Identifier.validate(Identifier.IdType.ISBN, "invalid"));
+
+        assertTrue(Identifier.validate(Identifier.IdType.ISSN, "1234-5678"));
+        assertFalse(Identifier.validate(Identifier.IdType.ISSN, "invalid"));
+
+        assertTrue(Identifier.validate(Identifier.IdType.ORCID, "0000-0001-2345-6789"));
+        assertFalse(Identifier.validate(Identifier.IdType.ORCID, "invalid"));
+    }
+
+    @Test
+    void testValidateNullAndBlank() {
+        // Test validate() with null and blank values (covers isBlank() branches)
+        assertFalse(Identifier.validate(Identifier.IdType.DOI, null));
+        assertFalse(Identifier.validate(Identifier.IdType.DOI, ""));
+        assertFalse(Identifier.validate(Identifier.IdType.DOI, "   "));
+
+        assertFalse(Identifier.validate(Identifier.IdType.PMID, null));
+        assertFalse(Identifier.validate(Identifier.IdType.PMID, ""));
+        assertFalse(Identifier.validate(Identifier.IdType.PMID, "   "));
+
+        // Direct method calls to cover individual isBlank() branches
+        assertFalse(Identifier.isValidDoi("   "));
+        assertFalse(Identifier.isValidPmid("   "));
+        assertFalse(Identifier.isValidPmcid("   "));
+        assertFalse(Identifier.isValidOrcid("   "));
+        assertFalse(Identifier.isValidIsni("   "));
+        assertFalse(Identifier.isValidRor("   "));
+        assertFalse(Identifier.isValidIsbn("   "));
+        assertFalse(Identifier.isValidIssn("   "));
+    }
+
+    @Test
+    void testValidateDefaultCase() {
+        // Test validate() default case - other types are always valid if value exists
+        assertTrue(Identifier.validate(Identifier.IdType.OTHER, "any-value"));
+        assertTrue(Identifier.validate(Identifier.IdType.PMC_UID, "any-value"));
+        assertTrue(Identifier.validate(Identifier.IdType.PII, "any-value"));
+        assertTrue(Identifier.validate(Identifier.IdType.PUBLISHER_ID, "any-value"));
+        assertTrue(Identifier.validate(Identifier.IdType.MANUSCRIPT, "any-value"));
+        assertTrue(Identifier.validate(Identifier.IdType.MEDLINE, "any-value"));
+        assertTrue(Identifier.validate(Identifier.IdType.SCOPUS, "any-value"));
+        assertTrue(Identifier.validate(Identifier.IdType.RESEARCHER_ID, "any-value"));
+        assertTrue(Identifier.validate(Identifier.IdType.RINGGOLD, "any-value"));
+        assertTrue(Identifier.validate(Identifier.IdType.GRID, "any-value"));
+        assertTrue(Identifier.validate(Identifier.IdType.REGISTRY_NUMBER, "any-value"));
+    }
 }

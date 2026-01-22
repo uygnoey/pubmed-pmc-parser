@@ -177,4 +177,54 @@ class StaxParserUtilsTest {
         assertEquals("third", keys[2]);
         assertEquals("fourth", keys[3]);
     }
+
+    @Test
+    void testMoveToStartElementNoMatch() throws Exception {
+        // Line 27: while (reader.hasNext()) false branch
+        String xml = """
+                <?xml version="1.0" encoding="UTF-8"?>
+                <root><child/></root>
+                """;
+
+        XMLStreamReader reader = createReader(xml);
+        StaxParserUtils.moveToStartElement(reader, "root");
+
+        // Move past root and child
+        reader.next(); // END_ELEMENT root
+        reader.next(); // END_DOCUMENT
+
+        // Should return false when no more elements
+        assertFalse(StaxParserUtils.moveToStartElement(reader));
+    }
+
+    @Test
+    void testIsAtStartElementFalse() throws Exception {
+        // Line 80: getEventType() == START_ELEMENT false branch
+        String xml = """
+                <?xml version="1.0" encoding="UTF-8"?>
+                <root>text</root>
+                """;
+
+        XMLStreamReader reader = createReader(xml);
+        StaxParserUtils.moveToStartElement(reader);
+        reader.next(); // Move to CHARACTERS
+
+        // Should return false when not at START_ELEMENT
+        assertFalse(StaxParserUtils.isStartElement(reader, "root"));
+    }
+
+    @Test
+    void testIsAtEndElementFalse() throws Exception {
+        // Line 92: getEventType() == END_ELEMENT false branch
+        String xml = """
+                <?xml version="1.0" encoding="UTF-8"?>
+                <root>text</root>
+                """;
+
+        XMLStreamReader reader = createReader(xml);
+        StaxParserUtils.moveToStartElement(reader);
+
+        // At START_ELEMENT, should return false
+        assertFalse(StaxParserUtils.isEndElement(reader, "root"));
+    }
 }

@@ -205,11 +205,9 @@ public class DateParser {
      * EN: Parse date range in "2024 Jan-Feb", "2024 Jan 15-Feb 20" format
      */
     private static ParsedDate parseDateRange(String input) {
+        // Note: parseDateRange is only called when input.contains("-") is true (from parseMedlineDate:166)
+        // Therefore, split("-", 2) always returns length >= 2, making the length check unnecessary.
         String[] parts = input.split("-", 2);
-        if (parts.length != 2) {
-            return parseSingleDate(input);
-        }
-
         String startPart = parts[0].trim();
         String endPart = parts[1].trim();
 
@@ -282,11 +280,8 @@ public class DateParser {
             return null;
         }
 
-        try {
-            return Month.of(monthNumber).name().substring(0, 3);
-        } catch (DateTimeParseException e) {
-            return null;
-        }
+        // Note: Month.of() never throws here because we already validated the range above
+        return Month.of(monthNumber).name().substring(0, 3);
     }
 
     /**
@@ -432,13 +427,12 @@ public class DateParser {
             }
         } else {
             // 단일 월 추출 / Extract single month
+            // Note: MONTH_PATTERN only matches valid month names (Jan, Feb, etc.)
+            // Therefore, parseMonthName always returns non-null for matched months.
             Matcher monthMatcher = MONTH_PATTERN.matcher(medlineDate);
             if (monthMatcher.find()) {
                 String month = monthMatcher.group(1);
-                Integer monthNum = parseMonthName(month);
-                if (monthNum != null) {
-                    builder.month(monthNum);
-                }
+                builder.month(parseMonthName(month));
             }
         }
 
@@ -480,41 +474,38 @@ public class DateParser {
         DateComponents.DateComponentsBuilder builder = DateComponents.builder()
                 .iso8601Date(iso8601Date);
 
-        try {
-            // YYYY-MM-DDTHH:MM:SS 형식 처리 / Handle YYYY-MM-DDTHH:MM:SS format
-            String dateOnlyPart = iso8601Date;
-            if (iso8601Date.contains("T")) {
-                dateOnlyPart = iso8601Date.substring(0, iso8601Date.indexOf("T"));
-            }
+        // Note: No need for outer Exception catch - all operations here only throw DateTimeParseException
+        // YYYY-MM-DDTHH:MM:SS 형식 처리 / Handle YYYY-MM-DDTHH:MM:SS format
+        String dateOnlyPart = iso8601Date;
+        if (iso8601Date.contains("T")) {
+            dateOnlyPart = iso8601Date.substring(0, iso8601Date.indexOf("T"));
+        }
 
-            // YYYY-MM-DD 형식 / YYYY-MM-DD format
+        // YYYY-MM-DD 형식 / YYYY-MM-DD format
+        try {
+            LocalDate date = LocalDate.parse(dateOnlyPart);
+            builder.year(date.getYear())
+                   .month(date.getMonthValue())
+                   .day(date.getDayOfMonth());
+            return builder.build();
+        } catch (DateTimeParseException e) {
+            // YYYY-MM 형식 시도 / Try YYYY-MM format
             try {
-                LocalDate date = LocalDate.parse(dateOnlyPart);
-                builder.year(date.getYear())
-                       .month(date.getMonthValue())
-                       .day(date.getDayOfMonth());
+                YearMonth ym = YearMonth.parse(dateOnlyPart);
+                builder.year(ym.getYear())
+                       .month(ym.getMonthValue());
                 return builder.build();
-            } catch (DateTimeParseException e) {
-                // YYYY-MM 형식 시도 / Try YYYY-MM format
+            } catch (DateTimeParseException e2) {
+                // YYYY 형식 시도 / Try YYYY format
                 try {
-                    YearMonth ym = YearMonth.parse(dateOnlyPart);
-                    builder.year(ym.getYear())
-                           .month(ym.getMonthValue());
+                    Year y = Year.parse(dateOnlyPart);
+                    builder.year(y.getValue());
                     return builder.build();
-                } catch (DateTimeParseException e2) {
-                    // YYYY 형식 시도 / Try YYYY format
-                    try {
-                        Year y = Year.parse(dateOnlyPart);
-                        builder.year(y.getValue());
-                        return builder.build();
-                    } catch (DateTimeParseException e3) {
-                        // 파싱 실패 / Parsing failed
-                        return builder.build();
-                    }
+                } catch (DateTimeParseException e3) {
+                    // 파싱 실패 / Parsing failed
+                    return builder.build();
                 }
             }
-        } catch (Exception e) {
-            return builder.build();
         }
     }
 

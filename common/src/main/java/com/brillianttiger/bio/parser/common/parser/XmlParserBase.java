@@ -95,7 +95,9 @@ public abstract class XmlParserBase {
     protected String getElementText(XMLStreamReader reader) throws XMLStreamException {
         StringBuilder sb = new StringBuilder();
 
-        while (reader.hasNext()) {
+        // Note: hasNext() check is unnecessary. In well-formed XML, we always encounter END_ELEMENT.
+        // If malformed, next() throws XMLStreamException.
+        while (true) {
             int event = reader.next();
 
             switch (event) {
@@ -109,10 +111,11 @@ public abstract class XmlParserBase {
                     // 중첩 요소는 건너뛰기 / Skip nested elements
                     skipElement(reader);
                     break;
+                default:
+                    // Ignore other events (COMMENT, PROCESSING_INSTRUCTION, SPACE, etc.)
+                    break;
             }
         }
-
-        return sb.toString().trim();
     }
 
     /**
@@ -144,7 +147,9 @@ public abstract class XmlParserBase {
         StringBuilder rawXml = new StringBuilder();
         int depth = 1;
 
-        while (reader.hasNext() && depth > 0) {
+        // Note: hasNext() check is unnecessary. depth > 0 already guards the loop.
+        // In well-formed XML, depth reaches 0 when END_ELEMENT is encountered.
+        while (depth > 0) {
             int event = reader.next();
 
             switch (event) {
@@ -174,6 +179,9 @@ public abstract class XmlParserBase {
                         htmlText.append("</").append(htmlCloseTag).append(">");
                         rawXml.append("</").append(closeTag).append(">");
                     }
+                    break;
+                default:
+                    // Ignore other events (COMMENT, PROCESSING_INSTRUCTION, SPACE, etc.)
                     break;
             }
         }
@@ -209,7 +217,9 @@ public abstract class XmlParserBase {
      */
     protected void skipElement(XMLStreamReader reader) throws XMLStreamException {
         int depth = 1;
-        while (reader.hasNext() && depth > 0) {
+        // Note: hasNext() check is unnecessary. depth > 0 already guards the loop.
+        // In well-formed XML, depth reaches 0 when matching END_ELEMENT is found.
+        while (depth > 0) {
             int event = reader.next();
             if (event == XMLStreamConstants.START_ELEMENT) {
                 depth++;

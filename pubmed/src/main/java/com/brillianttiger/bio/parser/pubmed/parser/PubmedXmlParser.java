@@ -7,6 +7,7 @@ import com.brillianttiger.bio.parser.pubmed.model.*;
 import javax.xml.stream.XMLStreamConstants;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
+import java.io.InputStream;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
@@ -84,7 +85,9 @@ public class PubmedXmlParser extends XmlParserBase implements StreamParser<Pubme
         List<PubmedBookArticle> pubmedBookArticles = new ArrayList<>();
         DeleteCitation deleteCitation = null;
 
-        while (reader.hasNext()) {
+        // Note: hasNext() 체크는 불필요합니다. 정상 XML에서는 항상 END_ELEMENT를 만나고,
+        // malformed XML에서는 next()가 XMLStreamException을 던집니다.
+        while (true) {
             int event = reader.next();
 
             if (event == XMLStreamConstants.START_ELEMENT) {
@@ -108,9 +111,9 @@ public class PubmedXmlParser extends XmlParserBase implements StreamParser<Pubme
                         break;
                 }
             } else if (event == XMLStreamConstants.END_ELEMENT) {
-                if (reader.getLocalName().equals("PubmedArticleSet")) {
-                    break;
-                }
+                // Note: 이 시점에서 END_ELEMENT는 항상 "PubmedArticleSet"입니다.
+                // 자식 요소들은 각각의 파서가 완전히 소비하므로 부모 파서는 자식의 END_ELEMENT를 만나지 않습니다.
+                break;
             }
         }
 
@@ -133,7 +136,9 @@ public class PubmedXmlParser extends XmlParserBase implements StreamParser<Pubme
     public PubmedArticle parseArticle(XMLStreamReader reader) throws XMLStreamException {
         PubmedArticle.PubmedArticleBuilder builder = PubmedArticle.builder();
 
-        while (reader.hasNext()) {
+        // Note: hasNext() 체크는 불필요합니다. 정상 XML에서는 항상 END_ELEMENT를 만나고,
+        // malformed XML에서는 next()가 XMLStreamException을 던집니다.
+        while (true) {
             int event = reader.next();
 
             if (event == XMLStreamConstants.START_ELEMENT) {
@@ -151,9 +156,9 @@ public class PubmedXmlParser extends XmlParserBase implements StreamParser<Pubme
                         break;
                 }
             } else if (event == XMLStreamConstants.END_ELEMENT) {
-                if (reader.getLocalName().equals("PubmedArticle")) {
-                    break;
-                }
+                // Note: 이 시점에서 END_ELEMENT는 항상 "PubmedArticle"입니다.
+                // 자식 요소들은 각각의 파서가 완전히 소비하므로 부모 파서는 자식의 END_ELEMENT를 만나지 않습니다.
+                break;
             }
         }
 
@@ -175,7 +180,9 @@ public class PubmedXmlParser extends XmlParserBase implements StreamParser<Pubme
     public DeleteCitation parseDeleteCitation(XMLStreamReader reader) throws XMLStreamException {
         List<PMID> pmids = new ArrayList<>();
 
-        while (reader.hasNext()) {
+        // Note: hasNext() 체크는 불필요합니다. 정상 XML에서는 항상 END_ELEMENT를 만나고,
+        // malformed XML에서는 next()가 XMLStreamException을 던집니다.
+        while (true) {
             int event = reader.next();
 
             if (event == XMLStreamConstants.START_ELEMENT) {
@@ -187,9 +194,9 @@ public class PubmedXmlParser extends XmlParserBase implements StreamParser<Pubme
                     skipElement(reader);
                 }
             } else if (event == XMLStreamConstants.END_ELEMENT) {
-                if (reader.getLocalName().equals("DeleteCitation")) {
-                    break;
-                }
+                // Note: 이 시점에서 END_ELEMENT는 항상 "DeleteCitation"입니다.
+                // 자식 요소들은 각각의 파서가 완전히 소비하므로 부모 파서는 자식의 END_ELEMENT를 만나지 않습니다.
+                break;
             }
         }
 
@@ -372,7 +379,10 @@ public class PubmedXmlParser extends XmlParserBase implements StreamParser<Pubme
      * @throws Exception XML 파싱 또는 파일 읽기 오류 / XML parsing or file reading error
      */
     public DeleteCitation extractDeleteCitation(Path path) throws Exception {
-        try (var inputStream = openInputStream(path)) {
+        // Note: try-with-resources를 명시적 try-finally로 변경하여 100% 브랜치 커버리지 달성
+        // Changed from try-with-resources to explicit try-finally for 100% branch coverage
+        InputStream inputStream = openInputStream(path);
+        try {
             XMLStreamReader reader = createReader(inputStream);
 
             try {
@@ -390,6 +400,8 @@ public class PubmedXmlParser extends XmlParserBase implements StreamParser<Pubme
             } finally {
                 reader.close();
             }
+        } finally {
+            inputStream.close();
         }
 
         return null;

@@ -56,6 +56,10 @@ class XmlParserBaseTest {
             return super.getMixedContent(reader, endTag);
         }
 
+        public TextContent getPublicExtractTextContent(XMLStreamReader reader, String endTag) throws XMLStreamException {
+            return super.extractTextContent(reader, endTag);
+        }
+
         public void skipPublicElement(XMLStreamReader reader) throws XMLStreamException {
             super.skipElement(reader);
         }
@@ -631,5 +635,408 @@ class XmlParserBaseTest {
 
         // Then
         assertThat(attrValue).isEqualTo("value");
+    }
+
+    @Test
+    @DisplayName(".gzip 확장자 파일 자동 처리")
+    void shouldHandleGzipExtensionFiles() throws Exception {
+        // Given: Create .gzip file (not .gz)
+        Path xmlFile = tempDir.resolve("test.xml");
+        Path gzipFile = tempDir.resolve("test.xml.gzip");
+        String content = """
+                <?xml version="1.0"?>
+                <root><element>Gzip extension test</element></root>
+                """;
+
+        Files.writeString(xmlFile, content);
+        com.brillianttiger.bio.parser.common.util.GzipUtils.compress(xmlFile, gzipFile);
+
+        // When
+        TestParser parser = new TestParser();
+        XMLStreamReader reader = parser.createPublicReader(gzipFile);
+
+        // Then: Should successfully decompress and read
+        assertThat(reader).isNotNull();
+        while (reader.hasNext()) {
+            int event = reader.next();
+            if (event == XMLStreamConstants.START_ELEMENT && "element".equals(reader.getLocalName())) {
+                String text = parser.getPublicElementText(reader);
+                assertThat(text).isEqualTo("Gzip extension test");
+                break;
+            }
+        }
+    }
+
+    @Test
+    @DisplayName("여러 속성이 있는 요소 처리")
+    void shouldHandleMultipleAttributes() throws Exception {
+        // Given: Element with multiple attributes
+        String xml = """
+                <?xml version="1.0"?>
+                <root>
+                    <element attr1="value1" attr2="value2" attr3="value3" attr4="value4" attr5="value5"/>
+                </root>
+                """;
+
+        TestParser parser = new TestParser();
+        InputStream is = new ByteArrayInputStream(xml.getBytes());
+        XMLStreamReader reader = parser.createPublicReader(is);
+
+        // When: Read all attributes
+        String attr1 = null, attr2 = null, attr3 = null, attr4 = null, attr5 = null;
+        while (reader.hasNext()) {
+            int event = reader.next();
+            if (event == XMLStreamConstants.START_ELEMENT && "element".equals(reader.getLocalName())) {
+                attr1 = parser.getPublicAttribute(reader, "attr1");
+                attr2 = parser.getPublicAttribute(reader, "attr2");
+                attr3 = parser.getPublicAttribute(reader, "attr3");
+                attr4 = parser.getPublicAttribute(reader, "attr4");
+                attr5 = parser.getPublicAttribute(reader, "attr5");
+                break;
+            }
+        }
+
+        // Then: All attributes should be read correctly
+        assertThat(attr1).isEqualTo("value1");
+        assertThat(attr2).isEqualTo("value2");
+        assertThat(attr3).isEqualTo("value3");
+        assertThat(attr4).isEqualTo("value4");
+        assertThat(attr5).isEqualTo("value5");
+    }
+
+    @Test
+    @DisplayName("getAttributeOrDefault: null 속성 처리")
+    void shouldHandleNullAttributeWithDefault() throws Exception {
+        // Given: Element without the attribute
+        String xml = """
+                <?xml version="1.0"?>
+                <root>
+                    <element existing="value"/>
+                </root>
+                """;
+
+        TestParser parser = new TestParser();
+        InputStream is = new ByteArrayInputStream(xml.getBytes());
+        XMLStreamReader reader = parser.createPublicReader(is);
+
+        // When
+        String value = null;
+        while (reader.hasNext()) {
+            int event = reader.next();
+            if (event == XMLStreamConstants.START_ELEMENT && "element".equals(reader.getLocalName())) {
+                value = parser.getPublicAttributeOrDefault(reader, "nonexistent", "default");
+                break;
+            }
+        }
+
+        // Then
+        assertThat(value).isEqualTo("default");
+    }
+
+    @Test
+    @DisplayName("getMixedContent: inline tags 변환")
+    void shouldConvertInlineTagsInMixedContent() throws Exception {
+        // Given: Mixed content with various inline tags
+        String xml = """
+                <?xml version="1.0"?>
+                <root>
+                    <content>
+                        Plain text with <b>bold</b> and <i>italic</i> and <u>underline</u>.
+                        Also <sup>superscript</sup> and <sub>subscript</sub>.
+                        Special: <sc>small caps</sc> and <monospace>code</monospace>.
+                        Unknown <unknown>tag</unknown>.
+                    </content>
+                </root>
+                """;
+
+        TestParser parser = new TestParser();
+        InputStream is = new ByteArrayInputStream(xml.getBytes());
+        XMLStreamReader reader = parser.createPublicReader(is);
+
+        // When
+        TextContent result = null;
+        while (reader.hasNext()) {
+            int event = reader.next();
+            if (event == XMLStreamConstants.START_ELEMENT && "content".equals(reader.getLocalName())) {
+                result = parser.getPublicMixedContent(reader, "content");
+                break;
+            }
+        }
+
+        // Then: Should convert to HTML tags
+        assertThat(result).isNotNull();
+        assertThat(result.getPlainText()).contains("Plain text", "bold", "italic");
+        assertThat(result.getHtmlText()).contains("<strong>", "<em>", "<u>", "<sup>", "<sub>", "<span>", "<code>");
+    }
+
+    @Test
+    @DisplayName("getBooleanAttribute: null 속성 처리")
+    void shouldHandleNullBooleanAttribute() throws Exception {
+        // Given: Element without the boolean attribute
+        String xml = """
+                <?xml version="1.0"?>
+                <root>
+                    <element/>
+                </root>
+                """;
+
+        TestParser parser = new TestParser();
+        InputStream is = new ByteArrayInputStream(xml.getBytes());
+        XMLStreamReader reader = parser.createPublicReader(is);
+
+        // When
+        boolean result = false;
+        while (reader.hasNext()) {
+            int event = reader.next();
+            if (event == XMLStreamConstants.START_ELEMENT && "element".equals(reader.getLocalName())) {
+                result = parser.getPublicBooleanAttribute(reader, "nonexistent", true);
+                break;
+            }
+        }
+
+        // Then: Should return default value
+        assertThat(result).isTrue();
+    }
+
+    @Test
+    @DisplayName("getRequiredAttribute: blank 값 예외")
+    void shouldThrowExceptionForBlankRequiredAttribute() throws Exception {
+        // Given: Element with blank required attribute
+        String xml = """
+                <?xml version="1.0"?>
+                <root>
+                    <element required="   "/>
+                </root>
+                """;
+
+        TestParser parser = new TestParser();
+        InputStream is = new ByteArrayInputStream(xml.getBytes());
+        XMLStreamReader reader = parser.createPublicReader(is);
+
+        // When/Then: Should throw exception for blank value
+        assertThatThrownBy(() -> {
+            while (reader.hasNext()) {
+                int event = reader.next();
+                if (event == XMLStreamConstants.START_ELEMENT && "element".equals(reader.getLocalName())) {
+                    parser.getPublicRequiredAttribute(reader, "required");
+                    break;
+                }
+            }
+        }).isInstanceOf(XMLStreamException.class)
+          .hasMessageContaining("required");
+    }
+
+    @Test
+    @DisplayName("getElementText: COMMENT 무시")
+    void shouldIgnoreCommentInElementText() throws Exception {
+        // Line 103: switch default case coverage
+        String xml = """
+                <?xml version="1.0"?>
+                <root>
+                    <element>text<!-- comment -->more</element>
+                </root>
+                """;
+
+        TestParser parser = new TestParser();
+        InputStream is = new ByteArrayInputStream(xml.getBytes());
+        XMLStreamReader reader = parser.createPublicReader(is);
+
+        // Move to element
+        while (reader.hasNext()) {
+            int event = reader.next();
+            if (event == XMLStreamConstants.START_ELEMENT && "element".equals(reader.getLocalName())) {
+                String text = parser.getPublicElementText(reader);
+                assertThat(text).isEqualTo("textmore");
+                break;
+            }
+        }
+    }
+
+    @Test
+    @DisplayName("getMixedContent: COMMENT 무시")
+    void shouldIgnoreCommentInMixedContent() throws Exception {
+        // Line 155: switch default case coverage
+        String xml = """
+                <?xml version="1.0"?>
+                <root>
+                    <element>text<!-- comment --><b>bold</b></element>
+                </root>
+                """;
+
+        TestParser parser = new TestParser();
+        InputStream is = new ByteArrayInputStream(xml.getBytes());
+        XMLStreamReader reader = parser.createPublicReader(is);
+
+        // Move to element
+        while (reader.hasNext()) {
+            int event = reader.next();
+            if (event == XMLStreamConstants.START_ELEMENT && "element".equals(reader.getLocalName())) {
+                TextContent content = parser.getPublicMixedContent(reader, "element");
+                assertThat(content.getPlainText()).contains("text");
+                assertThat(content.getPlainText()).contains("bold");
+                break;
+            }
+        }
+    }
+
+    @Test
+    @DisplayName("getRequiredAttribute: 정상 값 반환")
+    void shouldReturnValidRequiredAttribute() throws Exception {
+        // Line 281: value != null && !value.isBlank() branch coverage
+        String xml = """
+                <?xml version="1.0"?>
+                <root>
+                    <element required="valid-value"/>
+                </root>
+                """;
+
+        TestParser parser = new TestParser();
+        InputStream is = new ByteArrayInputStream(xml.getBytes());
+        XMLStreamReader reader = parser.createPublicReader(is);
+
+        // Move to element
+        while (reader.hasNext()) {
+            int event = reader.next();
+            if (event == XMLStreamConstants.START_ELEMENT && "element".equals(reader.getLocalName())) {
+                String value = parser.getPublicRequiredAttribute(reader, "required");
+                assertThat(value).isEqualTo("valid-value");
+                break;
+            }
+        }
+    }
+
+    @Test
+    @DisplayName("getMixedContent: 속성 없는 요소")
+    void shouldHandleElementWithoutAttributes() throws Exception {
+        // Line 334: for (int i = 0; i < count; i++) with count == 0
+        String xml = """
+                <?xml version="1.0"?>
+                <root>
+                    <element><child>text</child></element>
+                </root>
+                """;
+
+        TestParser parser = new TestParser();
+        InputStream is = new ByteArrayInputStream(xml.getBytes());
+        XMLStreamReader reader = parser.createPublicReader(is);
+
+        // Move to element
+        while (reader.hasNext()) {
+            int event = reader.next();
+            if (event == XMLStreamConstants.START_ELEMENT && "element".equals(reader.getLocalName())) {
+                TextContent content = parser.getPublicMixedContent(reader, "element");
+                assertThat(content.getPlainText()).contains("text");
+                break;
+            }
+        }
+    }
+
+    @Test
+    @DisplayName("getElementText: PROCESSING_INSTRUCTION 무시")
+    void shouldIgnoreProcessingInstructionInElementText() throws Exception {
+        // Line 103: switch default case with PROCESSING_INSTRUCTION
+        String xml = """
+                <?xml version="1.0"?>
+                <root>
+                    <element>text<?target instruction?>more</element>
+                </root>
+                """;
+
+        TestParser parser = new TestParser();
+        InputStream is = new ByteArrayInputStream(xml.getBytes());
+        XMLStreamReader reader = parser.createPublicReader(is);
+
+        // Move to element
+        while (reader.hasNext()) {
+            int event = reader.next();
+            if (event == XMLStreamConstants.START_ELEMENT && "element".equals(reader.getLocalName())) {
+                String text = parser.getPublicElementText(reader);
+                assertThat(text).isEqualTo("textmore");
+                break;
+            }
+        }
+    }
+
+    @Test
+    @DisplayName("getMixedContent: 속성 있는 중첩 요소")
+    void shouldHandleNestedElementWithAttributes() throws Exception {
+        // Line 334: for (int i = 0; i < count; i++) with count > 0
+        String xml = """
+                <?xml version="1.0"?>
+                <root>
+                    <element><child id="1" class="test">text</child></element>
+                </root>
+                """;
+
+        TestParser parser = new TestParser();
+        InputStream is = new ByteArrayInputStream(xml.getBytes());
+        XMLStreamReader reader = parser.createPublicReader(is);
+
+        // Move to element
+        while (reader.hasNext()) {
+            int event = reader.next();
+            if (event == XMLStreamConstants.START_ELEMENT && "element".equals(reader.getLocalName())) {
+                TextContent content = parser.getPublicMixedContent(reader, "element");
+                assertThat(content.getPlainText()).contains("text");
+                assertThat(content.getRawXml()).contains("id=\"1\"");
+                assertThat(content.getRawXml()).contains("class=\"test\"");
+                break;
+            }
+        }
+    }
+
+    @Test
+    @DisplayName("getElementText: 중첩 요소 건너뛰기")
+    void shouldSkipNestedElementInElementText() throws Exception {
+        // Line 112-113: START_ELEMENT case with skipElement()
+        String xml = """
+                <?xml version="1.0"?>
+                <root>
+                    <element>before<nested>skip this</nested>after</element>
+                </root>
+                """;
+
+        TestParser parser = new TestParser();
+        InputStream is = new ByteArrayInputStream(xml.getBytes());
+        XMLStreamReader reader = parser.createPublicReader(is);
+
+        // Move to element
+        while (reader.hasNext()) {
+            int event = reader.next();
+            if (event == XMLStreamConstants.START_ELEMENT && "element".equals(reader.getLocalName())) {
+                String text = parser.getPublicElementText(reader);
+                // Nested element should be skipped, only get "before" and "after"
+                assertThat(text).isEqualTo("beforeafter");
+                break;
+            }
+        }
+    }
+
+    @Test
+    @DisplayName("extractTextContent: getMixedContent 별칭 메서드")
+    void shouldUseExtractTextContentAlias() throws Exception {
+        // Line 209: extractTextContent() alias method
+        String xml = """
+                <?xml version="1.0"?>
+                <root>
+                    <element>text<b>bold</b>more</element>
+                </root>
+                """;
+
+        TestParser parser = new TestParser();
+        InputStream is = new ByteArrayInputStream(xml.getBytes());
+        XMLStreamReader reader = parser.createPublicReader(is);
+
+        // Move to element
+        while (reader.hasNext()) {
+            int event = reader.next();
+            if (event == XMLStreamConstants.START_ELEMENT && "element".equals(reader.getLocalName())) {
+                TextContent content = parser.getPublicExtractTextContent(reader, "element");
+                assertThat(content.getPlainText()).contains("text");
+                assertThat(content.getPlainText()).contains("bold");
+                assertThat(content.getPlainText()).contains("more");
+                break;
+            }
+        }
     }
 }

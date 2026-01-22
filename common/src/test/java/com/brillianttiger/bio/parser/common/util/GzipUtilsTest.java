@@ -1,5 +1,6 @@
 package com.brillianttiger.bio.parser.common.util;
 
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 
@@ -337,5 +338,13 @@ class GzipUtilsTest {
 
         assertThrows(IllegalArgumentException.class,
             () -> GzipUtils.compress(tempDir.resolve("input.txt"), null));
+    }
+
+    @Test
+    @DisplayName("클래스 인스턴스 생성")
+    void shouldInstantiateClass() {
+        // Cover class initialization bytecode
+        GzipUtils instance = new GzipUtils();
+        assertNotNull(instance);
     }
 }
