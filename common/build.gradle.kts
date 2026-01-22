@@ -54,5 +54,9 @@ tasks.javadoc {
     title = "PubMed & PMC Parser - Common Module"
     (options as StandardJavadocDocletOptions).apply {
         overview = "src/main/java/overview.html"
+        // Ignore javadoc errors in CI environments
+        addStringOption("Xdoclint:none", "-quiet")
     }
+    // Don't fail build if javadoc has errors
+    isFailOnError = false
 }

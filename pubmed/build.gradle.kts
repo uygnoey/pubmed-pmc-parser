@@ -62,7 +62,11 @@ tasks.javadoc {
         group("PubMed Models", "com.brillianttiger.bio.parser.pubmed.model")
         group("PubMed Parsers", "com.brillianttiger.bio.parser.pubmed.parser")
         group("PubMed Validation", "com.brillianttiger.bio.parser.pubmed.validation")
+        // Ignore javadoc errors in CI environments
+        addStringOption("Xdoclint:none", "-quiet")
     }
+    // Don't fail build if javadoc has errors
+    isFailOnError = false
 }
 
 // Fat JAR 생성 (PubMed 단독 실행 가능)

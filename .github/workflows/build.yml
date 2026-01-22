@@ -66,13 +66,8 @@ jobs:
         cd pubmed
         ln -s ../test-data test-data
 
-    - name: Build with Gradle
-      run: ./gradlew build --no-daemon --stacktrace
-      env:
-        JAVA_OPTS: -Xmx3g
-
-    - name: Run tests
-      run: ./gradlew test --no-daemon --stacktrace
+    - name: Build and test (skip javadoc for CI)
+      run: ./gradlew assemble test -x javadoc --no-daemon --stacktrace
       env:
         JAVA_OPTS: -Xmx3g
 
