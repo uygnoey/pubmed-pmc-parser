@@ -4,6 +4,7 @@ import com.brillianttiger.bio.parser.common.model.PubMedDate;
 import com.brillianttiger.bio.parser.common.util.Md5Verifier;
 import com.brillianttiger.bio.parser.pubmed.model.*;
 import com.brillianttiger.bio.parser.pubmed.parser.PubmedXmlParser;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import java.io.BufferedWriter;
@@ -32,6 +33,7 @@ class RealPubmedFileTest {
      * 전체 파일 파싱 및 **모든 논문 데이터 완전 기록** / Parse all files and record ALL article data completely
      */
     @Test
+    @Disabled("Integration test - requires large test files from NCBI FTP. Not for CI.")
     void testParseAndRecordAllArticles() throws Exception {
         String[] files = {
             "baseline/pubmed25n0001.xml.gz",

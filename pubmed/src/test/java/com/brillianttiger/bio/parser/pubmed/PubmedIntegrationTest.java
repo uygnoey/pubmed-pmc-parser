@@ -3,6 +3,7 @@ package com.brillianttiger.bio.parser.pubmed;
 import com.brillianttiger.bio.parser.common.util.Md5Verifier;
 import com.brillianttiger.bio.parser.pubmed.model.PubmedArticle;
 import com.brillianttiger.bio.parser.pubmed.parser.PubmedXmlParser;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import java.io.BufferedWriter;
@@ -43,6 +44,7 @@ class PubmedIntegrationTest {
      * Real PubMed baseline file complete parsing test
      */
     @Test
+    @Disabled("Integration test - requires large test files from NCBI FTP. Not for CI.")
     void testParseRealBaselineFile() throws Exception {
         Path xmlFile = Paths.get(BASE_DIR, "baseline", "pubmed25n0001.xml.gz");
         assumeTrue(Files.exists(xmlFile), "Skipping integration test - test file not found: " + xmlFile);
@@ -108,6 +110,7 @@ class PubmedIntegrationTest {
      * Real PubMed update file complete parsing test
      */
     @Test
+    @Disabled("Integration test - requires large test files from NCBI FTP. Not for CI.")
     void testParseRealUpdateFile() throws Exception {
         Path xmlFile = Paths.get(BASE_DIR, "update", "pubmed25n1275.xml.gz");
         assumeTrue(Files.exists(xmlFile), "Skipping integration test - test file not found: " + xmlFile);
@@ -170,6 +173,7 @@ class PubmedIntegrationTest {
      * Batch processing test with multiple files
      */
     @Test
+    @Disabled("Integration test - requires large test files from NCBI FTP. Not for CI.")
     void testBatchProcessing() throws Exception {
         String[] files = {
             "baseline/pubmed25n0001.xml.gz",

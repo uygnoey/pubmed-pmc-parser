@@ -3,6 +3,7 @@ package com.brillianttiger.bio.parser.pubmed;
 import com.brillianttiger.bio.parser.pubmed.model.PubmedArticle;
 import com.brillianttiger.bio.parser.pubmed.parser.PubmedXmlParser;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import java.io.*;
@@ -53,6 +54,7 @@ class PubmedPerformanceTest {
      * Streaming parsing performance test with 30,000+ articles
      */
     @Test
+    @Disabled("Performance test - requires large test files from NCBI FTP. Not for CI.")
     void testStreamingPerformanceWithLargeDataset() throws Exception {
         Path xmlFile = Paths.get(BASE_DIR, "baseline", "pubmed25n0001.xml.gz");
         assumeTrue(Files.exists(xmlFile), "Skipping performance test - test file not found: " + xmlFile);
@@ -121,6 +123,7 @@ class PubmedPerformanceTest {
      * Compare parsing performance: GZip vs Non-GZip
      */
     @Test
+    @Disabled("Performance test - requires large test files from NCBI FTP. Not for CI.")
     void testGzipVsNonGzipPerformance() throws Exception {
         Path gzipFile = Paths.get(BASE_DIR, "baseline", "pubmed25n0001.xml.gz");
         assumeTrue(Files.exists(gzipFile), "Skipping performance test - test file not found: " + gzipFile);
@@ -195,6 +198,7 @@ class PubmedPerformanceTest {
      * Detailed memory usage measurement
      */
     @Test
+    @Disabled("Performance test - requires large test files from NCBI FTP. Not for CI.")
     void testMemoryUsageWithLargeDataset() throws Exception {
         Path xmlFile = Paths.get(BASE_DIR, "baseline", "pubmed25n0001.xml.gz");
         assumeTrue(Files.exists(xmlFile), "Skipping performance test - test file not found: " + xmlFile);
@@ -258,6 +262,7 @@ class PubmedPerformanceTest {
      * Throughput benchmark with various scenarios
      */
     @Test
+    @Disabled("Performance test - requires large test files from NCBI FTP. Not for CI.")
     void testThroughputBenchmark() throws Exception {
         Path xmlFile = Paths.get(BASE_DIR, "baseline", "pubmed25n0001.xml.gz");
         assumeTrue(Files.exists(xmlFile), "Skipping performance test - test file not found: " + xmlFile);
