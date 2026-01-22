@@ -18,6 +18,7 @@ import java.util.zip.GZIPInputStream;
 import java.util.zip.GZIPOutputStream;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assumptions.assumeTrue;
 
 /**
  * PubmedPerformanceTest / PubMed 성능 테스트
@@ -53,13 +54,13 @@ class PubmedPerformanceTest {
      */
     @Test
     void testStreamingPerformanceWithLargeDataset() throws Exception {
+        Path xmlFile = Paths.get(BASE_DIR, "baseline", "pubmed25n0001.xml.gz");
+        assumeTrue(Files.exists(xmlFile), "Skipping performance test - test file not found: " + xmlFile);
+
         System.out.println("========================================");
         System.out.println("PubMed Streaming Performance Test");
         System.out.println("Target: 30,000+ articles");
         System.out.println("========================================\n");
-
-        Path xmlFile = Paths.get(BASE_DIR, "baseline", "pubmed25n0001.xml.gz");
-        assertTrue(Files.exists(xmlFile), "Test file should exist: " + xmlFile);
 
         PubmedXmlParser parser = new PubmedXmlParser();
         PerformanceMetrics metrics = new PerformanceMetrics("Streaming - 30K+ articles");
@@ -121,12 +122,12 @@ class PubmedPerformanceTest {
      */
     @Test
     void testGzipVsNonGzipPerformance() throws Exception {
+        Path gzipFile = Paths.get(BASE_DIR, "baseline", "pubmed25n0001.xml.gz");
+        assumeTrue(Files.exists(gzipFile), "Skipping performance test - test file not found: " + gzipFile);
+
         System.out.println("========================================");
         System.out.println("GZip vs Non-GZip Performance Test");
         System.out.println("========================================\n");
-
-        Path gzipFile = Paths.get(BASE_DIR, "baseline", "pubmed25n0001.xml.gz");
-        assertTrue(Files.exists(gzipFile), "GZip file should exist");
 
         // Non-GZip 파일 생성 (압축 해제)
         Path uncompressedFile = Paths.get(BASE_DIR, "baseline", "pubmed25n0001-uncompressed.xml");
@@ -195,12 +196,12 @@ class PubmedPerformanceTest {
      */
     @Test
     void testMemoryUsageWithLargeDataset() throws Exception {
+        Path xmlFile = Paths.get(BASE_DIR, "baseline", "pubmed25n0001.xml.gz");
+        assumeTrue(Files.exists(xmlFile), "Skipping performance test - test file not found: " + xmlFile);
+
         System.out.println("========================================");
         System.out.println("Memory Usage Measurement Test");
         System.out.println("========================================\n");
-
-        Path xmlFile = Paths.get(BASE_DIR, "baseline", "pubmed25n0001.xml.gz");
-        assertTrue(Files.exists(xmlFile), "Test file should exist");
 
         PubmedXmlParser parser = new PubmedXmlParser();
 
@@ -258,12 +259,12 @@ class PubmedPerformanceTest {
      */
     @Test
     void testThroughputBenchmark() throws Exception {
+        Path xmlFile = Paths.get(BASE_DIR, "baseline", "pubmed25n0001.xml.gz");
+        assumeTrue(Files.exists(xmlFile), "Skipping performance test - test file not found: " + xmlFile);
+
         System.out.println("========================================");
         System.out.println("Throughput Benchmark Test");
         System.out.println("========================================\n");
-
-        Path xmlFile = Paths.get(BASE_DIR, "baseline", "pubmed25n0001.xml.gz");
-        assertTrue(Files.exists(xmlFile), "Test file should exist");
 
         PubmedXmlParser parser = new PubmedXmlParser();
         List<PerformanceMetrics> allMetrics = new ArrayList<>();

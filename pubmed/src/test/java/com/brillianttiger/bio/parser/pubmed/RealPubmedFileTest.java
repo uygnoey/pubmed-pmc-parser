@@ -15,6 +15,7 @@ import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assumptions.assumeTrue;
 
 /**
  * RealPubmedFileTest / 실제 PubMed 파일 파싱 테스트
@@ -32,17 +33,27 @@ class RealPubmedFileTest {
      */
     @Test
     void testParseAndRecordAllArticles() throws Exception {
-        System.out.println("========================================");
-        System.out.println("실제 PubMed 파일 전체 파싱 및 데이터 기록");
-        System.out.println("Real PubMed Files - Complete Data Recording");
-        System.out.println("========================================\n");
-
         String[] files = {
             "baseline/pubmed25n0001.xml.gz",
             "baseline/pubmed25n1274.xml.gz",
             "update/pubmed25n1275.xml.gz",
             "update/pubmed25n1685.xml.gz"
         };
+
+        // At least one file should exist for this test to run
+        boolean anyFileExists = false;
+        for (String file : files) {
+            if (Files.exists(Paths.get(BASE_DIR, file))) {
+                anyFileExists = true;
+                break;
+            }
+        }
+        assumeTrue(anyFileExists, "Skipping real file test - no test files found in " + BASE_DIR);
+
+        System.out.println("========================================");
+        System.out.println("실제 PubMed 파일 전체 파싱 및 데이터 기록");
+        System.out.println("Real PubMed Files - Complete Data Recording");
+        System.out.println("========================================\n");
 
         // 문서 디렉토리 생성
         Files.createDirectories(Paths.get(DOC_DIR));

@@ -17,6 +17,7 @@ import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assumptions.assumeTrue;
 
 /**
  * PubmedIntegrationTest / PubMed 통합 테스트
@@ -43,12 +44,12 @@ class PubmedIntegrationTest {
      */
     @Test
     void testParseRealBaselineFile() throws Exception {
+        Path xmlFile = Paths.get(BASE_DIR, "baseline", "pubmed25n0001.xml.gz");
+        assumeTrue(Files.exists(xmlFile), "Skipping integration test - test file not found: " + xmlFile);
+
         System.out.println("========================================");
         System.out.println("PubMed Baseline Integration Test");
         System.out.println("========================================\n");
-
-        Path xmlFile = Paths.get(BASE_DIR, "baseline", "pubmed25n0001.xml.gz");
-        assertTrue(Files.exists(xmlFile), "Test file should exist: " + xmlFile);
 
         // MD5 검증 / MD5 verification
         System.out.println("1. MD5 체크섬 검증 / MD5 Checksum Verification");
@@ -108,12 +109,12 @@ class PubmedIntegrationTest {
      */
     @Test
     void testParseRealUpdateFile() throws Exception {
+        Path xmlFile = Paths.get(BASE_DIR, "update", "pubmed25n1275.xml.gz");
+        assumeTrue(Files.exists(xmlFile), "Skipping integration test - test file not found: " + xmlFile);
+
         System.out.println("========================================");
         System.out.println("PubMed Update Integration Test");
         System.out.println("========================================\n");
-
-        Path xmlFile = Paths.get(BASE_DIR, "update", "pubmed25n1275.xml.gz");
-        assertTrue(Files.exists(xmlFile), "Test file should exist: " + xmlFile);
 
         // MD5 검증
         System.out.println("1. MD5 체크섬 검증");
@@ -170,16 +171,26 @@ class PubmedIntegrationTest {
      */
     @Test
     void testBatchProcessing() throws Exception {
-        System.out.println("========================================");
-        System.out.println("PubMed Batch Processing Test");
-        System.out.println("========================================\n");
-
         String[] files = {
             "baseline/pubmed25n0001.xml.gz",
             "baseline/pubmed25n1274.xml.gz",
             "update/pubmed25n1275.xml.gz",
             "update/pubmed25n1685.xml.gz"
         };
+
+        // At least one file should exist for this test to run
+        boolean anyFileExists = false;
+        for (String file : files) {
+            if (Files.exists(Paths.get(BASE_DIR, file))) {
+                anyFileExists = true;
+                break;
+            }
+        }
+        assumeTrue(anyFileExists, "Skipping batch processing test - no test files found in " + BASE_DIR);
+
+        System.out.println("========================================");
+        System.out.println("PubMed Batch Processing Test");
+        System.out.println("========================================\n");
 
         PubmedXmlParser parser = new PubmedXmlParser();
         int totalArticles = 0;
