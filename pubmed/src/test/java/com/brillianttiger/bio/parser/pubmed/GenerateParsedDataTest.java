@@ -2,6 +2,7 @@ package com.brillianttiger.bio.parser.pubmed;
 
 import com.brillianttiger.bio.parser.pubmed.model.*;
 import com.brillianttiger.bio.parser.pubmed.parser.PubmedXmlParser;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import java.io.FileWriter;
@@ -22,6 +23,7 @@ import java.util.List;
 class GenerateParsedDataTest {
 
     @Test
+    @Disabled("Manual test: requires external file from ../test-docs-*/. Not for CI.")
     void generatePubmedParsedDataDetails() throws Exception {
         System.out.println("📚 Generating PubMed parsed data details...");
 

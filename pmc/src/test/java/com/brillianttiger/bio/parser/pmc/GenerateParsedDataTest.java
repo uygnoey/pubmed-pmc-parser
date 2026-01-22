@@ -2,6 +2,7 @@ package com.brillianttiger.bio.parser.pmc;
 
 import com.brillianttiger.bio.parser.pmc.model.*;
 import com.brillianttiger.bio.parser.pmc.parser.PmcXmlParser;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import java.io.FileWriter;
@@ -19,6 +20,7 @@ import java.util.List;
 public class GenerateParsedDataTest {
 
     @Test
+    @Disabled("Manual test: requires external file from ../test-docs-*/. Not for CI.")
     void generatePmcParsedDataDetails() throws Exception {
         System.out.println("📚 Generating PMC parsed data details...");
 
