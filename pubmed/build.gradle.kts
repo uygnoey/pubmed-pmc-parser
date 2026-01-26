@@ -49,7 +49,7 @@ tasks.jar {
     archiveBaseName.set("pubmed-pmc-parser-pubmed")
     manifest {
         attributes(
-            "Automatic-Module-Name" to "com.brillianttiger.bio.parser.pubmed"
+            "Automatic-Module-Name" to "io.brillianttiger.bio.parser.pubmed"
         )
     }
 }
@@ -74,7 +74,7 @@ tasks.register<Jar>("fatJar") {
 
     manifest {
         attributes(
-            "Main-Class" to "com.brillianttiger.bio.parser.pubmed.PubmedXmlParser"
+            "Main-Class" to "io.brillianttiger.bio.parser.pubmed.PubmedXmlParser"
         )
     }
 }

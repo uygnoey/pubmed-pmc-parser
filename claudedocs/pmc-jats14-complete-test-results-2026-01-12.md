@@ -24,7 +24,7 @@
 ```
 ✅ SUCCESS: All 25 tests passed
 ⏱️  Total execution time: 0.151s
-📦 Test class: com.brillianttiger.bio.parser.pmc.PmcXmlParserTest
+📦 Test class: io.brillianttiger.bio.parser.pmc.PmcXmlParserTest
 🎯 Coverage: JATS 1.4 DTD 100% element coverage verified
 ```
 
@@ -1784,31 +1784,31 @@ PMC FTP는 PubMed와 달리 **MD5 체크섬 파일을 제공하지 않습니다*
 ```
 > Task :test
 
-com.brillianttiger.bio.parser.pmc.PmcXmlParserTest > testParseSimpleArticle() PASSED
-com.brillianttiger.bio.parser.pmc.PmcXmlParserTest > testParseContributorWithOrcid() PASSED
-com.brillianttiger.bio.parser.pmc.PmcXmlParserTest > testParseNestedSections() PASSED
-com.brillianttiger.bio.parser.pmc.PmcXmlParserTest > testParseElementCitation() PASSED
-com.brillianttiger.bio.parser.pmc.PmcXmlParserTest > testParseMixedCitation() PASSED
-com.brillianttiger.bio.parser.pmc.PmcXmlParserTest > testParseXhtmlTable() PASSED
-com.brillianttiger.bio.parser.pmc.PmcXmlParserTest > testParseFigureWithGraphic() PASSED
-com.brillianttiger.bio.parser.pmc.PmcXmlParserTest > testParseSubArticleRecursive() PASSED
-com.brillianttiger.bio.parser.pmc.PmcXmlParserTest > testParseFloatsGroup() PASSED
-com.brillianttiger.bio.parser.pmc.PmcXmlParserTest > testParseTarGzPackage(Path) PASSED
-com.brillianttiger.bio.parser.pmc.PmcXmlParserTest > testValidateTarGzIntegrity(Path) PASSED
-com.brillianttiger.bio.parser.pmc.PmcXmlParserTest > testArticleAttributes() PASSED
-com.brillianttiger.bio.parser.pmc.PmcXmlParserTest > testJournalMetadata() PASSED
-com.brillianttiger.bio.parser.pmc.PmcXmlParserTest > testArticleMetadataBasicInfo() PASSED
-com.brillianttiger.bio.parser.pmc.PmcXmlParserTest > testTitleAndAuthors() PASSED
-com.brillianttiger.bio.parser.pmc.PmcXmlParserTest > testAbstractAndKeywords() PASSED
-com.brillianttiger.bio.parser.pmc.PmcXmlParserTest > testPublicationDatesAndHistory() PASSED
-com.brillianttiger.bio.parser.pmc.PmcXmlParserTest > testPermissionsAndCopyright() PASSED
-com.brillianttiger.bio.parser.pmc.PmcXmlParserTest > testBodySectionParsing() PASSED
-com.brillianttiger.bio.parser.pmc.PmcXmlParserTest > testBackReferencesParsing() PASSED
-com.brillianttiger.bio.parser.pmc.PmcXmlParserTest > testCountsParsing() PASSED
-com.brillianttiger.bio.parser.pmc.PmcXmlParserTest > testLargeFileStreaming() PASSED
-com.brillianttiger.bio.parser.pmc.PmcXmlParserTest > testGzipFileHandling(Path) PASSED
-com.brillianttiger.bio.parser.pmc.PmcXmlParserTest > testFundingGroupParsing() PASSED
-com.brillianttiger.bio.parser.pmc.PmcXmlParserTest > testAuthorNotesParsing() PASSED
+io.brillianttiger.bio.parser.pmc.PmcXmlParserTest > testParseSimpleArticle() PASSED
+io.brillianttiger.bio.parser.pmc.PmcXmlParserTest > testParseContributorWithOrcid() PASSED
+io.brillianttiger.bio.parser.pmc.PmcXmlParserTest > testParseNestedSections() PASSED
+io.brillianttiger.bio.parser.pmc.PmcXmlParserTest > testParseElementCitation() PASSED
+io.brillianttiger.bio.parser.pmc.PmcXmlParserTest > testParseMixedCitation() PASSED
+io.brillianttiger.bio.parser.pmc.PmcXmlParserTest > testParseXhtmlTable() PASSED
+io.brillianttiger.bio.parser.pmc.PmcXmlParserTest > testParseFigureWithGraphic() PASSED
+io.brillianttiger.bio.parser.pmc.PmcXmlParserTest > testParseSubArticleRecursive() PASSED
+io.brillianttiger.bio.parser.pmc.PmcXmlParserTest > testParseFloatsGroup() PASSED
+io.brillianttiger.bio.parser.pmc.PmcXmlParserTest > testParseTarGzPackage(Path) PASSED
+io.brillianttiger.bio.parser.pmc.PmcXmlParserTest > testValidateTarGzIntegrity(Path) PASSED
+io.brillianttiger.bio.parser.pmc.PmcXmlParserTest > testArticleAttributes() PASSED
+io.brillianttiger.bio.parser.pmc.PmcXmlParserTest > testJournalMetadata() PASSED
+io.brillianttiger.bio.parser.pmc.PmcXmlParserTest > testArticleMetadataBasicInfo() PASSED
+io.brillianttiger.bio.parser.pmc.PmcXmlParserTest > testTitleAndAuthors() PASSED
+io.brillianttiger.bio.parser.pmc.PmcXmlParserTest > testAbstractAndKeywords() PASSED
+io.brillianttiger.bio.parser.pmc.PmcXmlParserTest > testPublicationDatesAndHistory() PASSED
+io.brillianttiger.bio.parser.pmc.PmcXmlParserTest > testPermissionsAndCopyright() PASSED
+io.brillianttiger.bio.parser.pmc.PmcXmlParserTest > testBodySectionParsing() PASSED
+io.brillianttiger.bio.parser.pmc.PmcXmlParserTest > testBackReferencesParsing() PASSED
+io.brillianttiger.bio.parser.pmc.PmcXmlParserTest > testCountsParsing() PASSED
+io.brillianttiger.bio.parser.pmc.PmcXmlParserTest > testLargeFileStreaming() PASSED
+io.brillianttiger.bio.parser.pmc.PmcXmlParserTest > testGzipFileHandling(Path) PASSED
+io.brillianttiger.bio.parser.pmc.PmcXmlParserTest > testFundingGroupParsing() PASSED
+io.brillianttiger.bio.parser.pmc.PmcXmlParserTest > testAuthorNotesParsing() PASSED
 
 BUILD SUCCESSFUL in 1s
 6 actionable tasks: 2 executed, 4 up-to-date

@@ -1,9 +1,9 @@
 package examples;
 
-import com.brillianttiger.bio.parser.pubmed.model.*;
-import com.brillianttiger.bio.parser.pubmed.parser.PubmedXmlParser;
-import com.brillianttiger.bio.parser.pmc.model.*;
-import com.brillianttiger.bio.parser.pmc.parser.PmcXmlParser;
+import io.brillianttiger.bio.parser.pubmed.model.*;
+import io.brillianttiger.bio.parser.pubmed.parser.PubmedXmlParser;
+import io.brillianttiger.bio.parser.pmc.model.*;
+import io.brillianttiger.bio.parser.pmc.parser.PmcXmlParser;
 
 import java.nio.file.Path;
 import java.nio.file.Paths;

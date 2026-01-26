@@ -213,8 +213,8 @@ if (value.matches("\\d{4}-\\d{4}")) {
 파서에는 MedlineDate 파싱을 위한 유틸리티 클래스가 포함되어 있습니다:
 
 ```java
-import com.brillianttiger.bio.parser.common.util.DateParser;
-import com.brillianttiger.bio.parser.common.model.DateComponents;
+import io.brillianttiger.bio.parser.common.util.DateParser;
+import io.brillianttiger.bio.parser.common.model.DateComponents;
 
 // MedlineDate 파싱
 String medlineDateStr = "2024 Jan-Feb";

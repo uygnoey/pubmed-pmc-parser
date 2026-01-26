@@ -44,7 +44,7 @@ tasks.jar {
     archiveBaseName.set("pubmed-pmc-parser-common")
     manifest {
         attributes(
-            "Automatic-Module-Name" to "com.brillianttiger.bio.parser.common"
+            "Automatic-Module-Name" to "io.brillianttiger.bio.parser.common"
         )
     }
 }

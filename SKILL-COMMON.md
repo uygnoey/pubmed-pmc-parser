@@ -1238,7 +1238,7 @@ plugins {
     id("io.freefair.lombok") version "8.6"
 }
 
-group = "com.brillianttiger.bio"
+group = "io.brillianttiger.bio"
 version = "1.0.0"
 
 java {
@@ -1300,7 +1300,7 @@ MD5(pubmed25n0001.xml.gz)= d41d8cd98f00b204e9800998ecf8427e
 
 **검증 유틸리티:**
 ```java
-package com.brillianttiger.bio.common.util;
+package io.brillianttiger.bio.common.util;
 
 import java.io.*;
 import java.nio.file.*;

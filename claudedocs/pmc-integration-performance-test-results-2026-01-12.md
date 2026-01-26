@@ -256,7 +256,7 @@ PMC XML은 PubMed XML보다 구조가 복잡하고 요소가 많아 처리 속�
 
 ### PmcIntegrationTest.java
 
-**테스트 클래스:** `com.brillianttiger.bio.parser.pmc.PmcIntegrationTest`
+**테스트 클래스:** `io.brillianttiger.bio.parser.pmc.PmcIntegrationTest`
 
 **테스트 메서드:**
 1. `testParseRealPmcPackage(@TempDir Path tempDir)` - tar.gz 패키지 파싱
@@ -274,7 +274,7 @@ PMC XML은 PubMed XML보다 구조가 복잡하고 요소가 많아 처리 속�
 
 ### PmcPerformanceTest.java
 
-**테스트 클래스:** `com.brillianttiger.bio.parser.pmc.PmcPerformanceTest`
+**테스트 클래스:** `io.brillianttiger.bio.parser.pmc.PmcPerformanceTest`
 
 **테스트 메서드:**
 1. `testStreamingPerformanceWithLargeDataset()` - 대용량 스트리밍 성능
@@ -372,12 +372,12 @@ wget https://ftp.ncbi.nlm.nih.gov/pub/pmc/oa_bulk/oa_comm/xml/oa_comm_xml.PMC001
 
 2. **통합 테스트 실행**
    ```bash
-   ./gradlew test --tests "com.brillianttiger.bio.parser.pmc.PmcIntegrationTest.testParseRealPmcPackage"
+   ./gradlew test --tests "io.brillianttiger.bio.parser.pmc.PmcIntegrationTest.testParseRealPmcPackage"
    ```
 
 3. **성능 테스트 실행**
    ```bash
-   ./gradlew test --tests "com.brillianttiger.bio.parser.pmc.PmcPerformanceTest"
+   ./gradlew test --tests "io.brillianttiger.bio.parser.pmc.PmcPerformanceTest"
    ```
 
 4. **결과 분석 및 최적화**

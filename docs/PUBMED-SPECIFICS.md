@@ -213,8 +213,8 @@ if (value.matches("\\d{4}-\\d{4}")) {
 The parser includes a utility class for MedlineDate parsing:
 
 ```java
-import com.brillianttiger.bio.parser.common.util.DateParser;
-import com.brillianttiger.bio.parser.common.model.DateComponents;
+import io.brillianttiger.bio.parser.common.util.DateParser;
+import io.brillianttiger.bio.parser.common.model.DateComponents;
 
 // Parse MedlineDate
 String medlineDateStr = "2024 Jan-Feb";

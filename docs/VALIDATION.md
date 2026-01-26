@@ -24,7 +24,7 @@ PubMed FTP provides `.md5` checksum files for integrity verification.
 #### Basic MD5 Verification
 
 ```java
-import com.brillianttiger.bio.parser.common.util.Md5Verifier;
+import io.brillianttiger.bio.parser.common.util.Md5Verifier;
 
 Path xmlFile = Paths.get("pubmed25n0001.xml.gz");
 

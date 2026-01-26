@@ -16,7 +16,7 @@
 - **Gradle**: 8.5
 - **Parser**: PmcXmlParser (StAX-based streaming parser)
 - **DTD Standard**: JATS 1.4 (Journal Article Tag Suite)
-- **Test Class**: `com.brillianttiger.bio.parser.pmc.PmcXmlParserTest`
+- **Test Class**: `io.brillianttiger.bio.parser.pmc.PmcXmlParserTest`
 
 ---
 
@@ -641,7 +641,7 @@ dependencies {
 ### Error 1: FloatsGroup figures null
 ```
 org.opentest4j.AssertionFailedError: Figure 리스트가 null이 아니어야 함 / Figure list should not be null ==> expected: not <null>
-	at com.brillianttiger.bio.parser.pmc.PmcXmlParserTest.testParseFigureWithGraphic(PmcXmlParserTest.java:510)
+	at io.brillianttiger.bio.parser.pmc.PmcXmlParserTest.testParseFigureWithGraphic(PmcXmlParserTest.java:510)
 ```
 
 **Stack Context**:
@@ -668,7 +668,7 @@ private FloatsGroup parseFloatsGroup(XMLStreamReader reader) throws XMLStreamExc
 ```
 java.lang.NoClassDefFoundError: org/apache/commons/codec/Charsets
 	at org.apache.commons.compress.archivers.tar.TarArchiveOutputStream.<init>(TarArchiveOutputStream.java:212)
-	at com.brillianttiger.bio.parser.pmc.PmcXmlParserTest.testParseTarGzPackage(PmcXmlParserTest.java:775)
+	at io.brillianttiger.bio.parser.pmc.PmcXmlParserTest.testParseTarGzPackage(PmcXmlParserTest.java:775)
 Caused by: java.lang.ClassNotFoundException: org.apache.commons.codec.Charsets
 ```
 

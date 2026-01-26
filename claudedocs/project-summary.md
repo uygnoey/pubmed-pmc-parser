@@ -310,8 +310,8 @@ pubmed-pmc-parser/
 ### 2. PubMed 파일 파싱 예제
 
 ```java
-import com.brillianttiger.bio.parser.pubmed.parser.PubmedXmlParser;
-import com.brillianttiger.bio.parser.pubmed.model.PubmedArticle;
+import io.brillianttiger.bio.parser.pubmed.parser.PubmedXmlParser;
+import io.brillianttiger.bio.parser.pubmed.model.PubmedArticle;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
@@ -336,7 +336,7 @@ public class Example {
 ### 3. MD5 검증 예제
 
 ```java
-import com.brillianttiger.bio.parser.common.util.Md5Verifier;
+import io.brillianttiger.bio.parser.common.util.Md5Verifier;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 

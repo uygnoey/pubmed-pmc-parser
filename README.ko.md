@@ -90,7 +90,7 @@ DTD 기준으로 **모든 요소와 속성**을 빠짐없이 파싱하며, 메�
 
 ```gradle
 dependencies {
-    implementation 'com.brillianttiger.bio:pubmed-pmc-parser:1.0.0-SNAPSHOT'
+    implementation 'io.brillianttiger.bio:pubmed-pmc-parser:1.0.0-SNAPSHOT'
 }
 ```
 
@@ -98,7 +98,7 @@ dependencies {
 
 ```xml
 <dependency>
-    <groupId>com.brillianttiger.bio</groupId>
+    <groupId>io.brillianttiger.bio</groupId>
     <artifactId>pubmed-pmc-parser</artifactId>
     <version>1.0.0-SNAPSHOT</version>
 </dependency>
@@ -117,8 +117,8 @@ cd pubmed-pmc-parser
 ### 1. PubMed 파일 파싱
 
 ```java
-import com.brillianttiger.bio.parser.pubmed.parser.PubmedXmlParser;
-import com.brillianttiger.bio.parser.pubmed.model.*;
+import io.brillianttiger.bio.parser.pubmed.parser.PubmedXmlParser;
+import io.brillianttiger.bio.parser.pubmed.model.*;
 import java.nio.file.Paths;
 
 public class QuickStart {
@@ -148,8 +148,8 @@ public class QuickStart {
 ### 2. PMC 파일 파싱
 
 ```java
-import com.brillianttiger.bio.parser.pmc.parser.PmcXmlParser;
-import com.brillianttiger.bio.parser.pmc.model.*;
+import io.brillianttiger.bio.parser.pmc.parser.PmcXmlParser;
+import io.brillianttiger.bio.parser.pmc.model.*;
 import java.nio.file.Paths;
 
 public class PmcQuickStart {
@@ -180,7 +180,7 @@ public class PmcQuickStart {
 ### MD5 체크섬 검증
 
 ```java
-import com.brillianttiger.bio.parser.common.util.Md5Verifier;
+import io.brillianttiger.bio.parser.common.util.Md5Verifier;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
@@ -207,8 +207,8 @@ public class Md5Example {
 ### 스트리밍 파싱 (대용량 파일 최적화)
 
 ```java
-import com.brillianttiger.bio.parser.pubmed.parser.PubmedXmlParser;
-import com.brillianttiger.bio.parser.pubmed.model.PubmedArticle;
+import io.brillianttiger.bio.parser.pubmed.parser.PubmedXmlParser;
+import io.brillianttiger.bio.parser.pubmed.model.PubmedArticle;
 import java.nio.file.Paths;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -246,8 +246,8 @@ public class StreamingExample {
 ### PMC tar.gz 스트리밍 파싱
 
 ```java
-import com.brillianttiger.bio.parser.pmc.parser.PmcXmlParser;
-import com.brillianttiger.bio.parser.pmc.model.JatsArticle;
+import io.brillianttiger.bio.parser.pmc.parser.PmcXmlParser;
+import io.brillianttiger.bio.parser.pmc.model.JatsArticle;
 import java.nio.file.Paths;
 
 public class PmcStreamingExample {
@@ -285,8 +285,8 @@ public class PmcStreamingExample {
 ### 배치 처리 예제
 
 ```java
-import com.brillianttiger.bio.parser.pubmed.parser.PubmedXmlParser;
-import com.brillianttiger.bio.parser.common.util.Md5Verifier;
+import io.brillianttiger.bio.parser.pubmed.parser.PubmedXmlParser;
+import io.brillianttiger.bio.parser.common.util.Md5Verifier;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;

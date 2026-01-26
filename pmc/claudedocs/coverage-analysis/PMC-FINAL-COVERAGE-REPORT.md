@@ -25,7 +25,7 @@ Classes:     100% (32 / 32)
 
 ## 📦 패키지별 Coverage 분석
 
-### 1. com.brillianttiger.bio.parser.pmc.model (21 classes)
+### 1. io.brillianttiger.bio.parser.pmc.model (21 classes)
 ```
 Instructions: 100% (2,297 / 2,297)
 Branches:    100% (168 / 168)      ✅ 완벽
@@ -40,7 +40,7 @@ Classes:     100% (21 / 21)
 
 ---
 
-### 2. com.brillianttiger.bio.parser.pmc.parser (7 classes)
+### 2. io.brillianttiger.bio.parser.pmc.parser (7 classes)
 ```
 Instructions:  99% (13,074 / 13,118)
 Branches:     96% (1,592 / 1,646)   ⚠️ 54 missed
@@ -93,7 +93,7 @@ Classes:     100% (7 / 7)
 
 ---
 
-### 3. com.brillianttiger.bio.parser.pmc.validation (4 classes)
+### 3. io.brillianttiger.bio.parser.pmc.validation (4 classes)
 ```
 Instructions:  99% (1,399 / 1,405)
 Branches:     97% (273 / 280)      ⚠️ 7 missed

@@ -31,8 +31,8 @@ dependencies {
 ```java
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
-import com.brillianttiger.bio.parser.pubmed.PubmedXmlParser;
-import com.brillianttiger.bio.parser.pubmed.model.PubmedArticle;
+import io.brillianttiger.bio.parser.pubmed.PubmedXmlParser;
+import io.brillianttiger.bio.parser.pubmed.model.PubmedArticle;
 
 import java.nio.file.Path;
 import java.util.ArrayList;
@@ -128,7 +128,7 @@ dependencies {
 
 **PubmedArticleEntity.java:**
 ```java
-package com.brillianttiger.bio.parser.entity;
+package io.brillianttiger.bio.parser.entity;
 
 import jakarta.persistence.*;
 import lombok.Data;
@@ -258,10 +258,10 @@ public class MeshHeadingEntity {
 
 **ArticleConverter.java:**
 ```java
-package com.brillianttiger.bio.parser.converter;
+package io.brillianttiger.bio.parser.converter;
 
-import com.brillianttiger.bio.parser.pubmed.model.*;
-import com.brillianttiger.bio.parser.entity.*;
+import io.brillianttiger.bio.parser.pubmed.model.*;
+import io.brillianttiger.bio.parser.entity.*;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -464,9 +464,9 @@ CREATE INDEX idx_pmc_author_pmc ON pmc_authors(pmc_id);
 ### 4.1 Repository 인터페이스
 
 ```java
-package com.brillianttiger.bio.parser.repository;
+package io.brillianttiger.bio.parser.repository;
 
-import com.brillianttiger.bio.parser.entity.PubmedArticleEntity;
+import io.brillianttiger.bio.parser.entity.PubmedArticleEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
@@ -495,13 +495,13 @@ public interface PubmedArticleRepository extends JpaRepository<PubmedArticleEnti
 ### 4.2 Service 클래스
 
 ```java
-package com.brillianttiger.bio.parser.service;
+package io.brillianttiger.bio.parser.service;
 
-import com.brillianttiger.bio.parser.pubmed.PubmedXmlParser;
-import com.brillianttiger.bio.parser.pubmed.model.PubmedArticle;
-import com.brillianttiger.bio.parser.converter.ArticleConverter;
-import com.brillianttiger.bio.parser.entity.PubmedArticleEntity;
-import com.brillianttiger.bio.parser.repository.PubmedArticleRepository;
+import io.brillianttiger.bio.parser.pubmed.PubmedXmlParser;
+import io.brillianttiger.bio.parser.pubmed.model.PubmedArticle;
+import io.brillianttiger.bio.parser.converter.ArticleConverter;
+import io.brillianttiger.bio.parser.entity.PubmedArticleEntity;
+import io.brillianttiger.bio.parser.repository.PubmedArticleRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -607,9 +607,9 @@ public class PubmedLoaderService {
 ### 4.3 사용 예시
 
 ```java
-package com.brillianttiger.bio.parser;
+package io.brillianttiger.bio.parser;
 
-import com.brillianttiger.bio.parser.service.PubmedLoaderService;
+import io.brillianttiger.bio.parser.service.PubmedLoaderService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
@@ -659,12 +659,12 @@ dependencies {
 ### 5.2 Batch Job 설정
 
 ```java
-package com.brillianttiger.bio.parser.batch;
+package io.brillianttiger.bio.parser.batch;
 
-import com.brillianttiger.bio.parser.pubmed.PubmedXmlParser;
-import com.brillianttiger.bio.parser.pubmed.model.PubmedArticle;
-import com.brillianttiger.bio.parser.converter.ArticleConverter;
-import com.brillianttiger.bio.parser.entity.PubmedArticleEntity;
+import io.brillianttiger.bio.parser.pubmed.PubmedXmlParser;
+import io.brillianttiger.bio.parser.pubmed.model.PubmedArticle;
+import io.brillianttiger.bio.parser.converter.ArticleConverter;
+import io.brillianttiger.bio.parser.entity.PubmedArticleEntity;
 import lombok.RequiredArgsConstructor;
 import org.springframework.batch.core.Job;
 import org.springframework.batch.core.Step;

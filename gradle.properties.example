@@ -1,0 +1,22 @@
+# gradle.properties 예시
+# ⚠️ 이 파일을 .gitignore에 추가하세요!
+
+# Maven Central Credentials
+# Sonatype OSSRH 계정 정보
+ossrhUsername=your-sonatype-username
+ossrhPassword=your-sonatype-password
+
+# GPG Signing Configuration
+# gpg --list-keys 명령으로 확인한 Key ID의 마지막 8자리
+signing.keyId=12345678
+
+# gpg --gen-key 시 입력한 passphrase
+signing.password=your-gpg-passphrase
+
+# GPG secret key ring 파일 경로
+# macOS/Linux: /Users/yourusername/.gnupg/secring.gpg
+# Windows: C:/Users/yourusername/AppData/Roaming/gnupg/secring.gpg
+signing.secretKeyRingFile=/Users/yourusername/.gnupg/secring.gpg
+
+# Project Version (배포 시 SNAPSHOT 제거)
+version=1.0.0

@@ -15,7 +15,7 @@ plugins {
     id("io.freefair.lombok") version "8.11" apply false
 }
 
-group = "com.brillianttiger.bio"
+group = "io.brillianttiger.bio"
 version = "1.0.0-SNAPSHOT"
 
 allprojects {

@@ -55,7 +55,7 @@ subprojects {
     repositories {
         mavenCentral()
     }
-    group = "com.brillianttiger.bio"
+    group = "io.brillianttiger.bio"
     version = "1.0.0-SNAPSHOT"
 
     // Java 21, Javadoc/Sources JAR, JaCoCo, Checkstyle 등 자동 적용

@@ -24,7 +24,7 @@ PubMed FTP는 무결성 검증을 위한 `.md5` 체크섬 파일을 제공합니
 #### 기본 MD5 검증
 
 ```java
-import com.brillianttiger.bio.parser.common.util.Md5Verifier;
+import io.brillianttiger.bio.parser.common.util.Md5Verifier;
 
 Path xmlFile = Paths.get("pubmed25n0001.xml.gz");
 

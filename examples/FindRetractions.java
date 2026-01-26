@@ -1,7 +1,7 @@
 package examples;
 
-import com.brillianttiger.bio.parser.pubmed.model.*;
-import com.brillianttiger.bio.parser.pubmed.parser.PubmedXmlParser;
+import io.brillianttiger.bio.parser.pubmed.model.*;
+import io.brillianttiger.bio.parser.pubmed.parser.PubmedXmlParser;
 
 import java.io.BufferedWriter;
 import java.io.IOException;

@@ -1,6 +1,6 @@
 package examples;
 
-import com.brillianttiger.bio.parser.common.util.Md5Verifier;
+import io.brillianttiger.bio.parser.common.util.Md5Verifier;
 
 import java.io.*;
 import java.net.URL;

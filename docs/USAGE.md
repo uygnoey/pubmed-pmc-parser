@@ -22,7 +22,7 @@ Complete guide for using the PubMed & PMC XML Parser API.
 
 ```gradle
 dependencies {
-    implementation 'com.brillianttiger.bio:pubmed-pmc-parser:1.0.0-SNAPSHOT'
+    implementation 'io.brillianttiger.bio:pubmed-pmc-parser:1.0.0-SNAPSHOT'
 }
 ```
 

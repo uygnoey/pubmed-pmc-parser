@@ -371,19 +371,19 @@ List<PubmedArticle> articles = loadAll(file); // 메모리 낭비
 ### Integration Tests 실행
 ```bash
 # 단일 테스트
-./gradlew test --tests "com.brillianttiger.bio.parser.pubmed.PubmedIntegrationTest.testBatchProcessing"
+./gradlew test --tests "io.brillianttiger.bio.parser.pubmed.PubmedIntegrationTest.testBatchProcessing"
 
 # 전체 Integration Tests
-./gradlew test --tests "com.brillianttiger.bio.parser.pubmed.PubmedIntegrationTest"
+./gradlew test --tests "io.brillianttiger.bio.parser.pubmed.PubmedIntegrationTest"
 ```
 
 ### Performance Tests 실행
 ```bash
 # Throughput Benchmark
-./gradlew test --tests "com.brillianttiger.bio.parser.pubmed.PubmedPerformanceTest.testThroughputBenchmark"
+./gradlew test --tests "io.brillianttiger.bio.parser.pubmed.PubmedPerformanceTest.testThroughputBenchmark"
 
 # 전체 Performance Tests
-./gradlew test --tests "com.brillianttiger.bio.parser.pubmed.PubmedPerformanceTest"
+./gradlew test --tests "io.brillianttiger.bio.parser.pubmed.PubmedPerformanceTest"
 ```
 
 ### 실제 파일 준비

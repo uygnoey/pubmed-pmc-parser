@@ -22,7 +22,7 @@ PubMed & PMC XML Parser API의 완전한 사용 가이드입니다.
 
 ```gradle
 dependencies {
-    implementation 'com.brillianttiger.bio:pubmed-pmc-parser:1.0.0-SNAPSHOT'
+    implementation 'io.brillianttiger.bio:pubmed-pmc-parser:1.0.0-SNAPSHOT'
 }
 ```
 

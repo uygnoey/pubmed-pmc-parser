@@ -1,0 +1,255 @@
+// Maven Central 배포를 위한 build.gradle.kts 수정 예시
+// 기존 파일에 아래 내용을 추가/수정하세요
+
+import org.gradle.api.tasks.testing.Test
+import org.gradle.testing.jacoco.tasks.JacocoReport
+import org.gradle.testing.jacoco.tasks.JacocoCoverageVerification
+import org.gradle.testing.jacoco.plugins.JacocoTaskExtension
+import org.gradle.api.plugins.JavaPlugin
+import org.gradle.api.tasks.SourceSetContainer
+import org.gradle.api.publish.PublishingExtension
+import org.gradle.api.publish.maven.MavenPublication
+import org.gradle.api.tasks.javadoc.Javadoc
+import org.gradle.external.javadoc.StandardJavadocDocletOptions
+import org.gradle.api.plugins.quality.Checkstyle
+import org.gradle.api.plugins.quality.CheckstyleExtension
+import org.gradle.plugins.signing.SigningExtension  // 추가
+
+plugins {
+    id("io.freefair.lombok") version "8.11" apply false
+    id("maven-publish") apply false                    // 추가
+    id("signing") apply false                          // 추가
+}
+
+// ⚠️ 그룹 ID 선택:
+// Option A (추천): io.github.yourusername
+// Option B: com.brillianttiger.bio (도메인 소유 증명 필요)
+group = "io.github.yourusername"  // ← 본인의 GitHub 유저명으로 변경
+version = "1.0.0"                 // ← SNAPSHOT 제거
+
+allprojects {
+    repositories {
+        mavenCentral()
+    }
+}
+
+subprojects {
+    repositories {
+        mavenCentral()
+    }
+
+    group = rootProject.group
+    version = rootProject.version
+
+    // 플러그인 적용
+    apply(plugin = "java-library")
+    apply(plugin = "maven-publish")      // 추가
+    apply(plugin = "signing")            // 추가
+
+    // 서브프로젝트의 플러그인이 적용된 후 설정
+    afterEvaluate {
+        // Java 플러그인 설정
+        extensions.findByType<JavaPluginExtension>()?.apply {
+            toolchain {
+                languageVersion.set(JavaLanguageVersion.of(21))
+            }
+            withJavadocJar()
+            withSourcesJar()
+        }
+
+        // 공통 의존성
+        dependencies {
+            // Lombok
+            add("compileOnly", "org.projectlombok:lombok:1.18.36")
+            add("annotationProcessor", "org.projectlombok:lombok:1.18.36")
+            add("testCompileOnly", "org.projectlombok:lombok:1.18.36")
+            add("testAnnotationProcessor", "org.projectlombok:lombok:1.18.36")
+
+            // Logging
+            add("implementation", "org.slf4j:slf4j-api:2.0.9")
+            add("runtimeOnly", "ch.qos.logback:logback-classic:1.4.14")
+
+            // Testing
+            add("testImplementation", "org.junit.jupiter:junit-jupiter:5.10.1")
+            add("testImplementation", "org.assertj:assertj-core:3.24.2")
+            add("testRuntimeOnly", "org.junit.platform:junit-platform-launcher")
+        }
+
+        // Test 설정
+        tasks.findByName("test")?.let { test ->
+            (test as Test).apply {
+                useJUnitPlatform()
+                tasks.findByName("jacocoTestReport")?.let { finalizedBy(it) }
+                workingDir = projectDir
+            }
+        }
+
+        // JaCoCo 설정
+        tasks.findByName("jacocoTestReport")?.let { report ->
+            (report as JacocoReport).apply {
+                tasks.findByName("test")?.let { dependsOn(it) }
+                reports {
+                    xml.required.set(true)
+                    html.required.set(true)
+                    csv.required.set(false)
+                }
+            }
+        }
+
+        // JaCoCo 커버리지 검증
+        if (tasks.findByName("jacocoTestReport") != null &&
+            tasks.findByName("jacocoTestCoverageVerification") == null) {
+            tasks.register<JacocoCoverageVerification>("jacocoTestCoverageVerification") {
+                tasks.findByName("jacocoTestReport")?.let { dependsOn(it) }
+                violationRules {
+                    rule {
+                        limit {
+                            minimum = "0.80".toBigDecimal()
+                        }
+                    }
+                }
+            }
+        }
+
+        // Javadoc 설정
+        tasks.findByName("javadoc")?.let { javadoc ->
+            (javadoc as Javadoc).apply {
+                options {
+                    encoding = "UTF-8"
+                    (this as StandardJavadocDocletOptions).apply {
+                        locale = "en_US"
+                        charSet = "UTF-8"
+                        docEncoding = "UTF-8"
+                        links(
+                            "https://docs.oracle.com/en/java/javase/21/docs/api/",
+                            "https://javadoc.io/doc/org.slf4j/slf4j-api/latest/"
+                        )
+                        addStringOption("Xdoclint:none", "-quiet")
+                    }
+                }
+            }
+        }
+
+        // JAR manifest 설정
+        tasks.findByName("jar")?.let { jar ->
+            (jar as Jar).apply {
+                manifest {
+                    attributes(
+                        "Implementation-Title" to project.name,
+                        "Implementation-Version" to project.version,
+                        "Implementation-Vendor" to "Your Name",  // ← 본인 이름으로 변경
+                        "Built-By" to System.getProperty("user.name"),
+                        "Built-JDK" to System.getProperty("java.version"),
+                        "Created-By" to "Gradle ${gradle.gradleVersion}"
+                    )
+                }
+            }
+        }
+
+        // Maven 퍼블리싱 설정
+        extensions.findByType<PublishingExtension>()?.apply {
+            publications {
+                create<MavenPublication>("maven") {
+                    from(components["java"])
+
+                    pom {
+                        name.set("${project.group}:${project.name}")
+                        description.set("PubMed and PMC XML Parser Library - High-performance streaming parser with 100% DTD coverage")
+                        url.set("https://github.com/yourusername/pubmed-pmc-parser")  // ← 본인 GitHub URL로 변경
+
+                        licenses {
+                            license {
+                                name.set("The Apache License, Version 2.0")
+                                url.set("http://www.apache.org/licenses/LICENSE-2.0.txt")
+                            }
+                        }
+
+                        developers {
+                            developer {
+                                id.set("yourusername")           // ← 본인 ID로 변경
+                                name.set("Your Name")            // ← 본인 이름으로 변경
+                                email.set("your@email.com")      // ← 본인 이메일로 변경
+                            }
+                        }
+
+                        scm {
+                            connection.set("scm:git:git://github.com/yourusername/pubmed-pmc-parser.git")
+                            developerConnection.set("scm:git:ssh://github.com/yourusername/pubmed-pmc-parser.git")
+                            url.set("https://github.com/yourusername/pubmed-pmc-parser")
+                        }
+                    }
+                }
+            }
+
+            // ✨ Maven Central Repository 추가
+            repositories {
+                maven {
+                    name = "OSSRH"
+                    val releasesRepoUrl = uri("https://s01.oss.sonatype.org/service/local/staging/deploy/maven2/")
+                    val snapshotsRepoUrl = uri("https://s01.oss.sonatype.org/content/repositories/snapshots/")
+                    url = if (version.toString().endsWith("SNAPSHOT")) snapshotsRepoUrl else releasesRepoUrl
+
+                    credentials {
+                        username = findProperty("ossrhUsername") as String? ?: System.getenv("OSSRH_USERNAME")
+                        password = findProperty("ossrhPassword") as String? ?: System.getenv("OSSRH_PASSWORD")
+                    }
+                }
+            }
+        }
+
+        // ✨ Signing 설정 추가
+        extensions.findByType<SigningExtension>()?.apply {
+            sign(extensions.getByType<PublishingExtension>().publications["maven"])
+        }
+    }
+}
+
+// 루트 프로젝트 JaCoCo 통합 리포트
+tasks.register<JacocoReport>("jacocoRootReport") {
+    dependsOn(subprojects.map { it.tasks.named("test") })
+
+    executionData.setFrom(
+        subprojects.map {
+            it.tasks.withType<Test>().map { test ->
+                test.extensions.getByType<JacocoTaskExtension>().destinationFile!!
+            }
+        }.flatten()
+    )
+
+    subprojects.forEach { project ->
+        project.plugins.withType<JavaPlugin> {
+            val sourceSets = project.the<SourceSetContainer>()
+            sourceDirectories.from(sourceSets["main"].allSource.srcDirs)
+            classDirectories.from(sourceSets["main"].output)
+        }
+    }
+
+    reports {
+        xml.required.set(true)
+        html.required.set(true)
+        csv.required.set(false)
+        html.outputLocation.set(layout.buildDirectory.dir("reports/jacoco/html"))
+    }
+}
+
+// Clean 태스크
+tasks.register<Delete>("cleanAll") {
+    delete(layout.buildDirectory)
+    dependsOn(subprojects.map { it.tasks.named("clean") })
+}
+
+// 전체 테스트 실행
+tasks.register("testAll") {
+    dependsOn(subprojects.map { it.tasks.named("test") })
+    finalizedBy("jacocoRootReport")
+}
+
+// 전체 빌드
+tasks.register("buildAll") {
+    dependsOn(subprojects.map { it.tasks.named("build") })
+}
+
+// Checkstyle 전체 실행
+tasks.register("checkstyleAll") {
+    dependsOn(subprojects.flatMap { it.tasks.withType<Checkstyle>() })
+}

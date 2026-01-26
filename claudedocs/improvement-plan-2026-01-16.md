@@ -26,10 +26,10 @@
 **파일 생성:** `pmc/src/test/java/com/brillianttiger/bio/parser/pmc/parser/BodyParserDeepNestedTest.java`
 
 ```java
-package com.brillianttiger.bio.parser.pmc.parser;
+package io.brillianttiger.bio.parser.pmc.parser;
 
-import com.brillianttiger.bio.parser.pmc.model.*;
-import com.brillianttiger.bio.parser.pmc.parser.PmcXmlParser;
+import io.brillianttiger.bio.parser.pmc.model.*;
+import io.brillianttiger.bio.parser.pmc.parser.PmcXmlParser;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 
@@ -410,10 +410,10 @@ class BodyParserDeepNestedTest {
 **파일 생성:** `pmc/src/test/java/com/brillianttiger/bio/parser/pmc/parser/TableParserComplexTest.java`
 
 ```java
-package com.brillianttiger.bio.parser.pmc.parser;
+package io.brillianttiger.bio.parser.pmc.parser;
 
-import com.brillianttiger.bio.parser.pmc.model.*;
-import com.brillianttiger.bio.parser.pmc.parser.PmcXmlParser;
+import io.brillianttiger.bio.parser.pmc.model.*;
+import io.brillianttiger.bio.parser.pmc.parser.PmcXmlParser;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 
@@ -571,10 +571,10 @@ class TableParserComplexTest {
 **파일 생성:** `pubmed/src/test/java/com/brillianttiger/bio/parser/pubmed/validation/MedlineCitationValidatorTest.java`
 
 ```java
-package com.brillianttiger.bio.parser.pubmed.validation;
+package io.brillianttiger.bio.parser.pubmed.validation;
 
-import com.brillianttiger.bio.parser.common.validation.ValidationError;
-import com.brillianttiger.bio.parser.pubmed.model.*;
+import io.brillianttiger.bio.parser.common.validation.ValidationError;
+import io.brillianttiger.bio.parser.pubmed.model.*;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -771,10 +771,10 @@ class MedlineCitationValidatorTest {
 **파일 생성:** `pmc/src/test/java/com/brillianttiger/bio/parser/pmc/validation/JatsArticleValidatorTest.java`
 
 ```java
-package com.brillianttiger.bio.parser.pmc.validation;
+package io.brillianttiger.bio.parser.pmc.validation;
 
-import com.brillianttiger.bio.parser.common.validation.ValidationError;
-import com.brillianttiger.bio.parser.pmc.model.*;
+import io.brillianttiger.bio.parser.common.validation.ValidationError;
+import io.brillianttiger.bio.parser.pmc.model.*;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
