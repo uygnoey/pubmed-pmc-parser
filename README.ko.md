@@ -107,7 +107,7 @@ dependencies {
 ### 소스에서 직접 빌드
 
 ```bash
-git clone https://github.com/yourusername/pubmed-pmc-parser.git
+git clone https://github.com/BrilliantTiger/pubmed-pmc-parser.git
 cd pubmed-pmc-parser
 ./gradlew build
 ```
@@ -450,7 +450,7 @@ pubmed-pmc-parser/
 
 ```bash
 # 프로젝트 클론
-git clone https://github.com/yourusername/pubmed-pmc-parser.git
+git clone https://github.com/BrilliantTiger/pubmed-pmc-parser.git
 cd pubmed-pmc-parser
 
 # 빌드
@@ -501,9 +501,5 @@ SOFTWARE.
 
 ## 📧 연락처
 
-- **프로젝트 홈**: https://github.com/yourusername/pubmed-pmc-parser
-- **이슈 트래커**: https://github.com/yourusername/pubmed-pmc-parser/issues
-
----
-
-**생명의학 연구 커뮤니티를 위해 ❤️로 만들었습니다**
+- **프로젝트 홈**: https://github.com/BrilliantTiger/pubmed-pmc-parser
+- **이슈 트래커**: https://github.com/BrilliantTiger/pubmed-pmc-parser/issues

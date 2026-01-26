@@ -107,7 +107,7 @@ dependencies {
 ### Build from Source
 
 ```bash
-git clone https://github.com/uygneoy/pubmed-pmc-parser.git
+git clone https://github.com/BrilliantTiger/pubmed-pmc-parser.git
 cd pubmed-pmc-parser
 ./gradlew build
 ```
@@ -450,7 +450,7 @@ Contributions are always welcome!
 
 ```bash
 # Clone project
-git clone https://github.com/uygneoy/pubmed-pmc-parser.git
+git clone https://github.com/BrilliantTiger/pubmed-pmc-parser.git
 cd pubmed-pmc-parser
 
 # Build
@@ -501,9 +501,5 @@ SOFTWARE.
 
 ## 📧 Contact
 
-- **Project Home**: https://github.com/uygnoey/pubmed-pmc-parser
-- **Issue Tracker**: https://github.com/uygnoey/pubmed-pmc-parser/issues
-
----
-
-**Made with ❤️ for the biomedical research community**
+- **Project Home**: https://github.com/BrilliantTiger/pubmed-pmc-parser
+- **Issue Tracker**: https://github.com/BrilliantTiger/pubmed-pmc-parser/issues
