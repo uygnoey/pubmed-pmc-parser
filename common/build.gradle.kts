@@ -3,6 +3,7 @@ plugins {
     jacoco
     checkstyle
     `maven-publish`
+    signing
     id("io.freefair.lombok")
 }
 

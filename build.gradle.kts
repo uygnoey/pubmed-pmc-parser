@@ -10,6 +10,7 @@ import org.gradle.api.tasks.javadoc.Javadoc
 import org.gradle.external.javadoc.StandardJavadocDocletOptions
 import org.gradle.api.plugins.quality.Checkstyle
 import org.gradle.api.plugins.quality.CheckstyleExtension
+import org.gradle.plugins.signing.SigningExtension
 
 plugins {
     id("io.freefair.lombok") version "8.11" apply false
@@ -166,6 +167,36 @@ subprojects {
                             url.set("https://github.com/brillianttiger/pubmed-pmc-parser")
                         }
                     }
+                }
+            }
+
+            repositories {
+                maven {
+                    val releasesRepoUrl = uri("https://s01.oss.sonatype.org/service/local/staging/deploy/maven2/")
+                    val snapshotsRepoUrl = uri("https://s01.oss.sonatype.org/content/repositories/snapshots/")
+                    url = if (version.toString().endsWith("SNAPSHOT")) snapshotsRepoUrl else releasesRepoUrl
+
+                    credentials {
+                        username = System.getenv("OSSRH_USERNAME") ?: findProperty("ossrhUsername") as String?
+                        password = System.getenv("OSSRH_PASSWORD") ?: findProperty("ossrhPassword") as String?
+                    }
+                }
+            }
+        }
+
+        // Signing 설정 (릴리스 버전만)
+        if (!version.toString().endsWith("SNAPSHOT")) {
+            extensions.findByType<SigningExtension>()?.apply {
+                // In-memory signing 사용 (GitHub Actions 환경)
+                val signingKey = System.getenv("GPG_SIGNING_KEY")
+                val signingPassword = System.getenv("GPG_SIGNING_PASSWORD")
+
+                if (signingKey != null && signingPassword != null) {
+                    useInMemoryPgpKeys(signingKey, signingPassword)
+                }
+
+                extensions.findByType<PublishingExtension>()?.publications?.let {
+                    sign(it)
                 }
             }
         }

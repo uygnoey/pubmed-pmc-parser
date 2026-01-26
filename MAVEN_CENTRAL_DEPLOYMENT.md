@@ -5,8 +5,11 @@
 2. [Sonatype OSSRH 계정 생성](#sonatype-ossrh-계정-생성)
 3. [GPG 키 생성 및 배포](#gpg-키-생성-및-배포)
 4. [Gradle 설정 수정](#gradle-설정-수정)
-5. [배포 실행](#배포-실행)
+5. [배포 방법](#배포-방법)
+   - [방법 A: GitHub Actions 자동 배포 (권장)](#방법-a-github-actions-자동-배포-권장)
+   - [방법 B: 수동 배포](#방법-b-수동-배포)
 6. [릴리스 승인](#릴리스-승인)
+7. [배포 후 확인](#배포-후-확인)
 
 ---
 
@@ -207,9 +210,77 @@ plugins {
 
 ---
 
-## 5. 배포 실행
+## 5. 배포 방법
 
-### Step 1: 빌드 및 테스트
+### 방법 A: GitHub Actions 자동 배포 (권장) ✅
+
+**가장 쉽고 안전한 방법입니다!** Git tag만 push하면 자동으로 Maven Central에 배포됩니다.
+
+#### Step 1: GitHub Secrets 설정
+
+GitHub Repository → Settings → Secrets and variables → Actions에서 다음 4개의 Secret을 등록합니다:
+
+| Secret 이름 | 설명 | 예시 |
+|------------|------|-----|
+| `OSSRH_USERNAME` | Sonatype OSSRH 사용자명 | `your-username` |
+| `OSSRH_PASSWORD` | Sonatype OSSRH 비밀번호 | `your-password` |
+| `GPG_SIGNING_KEY` | GPG 개인키 (ASCII armored) | `-----BEGIN PGP PRIVATE KEY BLOCK----- ...` |
+| `GPG_SIGNING_PASSWORD` | GPG 키 비밀번호 | `your-gpg-passphrase` |
+
+**상세 가이드**: [GITHUB_SECRETS_SETUP.md](GITHUB_SECRETS_SETUP.md) 참고
+
+#### Step 2: 버전 태그 생성 및 Push
+
+```bash
+# 릴리스 버전 결정 (예: 1.0.0)
+VERSION="1.0.0"
+
+# Git tag 생성
+git tag v${VERSION}
+
+# Tag push (자동 배포 트리거)
+git push origin v${VERSION}
+```
+
+#### Step 3: GitHub Actions 워크플로우 확인
+
+1. GitHub 저장소 → **Actions** 탭 이동
+2. "Publish to Maven Central" 워크플로우 실행 확인
+3. 빌드 로그 모니터링 (약 5-10분)
+
+**성공 시**: Sonatype staging repository에 자동 업로드 완료
+**실패 시**: Actions 로그에서 오류 확인 후 수정
+
+#### Step 4: 릴리스 승인
+
+자동 배포 후, 수동으로 릴리스 승인 필요:
+
+1. https://s01.oss.sonatype.org/ 로그인
+2. Staging Repositories → `iobrillanttiger-XXXX` 선택
+3. **Close** 버튼 클릭 (검증 5-10분)
+4. **Release** 버튼 클릭 → Maven Central 배포 완료!
+
+---
+
+### 방법 B: 수동 배포
+
+로컬 환경에서 직접 배포하는 방법입니다.
+
+#### Step 1: 로컬 환경변수 설정
+
+```bash
+# ~/.zshrc 또는 ~/.bashrc에 추가
+export OSSRH_USERNAME="your-username"
+export OSSRH_PASSWORD="your-password"
+export GPG_SIGNING_KEY="$(gpg --armor --export-secret-keys YOUR_KEY_ID)"
+export GPG_SIGNING_PASSWORD="your-gpg-passphrase"
+
+# 적용
+source ~/.zshrc  # 또는 source ~/.bashrc
+```
+
+#### Step 2: 빌드 및 테스트
+
 ```bash
 ./gradlew clean build
 
@@ -217,17 +288,22 @@ plugins {
 ./gradlew test
 ```
 
-### Step 2: 로컬 배포 테스트
+#### Step 3: 로컬 배포 테스트
+
 ```bash
 # 로컬 Maven 저장소에 배포 테스트
 ./gradlew publishToMavenLocal
 
 # 확인
-ls ~/.m2/repository/com/brillianttiger/bio/
+ls ~/.m2/repository/io/brillianttiger/bio/
 ```
 
-### Step 3: Staging Repository에 배포
+#### Step 4: Staging Repository에 배포
+
 ```bash
+# 버전 업데이트 (build.gradle.kts)
+# version = "1.0.0-SNAPSHOT" → version = "1.0.0"
+
 # 모든 아티팩트를 Sonatype에 업로드
 ./gradlew publish
 
