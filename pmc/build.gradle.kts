@@ -2,9 +2,8 @@ plugins {
     `java-library`
     jacoco
     checkstyle
-    `maven-publish`
-    signing
     id("io.freefair.lombok")
+    id("com.vanniktech.maven.publish")
 }
 
 repositories {

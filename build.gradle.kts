@@ -4,16 +4,14 @@ import org.gradle.testing.jacoco.tasks.JacocoCoverageVerification
 import org.gradle.testing.jacoco.plugins.JacocoTaskExtension
 import org.gradle.api.plugins.JavaPlugin
 import org.gradle.api.tasks.SourceSetContainer
-import org.gradle.api.publish.PublishingExtension
-import org.gradle.api.publish.maven.MavenPublication
 import org.gradle.api.tasks.javadoc.Javadoc
 import org.gradle.external.javadoc.StandardJavadocDocletOptions
 import org.gradle.api.plugins.quality.Checkstyle
 import org.gradle.api.plugins.quality.CheckstyleExtension
-import org.gradle.plugins.signing.SigningExtension
 
 plugins {
     id("io.freefair.lombok") version "8.11" apply false
+    id("com.vanniktech.maven.publish") version "0.30.0" apply false
 }
 
 group = "io.brillianttiger.bio"
@@ -131,72 +129,6 @@ subprojects {
                         "Built-JDK" to System.getProperty("java.version"),
                         "Created-By" to "Gradle ${gradle.gradleVersion}"
                     )
-                }
-            }
-        }
-
-        // Maven 퍼블리싱 설정
-        extensions.findByType<PublishingExtension>()?.apply {
-            publications {
-                create<MavenPublication>("maven") {
-                    from(components["java"])
-
-                    pom {
-                        name.set("${project.group}:${project.name}")
-                        description.set("PubMed and PMC XML Parser Library")
-                        url.set("https://github.com/brillianttiger/pubmed-pmc-parser")
-
-                        licenses {
-                            license {
-                                name.set("The Apache License, Version 2.0")
-                                url.set("http://www.apache.org/licenses/LICENSE-2.0.txt")
-                            }
-                        }
-
-                        developers {
-                            developer {
-                                id.set("brillianttiger")
-                                name.set("Brilliant Tiger")
-                                email.set("dev@brillianttiger.com")
-                            }
-                        }
-
-                        scm {
-                            connection.set("scm:git:git://github.com/brillianttiger/pubmed-pmc-parser.git")
-                            developerConnection.set("scm:git:ssh://github.com/brillianttiger/pubmed-pmc-parser.git")
-                            url.set("https://github.com/brillianttiger/pubmed-pmc-parser")
-                        }
-                    }
-                }
-            }
-
-            repositories {
-                maven {
-                    val releasesRepoUrl = uri("https://s01.oss.sonatype.org/service/local/staging/deploy/maven2/")
-                    val snapshotsRepoUrl = uri("https://s01.oss.sonatype.org/content/repositories/snapshots/")
-                    url = if (version.toString().endsWith("SNAPSHOT")) snapshotsRepoUrl else releasesRepoUrl
-
-                    credentials {
-                        username = System.getenv("OSSRH_USERNAME") ?: findProperty("ossrhUsername") as String?
-                        password = System.getenv("OSSRH_PASSWORD") ?: findProperty("ossrhPassword") as String?
-                    }
-                }
-            }
-        }
-
-        // Signing 설정 (릴리스 버전만)
-        if (!version.toString().endsWith("SNAPSHOT")) {
-            extensions.findByType<SigningExtension>()?.apply {
-                // In-memory signing 사용 (GitHub Actions 환경)
-                val signingKey = System.getenv("GPG_SIGNING_KEY")
-                val signingPassword = System.getenv("GPG_SIGNING_PASSWORD")
-
-                if (signingKey != null && signingPassword != null) {
-                    useInMemoryPgpKeys(signingKey, signingPassword)
-                }
-
-                extensions.findByType<PublishingExtension>()?.publications?.let {
-                    sign(it)
                 }
             }
         }

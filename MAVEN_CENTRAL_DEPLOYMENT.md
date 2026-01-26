@@ -1,15 +1,21 @@
-# Maven Central 배포 가이드
+# Maven Central 배포 가이드 (2026 최신판)
+
+## 🚨 중요 변경사항
+
+**2025년 6월 30일부터 OSSRH가 완전 종료**되고 **Central Portal**로 전환되었습니다.
+
+- ❌ **옛날 방식**: Sonatype OSSRH + Jira 티켓 + Nexus Staging Plugin
+- ✅ **새로운 방식**: Central Portal + 간단한 가입 + Vanniktech Plugin
+
+---
 
 ## 📋 목차
 1. [사전 준비](#사전-준비)
-2. [Sonatype OSSRH 계정 생성](#sonatype-ossrh-계정-생성)
+2. [Central Portal 계정 생성](#central-portal-계정-생성)
 3. [GPG 키 생성 및 배포](#gpg-키-생성-및-배포)
-4. [Gradle 설정 수정](#gradle-설정-수정)
-5. [배포 방법](#배포-방법)
-   - [방법 A: GitHub Actions 자동 배포 (권장)](#방법-a-github-actions-자동-배포-권장)
-   - [방법 B: 수동 배포](#방법-b-수동-배포)
-6. [릴리스 승인](#릴리스-승인)
-7. [배포 후 확인](#배포-후-확인)
+4. [자동 배포 설정 (GitHub Actions)](#자동-배포-설정-github-actions)
+5. [수동 배포 (로컬)](#수동-배포-로컬)
+6. [배포 확인](#배포-확인)
 
 ---
 
@@ -18,63 +24,63 @@
 ### ✅ 이미 완료된 항목
 - [x] 프로젝트 품질 (100% 테스트 커버리지)
 - [x] 문서화 (README, JavaDoc)
-- [x] Maven POM 메타데이터
+- [x] Maven POM 메타데이터 (`gradle.properties`에 설정완료)
 - [x] 오픈소스 라이선스 (Apache 2.0)
+- [x] Vanniktech Maven Publish Plugin 설정
 
 ### ⚠️ 필요한 항목
-- [ ] Sonatype OSSRH 계정
-- [ ] GPG 키페어
-- [ ] 도메인 소유권 증명 (또는 GitHub 기반 그룹 ID)
-- [ ] Gradle Signing 플러그인 설정
+- [ ] Central Portal 계정 (https://central.sonatype.com/)
+- [ ] 네임스페이스 검증 (Namespace Verification)
+- [ ] GPG 키페어 생성 및 배포
+- [ ] GitHub Secrets 설정 (자동 배포용)
 
 ---
 
-## 2. Sonatype OSSRH 계정 생성
+## 2. Central Portal 계정 생성
 
-### Step 1: Sonatype Jira 계정 생성
-1. https://issues.sonatype.org/secure/Signup!default.jspa 접속
-2. 계정 생성 (Username, Email, Full Name)
+### Step 1: 계정 생성 (매우 간단!)
+
+1. **https://central.sonatype.com/ 접속**
+2. **Sign Up** 또는 GitHub/Google 계정으로 로그인
 3. 이메일 인증 완료
 
-### Step 2: New Project Ticket 생성
-1. https://issues.sonatype.org/secure/CreateIssue.jspa 접속
-2. 다음 정보 입력:
-   ```
-   Project: Community Support - Open Source Project Repository Hosting (OSSRH)
-   Issue Type: New Project
-   Summary: Request for io.brillianttiger.bio or io.github.yourusername
-   Group Id: io.brillianttiger.bio (또는 io.github.yourusername)
-   Project URL: https://github.com/brillianttiger/pubmed-pmc-parser
-   SCM URL: https://github.com/brillianttiger/pubmed-pmc-parser.git
-   ```
+**🎉 Jira 티켓 불필요!** 2023년부터 티켓 없이 바로 가입 가능합니다.
 
-### Step 3: 도메인 소유권 증명
+### Step 2: Namespace 검증
 
-**옵션 A: GitHub 기반 그룹 ID 사용 (추천)** ✅
+**네임스페이스**란 Maven의 groupId (예: `io.brillianttiger.bio`)를 말합니다.
+
+#### 옵션 A: GitHub 기반 네임스페이스 (가장 쉬움) ✅
+
 ```
-Group ID: io.github.yourusername
-- 도메인 소유권 증명 불필요
-- GitHub 계정만 있으면 OK
-- 승인 빠름 (1-2일)
+Namespace: io.github.yourusername
+검증 방법: GitHub 계정으로 로그인만 하면 자동 검증!
+승인 시간: 즉시
 ```
 
-**옵션 B: 커스텀 도메인 (brillianttiger.com)**
+#### 옵션 B: 커스텀 도메인 네임스페이스 (이미 요청됨)
+
 ```
-Group ID: io.brillianttiger.bio
-- DNS TXT 레코드 추가 필요
-- 또는 brillianttiger.com 도메인 소유 증명
-- 승인 느림 (수일~수주)
+Namespace: io.brillianttiger.bio
+검증 방법: 도메인 소유권 증명 (DNS TXT 레코드 또는 웹사이트 파일)
+승인 시간: 1-2 영업일
 ```
 
-### Step 4: 승인 대기
-- 보통 1-2 영업일 내 승인
-- Jira 티켓에서 "RESOLVED" 상태 확인
+**현재 상태**: `io.brillianttiger.bio`로 도메인 인증 요청 완료 ✅
+
+### Step 3: 사용자 토큰 생성
+
+1. Central Portal 로그인
+2. **Account** → **Generate User Token** 클릭
+3. Username과 Password(Token) 복사
+4. GitHub Secrets에 저장할 예정
 
 ---
 
 ## 3. GPG 키 생성 및 배포
 
 ### Step 1: GPG 설치
+
 ```bash
 # macOS
 brew install gnupg
@@ -87,6 +93,7 @@ sudo apt-get install gnupg
 ```
 
 ### Step 2: GPG 키 생성
+
 ```bash
 # 키 생성
 gpg --gen-key
@@ -98,263 +105,168 @@ gpg --gen-key
 ```
 
 ### Step 3: 키 ID 확인
+
 ```bash
 # 키 목록 확인
-gpg --list-keys
+gpg --list-secret-keys --keyid-format=long
 
 # 출력 예시:
-# pub   rsa3072 2024-01-26 [SC]
-#       ABCD1234EFGH5678IJKL9012MNOP3456QRST7890  <- 이것이 Key ID
-# uid           [ultimate] Brilliant Tiger <dev@brillianttiger.com>
+# sec   rsa3072/ABCD1234EFGH5678 2026-01-26 [SC]
+#       ABCDEF1234567890ABCDEF1234567890ABCDEF12
+# uid                 [ultimate] Brilliant Tiger <dev@brillianttiger.com>
 ```
 
-### Step 4: 공개 키 배포
+위에서 `ABCD1234EFGH5678`이 **Key ID**입니다.
+
+### Step 4: 공개 키 배포 (Central Portal)
+
+Central Portal에서는 keyserver.ubuntu.com만 확인하므로:
+
 ```bash
-# Key ID의 마지막 8자리 사용
-gpg --keyserver keyserver.ubuntu.com --send-keys QRST7890
-gpg --keyserver keys.openpgp.org --send-keys QRST7890
-gpg --keyserver pgp.mit.edu --send-keys QRST7890
+# Key ID의 마지막 8자리 또는 전체 사용
+gpg --keyserver keyserver.ubuntu.com --send-keys ABCD1234EFGH5678
+
+# 또는 다른 keyserver에도 배포 (선택)
+gpg --keyserver keys.openpgp.org --send-keys ABCD1234EFGH5678
+gpg --keyserver pgp.mit.edu --send-keys ABCD1234EFGH5678
 ```
 
-### Step 5: 개인 키 내보내기 (백업)
+### Step 5: 개인 키 내보내기 (GitHub Secrets용)
+
 ```bash
-# 안전한 곳에 백업
-gpg --export-secret-keys QRST7890 > gpg-secret.key
+# ASCII Armored 형식으로 내보내기
+gpg --armor --export-secret-keys ABCD1234EFGH5678
+
+# 출력 전체를 복사 (-----BEGIN ~ -----END 포함)
 ```
 
 ---
 
-## 4. Gradle 설정 수정
+## 4. 자동 배포 설정 (GitHub Actions)
 
-### Step 1: gradle.properties 수정
+### Step 1: GitHub Secrets 설정
 
-프로젝트 루트에 `gradle.properties` 파일 생성 또는 수정:
+GitHub Repository → **Settings** → **Secrets and variables** → **Actions**에서 다음 4개 Secret 등록:
 
-```properties
-# Maven Central Credentials
-signing.keyId=QRST7890
-signing.password=YOUR_GPG_PASSPHRASE
-signing.secretKeyRingFile=/Users/yourusername/.gnupg/secring.gpg
+| Secret 이름 | 값 | 설명 |
+|------------|---|------|
+| `MAVEN_CENTRAL_USERNAME` | `your-username` | Central Portal 사용자 토큰의 Username |
+| `MAVEN_CENTRAL_PASSWORD` | `your-token` | Central Portal 사용자 토큰의 Password |
+| `ORG_GRADLE_PROJECT_signingInMemoryKey` | `-----BEGIN PGP...-----END PGP...` | GPG 개인키 전체 (Step 3-5에서 복사) |
+| `ORG_GRADLE_PROJECT_signingInMemoryKeyPassword` | `your-gpg-passphrase` | GPG 키 비밀번호 |
 
-ossrhUsername=YOUR_SONATYPE_USERNAME
-ossrhPassword=YOUR_SONATYPE_PASSWORD
+**주의**: Secret 이름을 정확히 입력해야 합니다!
 
-# Version (SNAPSHOT 제거)
-version=1.0.0
-```
+**상세 가이드**: [GITHUB_SECRETS_SETUP.md](./GITHUB_SECRETS_SETUP.md)
 
-**⚠️ 보안 주의:**
-- `gradle.properties`를 `.gitignore`에 추가
-- 또는 `~/.gradle/gradle.properties` (홈 디렉토리)에 저장
+### Step 2: 자동 배포 워크플로우
 
-### Step 2: build.gradle.kts 수정
+`.github/workflows/publish.yml` 파일이 이미 설정되어 있습니다.
 
-`build.gradle.kts` 파일 상단에 추가:
-
-```kotlin
-plugins {
-    id("io.freefair.lombok") version "8.11" apply false
-    id("maven-publish")
-    id("signing")
-}
-
-group = "io.brillianttiger.bio"  // 또는 io.github.yourusername
-version = "1.0.0"  // SNAPSHOT 제거
-```
-
-각 서브프로젝트에 signing 설정 추가:
-
-```kotlin
-subprojects {
-    // 기존 설정...
-
-    afterEvaluate {
-        // 기존 publishing 설정 유지...
-
-        // Signing 설정 추가
-        extensions.findByType<SigningExtension>()?.apply {
-            sign(extensions.getByType<PublishingExtension>().publications["maven"])
-        }
-
-        // Publishing Repository 추가
-        extensions.findByType<PublishingExtension>()?.apply {
-            repositories {
-                maven {
-                    val releasesRepoUrl = uri("https://s01.oss.sonatype.org/service/local/staging/deploy/maven2/")
-                    val snapshotsRepoUrl = uri("https://s01.oss.sonatype.org/content/repositories/snapshots/")
-                    url = if (version.toString().endsWith("SNAPSHOT")) snapshotsRepoUrl else releasesRepoUrl
-
-                    credentials {
-                        username = findProperty("ossrhUsername") as String? ?: System.getenv("OSSRH_USERNAME")
-                        password = findProperty("ossrhPassword") as String? ?: System.getenv("OSSRH_PASSWORD")
-                    }
-                }
-            }
-        }
-    }
-}
-```
-
-### Step 3: 플러그인 적용 확인
-
-각 서브모듈의 `build.gradle.kts`에 다음이 있는지 확인:
-
-```kotlin
-plugins {
-    id("java-library")
-    id("maven-publish")
-    id("signing")
-    id("io.freefair.lombok")
-}
-```
-
----
-
-## 5. 배포 방법
-
-### 방법 A: GitHub Actions 자동 배포 (권장) ✅
-
-**가장 쉽고 안전한 방법입니다!** Git tag만 push하면 자동으로 Maven Central에 배포됩니다.
-
-#### Step 1: GitHub Secrets 설정
-
-GitHub Repository → Settings → Secrets and variables → Actions에서 다음 4개의 Secret을 등록합니다:
-
-| Secret 이름 | 설명 | 예시 |
-|------------|------|-----|
-| `OSSRH_USERNAME` | Sonatype OSSRH 사용자명 | `your-username` |
-| `OSSRH_PASSWORD` | Sonatype OSSRH 비밀번호 | `your-password` |
-| `GPG_SIGNING_KEY` | GPG 개인키 (ASCII armored) | `-----BEGIN PGP PRIVATE KEY BLOCK----- ...` |
-| `GPG_SIGNING_PASSWORD` | GPG 키 비밀번호 | `your-gpg-passphrase` |
-
-**상세 가이드**: [GITHUB_SECRETS_SETUP.md](GITHUB_SECRETS_SETUP.md) 참고
-
-#### Step 2: 버전 태그 생성 및 Push
+### Step 3: 릴리스 배포
 
 ```bash
-# 릴리스 버전 결정 (예: 1.0.0)
+# 1. 릴리스 버전 결정
 VERSION="1.0.0"
 
-# Git tag 생성
+# 2. Git tag 생성
 git tag v${VERSION}
 
-# Tag push (자동 배포 트리거)
+# 3. Tag push → 자동 배포 시작!
 git push origin v${VERSION}
 ```
 
-#### Step 3: GitHub Actions 워크플로우 확인
+### Step 4: GitHub Actions 확인
 
-1. GitHub 저장소 → **Actions** 탭 이동
+1. GitHub 저장소 → **Actions** 탭
 2. "Publish to Maven Central" 워크플로우 실행 확인
-3. 빌드 로그 모니터링 (약 5-10분)
+3. 약 5-10분 소요
 
-**성공 시**: Sonatype staging repository에 자동 업로드 완료
-**실패 시**: Actions 로그에서 오류 확인 후 수정
-
-#### Step 4: 릴리스 승인
-
-자동 배포 후, 수동으로 릴리스 승인 필요:
-
-1. https://s01.oss.sonatype.org/ 로그인
-2. Staging Repositories → `iobrillanttiger-XXXX` 선택
-3. **Close** 버튼 클릭 (검증 5-10분)
-4. **Release** 버튼 클릭 → Maven Central 배포 완료!
+**성공 시**: 자동으로 Maven Central에 배포 완료! 🎉
 
 ---
 
-### 방법 B: 수동 배포
+## 5. 수동 배포 (로컬)
 
-로컬 환경에서 직접 배포하는 방법입니다.
-
-#### Step 1: 로컬 환경변수 설정
+### Step 1: 환경변수 설정
 
 ```bash
 # ~/.zshrc 또는 ~/.bashrc에 추가
-export OSSRH_USERNAME="your-username"
-export OSSRH_PASSWORD="your-password"
-export GPG_SIGNING_KEY="$(gpg --armor --export-secret-keys YOUR_KEY_ID)"
-export GPG_SIGNING_PASSWORD="your-gpg-passphrase"
+export MAVEN_CENTRAL_USERNAME="your-username"
+export MAVEN_CENTRAL_PASSWORD="your-token"
+export ORG_GRADLE_PROJECT_signingInMemoryKey="$(gpg --armor --export-secret-keys YOUR_KEY_ID)"
+export ORG_GRADLE_PROJECT_signingInMemoryKeyPassword="your-gpg-passphrase"
 
 # 적용
 source ~/.zshrc  # 또는 source ~/.bashrc
 ```
 
-#### Step 2: 빌드 및 테스트
+### Step 2: 버전 업데이트
+
+`build.gradle.kts` 파일에서 SNAPSHOT 제거:
+
+```kotlin
+version = "1.0.0"  // "1.0.0-SNAPSHOT" → "1.0.0"
+```
+
+### Step 3: 빌드 및 배포
 
 ```bash
+# 빌드 및 테스트
 ./gradlew clean build
 
-# 테스트 통과 확인
-./gradlew test
+# Maven Central에 자동 배포 및 릴리스
+./gradlew publishAndReleaseToMavenCentral --no-configuration-cache
 ```
 
-#### Step 3: 로컬 배포 테스트
+**Vanniktech 플러그인**이 자동으로:
+1. 아티팩트 빌드
+2. GPG 서명
+3. Central Portal에 업로드
+4. 자동 릴리스까지 처리!
 
-```bash
-# 로컬 Maven 저장소에 배포 테스트
-./gradlew publishToMavenLocal
+### Step 4: 배포 확인
 
-# 확인
-ls ~/.m2/repository/io/brillianttiger/bio/
+로그에서 다음 메시지 확인:
+
 ```
-
-#### Step 4: Staging Repository에 배포
-
-```bash
-# 버전 업데이트 (build.gradle.kts)
-# version = "1.0.0-SNAPSHOT" → version = "1.0.0"
-
-# 모든 아티팩트를 Sonatype에 업로드
-./gradlew publish
-
-# 또는 개별 모듈
-./gradlew :common:publish
-./gradlew :pubmed:publish
-./gradlew :pmc:publish
+> Task :publishAndReleaseToMavenCentral
+Successfully published to Maven Central
+Deployment ID: xxxx-xxxx-xxxx-xxxx
 ```
 
 ---
 
-## 6. 릴리스 승인
+## 6. 배포 확인
 
-### Step 1: Sonatype Nexus Repository Manager 접속
-1. https://s01.oss.sonatype.org/ 로그인
-2. 좌측 메뉴 "Staging Repositories" 클릭
+### Step 1: Maven Central Search
 
-### Step 2: Staging Repository 찾기
-1. 목록에서 `combrillanttiger-XXXX` 또는 `iogithub-XXXX` 찾기
-2. 체크박스 선택
+약 10분 ~ 2시간 후:
 
-### Step 3: Close → Release
-1. "Close" 버튼 클릭 (검증 시작)
-2. 검증 통과 확인 (5-10분)
-3. "Release" 버튼 클릭
-4. 확인 대화상자에서 "Confirm"
+```
+https://central.sonatype.com/
+→ "io.brillianttiger.bio" 검색
+```
 
-### Step 4: 배포 완료 확인
-- Maven Central 동기화: 10분 ~ 2시간
-- 검색 가능: 2시간 ~ 24시간
-- 확인: https://search.maven.org/artifact/io.brillianttiger.bio/pubmed-pmc-parser
+또는:
 
----
-
-## 7. 배포 후 확인
-
-### Step 1: Maven Central 검색
 ```
 https://search.maven.org/
 → "io.brillianttiger.bio" 검색
 ```
 
 ### Step 2: Gradle 사용자 테스트
-```gradle
+
+```kotlin
 dependencies {
-    implementation 'io.brillianttiger.bio:pubmed:1.0.0'
-    implementation 'io.brillianttiger.bio:pmc:1.0.0'
+    implementation("io.brillianttiger.bio:pubmed:1.0.0")
+    implementation("io.brillianttiger.bio:pmc:1.0.0")
+    implementation("io.brillianttiger.bio:common:1.0.0")
 }
 ```
 
 ### Step 3: Maven 사용자 테스트
+
 ```xml
 <dependency>
     <groupId>io.brillianttiger.bio</groupId>
@@ -369,78 +281,77 @@ dependencies {
 
 배포 전 최종 확인:
 
+- [ ] Central Portal 계정 생성 및 네임스페이스 검증
+- [ ] GPG 키 생성 및 keyserver에 업로드
+- [ ] GitHub Secrets 4개 모두 등록
 - [ ] 모든 테스트 통과 (100% 커버리지)
-- [ ] README.md 업데이트 (버전 변경)
-- [ ] CHANGELOG.md 작성
-- [ ] Git 태그 생성 (`v1.0.0`)
-- [ ] JavaDoc 생성 확인
-- [ ] Sources JAR 생성 확인
-- [ ] POM 메타데이터 완성
-- [ ] GPG 서명 설정 완료
-- [ ] Sonatype 자격증명 설정
+- [ ] README.md 버전 업데이트
+- [ ] Git tag 생성 및 push
 
 ---
 
 ## 🔧 트러블슈팅
 
 ### 문제 1: GPG 서명 실패
+
 ```
-Solution: gpg-agent 재시작
-$ gpgconf --kill gpg-agent
-$ gpg-agent --daemon
+Could not read PGP secret key
 ```
+
+**해결책**:
+- `ORG_GRADLE_PROJECT_signingInMemoryKey`에 전체 개인키 포함 확인
+- ASCII armored 형식 확인 (`-----BEGIN PGP PRIVATE KEY BLOCK-----`)
+- 줄바꿈이 제대로 유지되었는지 확인
 
 ### 문제 2: 401 Unauthorized
+
 ```
-Solution: gradle.properties 자격증명 확인
-- ossrhUsername
-- ossrhPassword
+Received status code 401 from server: Unauthorized
 ```
 
-### 문제 3: POM 검증 실패
-```
-Solution: POM 필수 필드 확인
-- name, description, url
-- licenses, developers, scm
-```
+**해결책**:
+- Central Portal에서 **User Token** 재생성
+- `MAVEN_CENTRAL_USERNAME`과 `MAVEN_CENTRAL_PASSWORD` 확인
+- Namespace 검증 완료 확인
 
-### 문제 4: Javadoc 생성 오류
-```
-Solution: build.gradle.kts에 추가
-tasks.withType<Javadoc> {
-    options.encoding = "UTF-8"
-    (options as StandardJavadocDocletOptions).addStringOption("Xdoclint:none", "-quiet")
-}
-```
+### 문제 3: Central Portal에서 찾을 수 없음
+
+**해결책**:
+- 10분 ~ 2시간 대기 (Central 동기화 시간)
+- Deployment ID 로그 확인
+- https://central.sonatype.com/publishing 에서 배포 상태 확인
 
 ---
 
 ## 📚 참고 자료
 
-- [Sonatype OSSRH Guide](https://central.sonatype.org/publish/publish-guide/)
-- [Gradle Maven Publish Plugin](https://docs.gradle.org/current/userguide/publishing_maven.html)
-- [Gradle Signing Plugin](https://docs.gradle.org/current/userguide/signing_plugin.html)
-- [Maven Central Search](https://search.maven.org/)
+- [Sonatype Central Portal](https://central.sonatype.com/)
+- [Vanniktech Gradle Maven Publish Plugin](https://vanniktech.github.io/gradle-maven-publish-plugin/)
+- [Maven Central Setup Guide](https://vanniktech.github.io/gradle-maven-publish-plugin/central/)
+- [GitHub Actions Publishing Guide](https://docs.github.com/en/actions/publishing-packages/publishing-java-packages-with-gradle)
 
 ---
 
 ## 🚀 간단 요약
 
-### GitHub 기반 배포 (가장 쉬움) ✅
+### 옛날 방식 (OSSRH - 종료됨) ❌
+1. Sonatype Jira 계정 생성
+2. Jira 티켓 생성 및 승인 대기 (수일)
+3. Nexus Staging Plugin 설정
+4. 수동으로 Nexus에서 Close → Release
 
-```bash
-# 1. Sonatype 계정 생성 + 티켓 (io.github.yourusername)
-# 2. GPG 키 생성 및 배포
-# 3. build.gradle.kts 수정 (group, version, signing)
-# 4. 배포
-./gradlew clean build publish
+### 새로운 방식 (Central Portal) ✅
+1. Central Portal 가입 (즉시)
+2. Namespace 검증 (GitHub 기반은 즉시)
+3. Vanniktech Plugin 설정
+4. `git tag v1.0.0 && git push origin v1.0.0` → **자동 배포 완료!**
 
-# 5. Nexus에서 Close → Release
-```
-
-**예상 소요 시간:** 2-3시간 (초기 설정) + 1-2일 (승인 대기)
+**소요 시간**:
+- 초기 설정: 30분
+- 배포: Git tag push 1회 → 자동!
 
 ---
 
-**작성일:** 2026-01-26
-**프로젝트:** pubmed-pmc-parser v1.0.0
+**작성일**: 2026-01-26
+**프로젝트**: pubmed-pmc-parser v1.0.0
+**플러그인**: Vanniktech Maven Publish Plugin v0.30.0
