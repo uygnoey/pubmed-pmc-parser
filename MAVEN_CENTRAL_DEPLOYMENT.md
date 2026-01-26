@@ -150,8 +150,8 @@ GitHub Repository → **Settings** → **Secrets and variables** → **Actions**
 
 | Secret 이름 | 값 | 설명 |
 |------------|---|------|
-| `MAVEN_CENTRAL_USERNAME` | `your-username` | Central Portal 사용자 토큰의 Username |
-| `MAVEN_CENTRAL_PASSWORD` | `your-token` | Central Portal 사용자 토큰의 Password |
+| `MAVEN_CENTRAL_BIO_USERNAME` | `your-username` | Central Portal 사용자 토큰의 Username |
+| `MAVEN_CENTRAL_BIO_PASSWORD` | `your-token` | Central Portal 사용자 토큰의 Password |
 | `ORG_GRADLE_PROJECT_signingInMemoryKey` | `-----BEGIN PGP...-----END PGP...` | GPG 개인키 전체 (Step 3-5에서 복사) |
 | `ORG_GRADLE_PROJECT_signingInMemoryKeyPassword` | `your-gpg-passphrase` | GPG 키 비밀번호 |
 
@@ -165,24 +165,50 @@ GitHub Repository → **Settings** → **Secrets and variables** → **Actions**
 
 ### Step 3: 릴리스 배포
 
+GitHub에서 Release를 생성하면 자동으로 배포됩니다:
+
+**방법 1: GitHub 웹 인터페이스 사용 (권장)**
+
+1. GitHub 저장소 페이지 → **Releases** 섹션
+2. **Create a new release** 클릭
+3. **Choose a tag**: `v1.0.0` 입력 (새 태그 생성)
+4. **Release title**: `v1.0.0` 또는 `Release 1.0.0`
+5. **Description**: 릴리스 노트 작성
+6. **Publish release** 클릭 → **자동 배포 시작!**
+
+**방법 2: GitHub CLI 사용**
+
 ```bash
-# 1. 릴리스 버전 결정
+# 릴리스 버전 결정
 VERSION="1.0.0"
 
-# 2. Git tag 생성
-git tag v${VERSION}
+# GitHub Release 생성 (자동으로 tag도 생성됨)
+gh release create v${VERSION} \
+  --title "Release ${VERSION}" \
+  --notes "Maven Central deployment for version ${VERSION}"
+```
 
-# 3. Tag push → 자동 배포 시작!
-git push origin v${VERSION}
+**방법 3: Git tag 후 Release 생성**
+
+```bash
+# 1. Git tag 생성
+git tag v1.0.0
+git push origin v1.0.0
+
+# 2. GitHub에서 해당 tag로 Release 생성
+# (웹 인터페이스 또는 gh CLI 사용)
 ```
 
 ### Step 4: GitHub Actions 확인
 
-1. GitHub 저장소 → **Actions** 탭
-2. "Publish to Maven Central" 워크플로우 실행 확인
-3. 약 5-10분 소요
+1. Release를 publish하면 자동으로 워크플로우 실행
+2. GitHub 저장소 → **Actions** 탭
+3. "Publish to Maven Central" 워크플로우 실행 확인
+4. 약 5-10분 소요
 
 **성공 시**: 자동으로 Maven Central에 배포 완료! 🎉
+
+**주의**: Draft release는 배포되지 않습니다. 반드시 **Publish release**를 클릭해야 합니다.
 
 ---
 
@@ -192,8 +218,8 @@ git push origin v${VERSION}
 
 ```bash
 # ~/.zshrc 또는 ~/.bashrc에 추가
-export MAVEN_CENTRAL_USERNAME="your-username"
-export MAVEN_CENTRAL_PASSWORD="your-token"
+export MAVEN_CENTRAL_BIO_USERNAME="your-username"
+export MAVEN_CENTRAL_BIO_PASSWORD="your-token"
 export ORG_GRADLE_PROJECT_signingInMemoryKey="$(gpg --armor --export-secret-keys YOUR_KEY_ID)"
 export ORG_GRADLE_PROJECT_signingInMemoryKeyPassword="your-gpg-passphrase"
 
@@ -286,7 +312,8 @@ dependencies {
 - [ ] GitHub Secrets 4개 모두 등록
 - [ ] 모든 테스트 통과 (100% 커버리지)
 - [ ] README.md 버전 업데이트
-- [ ] Git tag 생성 및 push
+- [ ] 코드 변경사항 commit 및 push
+- [ ] **GitHub Release 생성 (Publish)**
 
 ---
 
@@ -311,7 +338,7 @@ Received status code 401 from server: Unauthorized
 
 **해결책**:
 - Central Portal에서 **User Token** 재생성
-- `MAVEN_CENTRAL_USERNAME`과 `MAVEN_CENTRAL_PASSWORD` 확인
+- `MAVEN_CENTRAL_BIO_USERNAME`과 `MAVEN_CENTRAL_BIO_PASSWORD` 확인
 - Namespace 검증 완료 확인
 
 ### 문제 3: Central Portal에서 찾을 수 없음
@@ -344,11 +371,11 @@ Received status code 401 from server: Unauthorized
 1. Central Portal 가입 (즉시)
 2. Namespace 검증 (GitHub 기반은 즉시)
 3. Vanniktech Plugin 설정
-4. `git tag v1.0.0 && git push origin v1.0.0` → **자동 배포 완료!**
+4. **GitHub Release 생성 → 자동 배포 완료!**
 
 **소요 시간**:
 - 초기 설정: 30분
-- 배포: Git tag push 1회 → 자동!
+- 배포: GitHub Release 생성 → 자동!
 
 ---
 

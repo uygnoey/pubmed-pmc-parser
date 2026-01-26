@@ -20,11 +20,11 @@ Git tag push 시 자동으로 Maven Central에 배포하기 위해서는 GitHub 
 
 ## 필요한 Secrets
 
-### 1. MAVEN_CENTRAL_USERNAME
+### 1. MAVEN_CENTRAL_BIO_USERNAME
 **설명**: Central Portal 사용자 토큰의 Username
 **값**: Central Portal에서 생성한 토큰의 Username (예: `A1B2C3D4`)
 
-### 2. MAVEN_CENTRAL_PASSWORD
+### 2. MAVEN_CENTRAL_BIO_PASSWORD
 **설명**: Central Portal 사용자 토큰의 Password
 **값**: Central Portal에서 생성한 토큰의 Password (매우 긴 문자열)
 
@@ -63,7 +63,7 @@ Git tag push 시 자동으로 Maven Central에 배포하기 위해서는 GitHub 
 - Username: 짧은 문자열 (예: `A1B2C3D4`)
 - Password: 매우 긴 문자열 (전체 복사!)
 
-이 값을 `MAVEN_CENTRAL_USERNAME`과 `MAVEN_CENTRAL_PASSWORD`에 사용합니다.
+이 값을 `MAVEN_CENTRAL_BIO_USERNAME`과 `MAVEN_CENTRAL_BIO_PASSWORD`에 사용합니다.
 
 ---
 
@@ -132,17 +132,17 @@ gpg --keyserver keyserver.ubuntu.com --recv-keys ABCD1234EFGH5678
 
 각 Secret에 대해 다음을 반복:
 
-#### 1. MAVEN_CENTRAL_USERNAME
+#### 1. MAVEN_CENTRAL_BIO_USERNAME
 
 - **New repository secret** 버튼 클릭
-- **Name**: `MAVEN_CENTRAL_USERNAME`
+- **Name**: `MAVEN_CENTRAL_BIO_USERNAME`
 - **Secret**: Central Portal 토큰 Username 붙여넣기 (예: `A1B2C3D4`)
 - **Add secret** 클릭
 
-#### 2. MAVEN_CENTRAL_PASSWORD
+#### 2. MAVEN_CENTRAL_BIO_PASSWORD
 
 - **New repository secret** 버튼 클릭
-- **Name**: `MAVEN_CENTRAL_PASSWORD`
+- **Name**: `MAVEN_CENTRAL_BIO_PASSWORD`
 - **Secret**: Central Portal 토큰 Password 붙여넣기 (긴 문자열 전체)
 - **Add secret** 클릭
 
@@ -179,8 +179,8 @@ gpg --keyserver keyserver.ubuntu.com --recv-keys ABCD1234EFGH5678
 
 ```bash
 # 환경변수 설정 (임시)
-export MAVEN_CENTRAL_USERNAME="your-username"
-export MAVEN_CENTRAL_PASSWORD="your-token-password"
+export MAVEN_CENTRAL_BIO_USERNAME="your-username"
+export MAVEN_CENTRAL_BIO_PASSWORD="your-token-password"
 export ORG_GRADLE_PROJECT_signingInMemoryKey="$(gpg --armor --export-secret-keys YOUR_KEY_ID)"
 export ORG_GRADLE_PROJECT_signingInMemoryKeyPassword="your-gpg-passphrase"
 
@@ -214,17 +214,25 @@ ls ~/.m2/repository/io/brillianttiger/bio/
 
 ## 배포 프로세스
 
-### 1. 버전 태그 생성 및 Push
+### 1. GitHub Release 생성
 
+**웹 인터페이스 사용:**
+1. GitHub 저장소 → **Releases** → **Create a new release**
+2. **Choose a tag**: `v1.0.0` 입력
+3. **Release title**: `Release 1.0.0`
+4. **Description**: 릴리스 노트 작성
+5. **Publish release** 클릭
+
+**또는 GitHub CLI 사용:**
 ```bash
-# 릴리스 버전 태그
-git tag v1.0.0
-git push origin v1.0.0
+gh release create v1.0.0 \
+  --title "Release 1.0.0" \
+  --notes "Maven Central deployment"
 ```
 
 ### 2. GitHub Actions 자동 실행
 
-- `publish.yml` 워크플로우가 자동으로 트리거됨
+- Release가 published되면 `publish.yml` 워크플로우가 자동 트리거
 - 빌드 → 테스트 → Maven Central 자동 업로드 및 릴리스
 
 ### 3. Central Portal에서 확인
@@ -262,7 +270,7 @@ Received status code 401 from server: Unauthorized
 
 **해결책**:
 - Central Portal에서 **User Token** 재생성
-- `MAVEN_CENTRAL_USERNAME`과 `MAVEN_CENTRAL_PASSWORD` 확인
+- `MAVEN_CENTRAL_BIO_USERNAME`과 `MAVEN_CENTRAL_BIO_PASSWORD` 확인
 - Namespace가 **Verified** 상태인지 확인
 
 ### 문제 3: Publishing failed
