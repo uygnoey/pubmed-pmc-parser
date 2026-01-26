@@ -17,12 +17,6 @@ plugins {
 group = "io.brillianttiger.bio"
 version = "1.0.0"
 
-// Load properties for Maven publishing
-ext {
-    set("MAVEN_CENTRAL_USERNAME", System.getenv("MAVEN_CENTRAL_USERNAME"))
-    set("MAVEN_CENTRAL_PASSWORD", System.getenv("MAVEN_CENTRAL_PASSWORD"))
-}
-
 allprojects {
     repositories {
         mavenCentral()

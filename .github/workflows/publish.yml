@@ -51,8 +51,8 @@ jobs:
     - name: Publish and release to Maven Central
       run: ./gradlew publishAndReleaseToMavenCentral --no-configuration-cache --no-daemon --stacktrace
       env:
-        MAVEN_CENTRAL_USERNAME: ${{ secrets.MAVEN_CENTRAL_BIO_USERNAME }}
-        MAVEN_CENTRAL_PASSWORD: ${{ secrets.MAVEN_CENTRAL_BIO_PASSWORD }}
+        ORG_GRADLE_PROJECT_mavenCentralUsername: ${{ secrets.MAVEN_CENTRAL_BIO_USERNAME }}
+        ORG_GRADLE_PROJECT_mavenCentralPassword: ${{ secrets.MAVEN_CENTRAL_BIO_PASSWORD }}
         ORG_GRADLE_PROJECT_signingInMemoryKey: ${{ secrets.ORG_GRADLE_PROJECT_signingInMemoryKey }}
         ORG_GRADLE_PROJECT_signingInMemoryKeyPassword: ${{ secrets.ORG_GRADLE_PROJECT_signingInMemoryKeyPassword }}
 
