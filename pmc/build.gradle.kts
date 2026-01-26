@@ -57,6 +57,43 @@ tasks.javadoc {
     enabled = false  // Disable javadoc generation completely
 }
 
+// Maven Publishing 설정
+mavenPublishing {
+    publishToMavenCentral(com.vanniktech.maven.publish.SonatypeHost.CENTRAL_PORTAL)
+    signAllPublications()
+
+    coordinates(group.toString(), "pmc-parser", version.toString())
+
+    pom {
+        name.set("PMC XML Parser")
+        description.set("High-performance streaming parser for PMC Open Access articles with JATS 1.4 support")
+        url.set("https://github.com/BrilliantTiger/pubmed-pmc-parser")
+
+        licenses {
+            license {
+                name.set("The Apache Software License, Version 2.0")
+                url.set("https://www.apache.org/licenses/LICENSE-2.0.txt")
+                distribution.set("repo")
+            }
+        }
+
+        developers {
+            developer {
+                id.set("brillianttiger")
+                name.set("Brilliant Tiger")
+                email.set("dev@brillianttiger.com")
+                url.set("https://github.com/BrilliantTiger")
+            }
+        }
+
+        scm {
+            url.set("https://github.com/BrilliantTiger/pubmed-pmc-parser")
+            connection.set("scm:git:git://github.com/BrilliantTiger/pubmed-pmc-parser.git")
+            developerConnection.set("scm:git:ssh://git@github.com/BrilliantTiger/pubmed-pmc-parser.git")
+        }
+    }
+}
+
 // Fat JAR 생성 (PMC 단독 실행 가능)
 tasks.register<Jar>("fatJar") {
     archiveClassifier.set("all")

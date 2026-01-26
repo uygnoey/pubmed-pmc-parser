@@ -53,3 +53,40 @@ tasks.jar {
 tasks.javadoc {
     enabled = false  // Disable javadoc generation completely
 }
+
+// Maven Publishing 설정
+mavenPublishing {
+    publishToMavenCentral(com.vanniktech.maven.publish.SonatypeHost.CENTRAL_PORTAL)
+    signAllPublications()
+
+    coordinates(group.toString(), "common", version.toString())
+
+    pom {
+        name.set("PubMed & PMC Common")
+        description.set("Common utilities and base classes for PubMed and PMC parsers")
+        url.set("https://github.com/BrilliantTiger/pubmed-pmc-parser")
+
+        licenses {
+            license {
+                name.set("The Apache Software License, Version 2.0")
+                url.set("https://www.apache.org/licenses/LICENSE-2.0.txt")
+                distribution.set("repo")
+            }
+        }
+
+        developers {
+            developer {
+                id.set("brillianttiger")
+                name.set("Brilliant Tiger")
+                email.set("dev@brillianttiger.com")
+                url.set("https://github.com/BrilliantTiger")
+            }
+        }
+
+        scm {
+            url.set("https://github.com/BrilliantTiger/pubmed-pmc-parser")
+            connection.set("scm:git:git://github.com/BrilliantTiger/pubmed-pmc-parser.git")
+            developerConnection.set("scm:git:ssh://git@github.com/BrilliantTiger/pubmed-pmc-parser.git")
+        }
+    }
+}

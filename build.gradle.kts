@@ -17,6 +17,12 @@ plugins {
 group = "io.brillianttiger.bio"
 version = "1.0.0"
 
+// Load properties for Maven publishing
+ext {
+    set("MAVEN_CENTRAL_USERNAME", System.getenv("MAVEN_CENTRAL_USERNAME"))
+    set("MAVEN_CENTRAL_PASSWORD", System.getenv("MAVEN_CENTRAL_PASSWORD"))
+}
+
 allprojects {
     repositories {
         mavenCentral()
@@ -183,4 +189,11 @@ tasks.register("buildAll") {
 // Checkstyle 전체 실행
 tasks.register("checkstyleAll") {
     dependsOn(subprojects.flatMap { it.tasks.withType<Checkstyle>() })
+}
+
+// Maven Central 배포 (모든 서브프로젝트)
+tasks.register("publishAndReleaseToMavenCentral") {
+    group = "publishing"
+    description = "Publishes all subprojects to Maven Central and releases them"
+    dependsOn(subprojects.map { it.tasks.named("publishAndReleaseToMavenCentral") })
 }
