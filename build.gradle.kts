@@ -44,8 +44,7 @@ subprojects {
             toolchain {
                 languageVersion.set(JavaLanguageVersion.of(21))
             }
-            withSourcesJar()
-            // Javadoc jar는 Vanniktech plugin에서 처리하므로 여기서는 설정하지 않음
+            // Sources와 Javadoc jar는 Vanniktech plugin에서 자동으로 처리
         }
 
         // 공통 의존성
